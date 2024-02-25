@@ -1,0 +1,39 @@
+<%- include('../base.ejs') %>
+
+    <link rel="stylesheet" href="/css/company/register-company.css">
+    <title>Registro Empresa</title>
+     
+    <div class="container">
+        <form action="/register-company/new" method="post">
+            <div class="icon-holder">
+                <div class="icon">
+                    <i class="fa fa-building-o" aria-hidden="true"></i>
+                    <h1>Empresas</h1>
+                </div>
+            </div>
+            <div class="form-group">
+                <h1>Registro</h1>
+                <p>Registrar nueva empresa.</p>
+                <label for=""><i class="fa fa-building-o" aria-hidden="true"></i> Nombre/Razón social:</label>
+                <input type="text" name="nombre" id="" class="form-control" required autocomplete="off" placeholder="Razón social">
+
+                <label for=""><i class="fas fa-mail-bulk    "></i> Correo:</label>
+                <input type="email" name="correo" id="" class="form-control" required autocomplete="off" placeholder="Correo">
+
+                <label for=""><i class="fa fa-phone" aria-hidden="true"></i> Teléfono:</label>
+                <input type="tel" name="telefono" id="" class="form-control" required autocomplete="off" placeholder="Teléfono">
+
+                <label for=""><i class="fa fa-lock" aria-hidden="true"></i> Contraseña:</label>
+                <input type="password" name="password" id="" class="form-control" required autocomplete="off" placeholder="Crea una contraseña">
+
+                <div class="buttons">
+                    <button type="submit" name="" id="" class="btn btn-primary" btn-lg btn-block">
+                        <i class="fa fa-user-plus" aria-hidden="true"></i> Registrarse
+                    </button>
+                    <a name="" id="" class="btn btn-primary" href="/" role="button">
+                        <i class="fa fa-paper-plane-o" aria-hidden="true"></i> Iniciar Sesión
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>

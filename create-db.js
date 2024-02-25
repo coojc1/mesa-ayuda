@@ -65,7 +65,7 @@ function crearTabla() {
 
     consulta = `INSERT INTO usuarios(nombre, correo, password, tipo_usuario) VALUES("Jose Torres", "Jose123@gmai.com", "Jose123", "Administrador")`;
 
-    consulta = `SELECT * FROM usuarios`;
+    consulta = `SELECT * FROM empresas`;
 
     db.all(consulta, (err, row) => {
         if(err) {
