@@ -1,0 +1,104 @@
+:root{
+    --Color-1: #004AAD;
+    --Color-2: #fff;
+    --Color-3: #A6A6A6;
+}
+
+.container{
+    height: 90vh;
+    display: flex;
+    align-items: center;
+}
+
+.container form{
+    background-color: var(--Color-1);
+    border-radius: 10px;
+    margin: auto;
+    height: fit-content;
+    width: 60%;
+    box-shadow: 0px 0px 10px var(--Color-3);
+    display: flex;
+}
+
+.container form .icon-holder{
+    width: 40%;
+    padding: 10px;
+    text-align: center;
+}
+
+form .icon-holder h1{
+    color: var(--Color-2);
+    font-size: 35pt;
+    width: 95%;
+    margin-left: 5%;
+}
+
+form .icon-holder i{
+    margin-top: 35%;
+    color: var(--Color-2);
+    font-size: 60pt;
+}
+
+form .form-group{
+    background-color: var(--Color-2);
+    border-radius: 10px;
+    width: 60%;
+    padding: 10px;
+    padding-bottom: 5vh;
+    color: var(--Color-1);
+}
+
+.form-group h1{
+    font-size: 35pt;
+    width: 90%;
+    margin: auto;
+    margin-bottom: 0px;
+}
+
+.form-group p{
+    font-weight: bold;
+    width: 90%;
+    margin: auto;
+    margin-bottom: 4vh;
+}
+
+.form-group label{
+    font-weight: bold;
+    width: 90%;
+    margin: auto 5%;
+}
+
+.form-group input{
+    width: 90%;
+    margin: auto;
+    margin-bottom: 4vh;
+}
+
+.form-group .buttons{
+    width: 90%;
+    margin: auto;
+    display: flex;
+    align-items: center;
+}
+
+.buttons button{
+    background-color: var(--Color-1);
+    margin-right: auto;
+    font-weight: bold;
+    &:hover{
+        background-color: var(--Color-1);
+    }
+}
+
+.buttons a{
+    background-color: var(--Color-2);
+    border: none;
+    font-weight: bold;
+    color: var(--Color-1);
+    padding: 0px;
+    height: fit-content;
+    &:hover{
+        background-color: var(--Color-2);
+        color: var(--Color-1);
+    }
+}
