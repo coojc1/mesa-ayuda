@@ -1,31 +1,13 @@
 const sqlite3 =  require('sqlite3');
 const db = new sqlite3.Database("mesa.db");
 
-function tablaUsuarios() {
-    let consulta = `CREATE TABLE IF NOT EXISTS usuarios(
-        id_usuario_pk INTEGER PRIMARY KEY NOT NULL,
-        NOMBRE TEXT,
-        CORREO TEXT,
-        PASSWORD TEXT,
-        TIPO_USUARIO TEXT
-    )`;
-
-    db.all(consulta, (err) => {
-        if(err) {
-            return console.log(err);
-        } else {
-            console.log("Tabla creada");
-        }
-    });
-}
-
 function crearTabla() {
     let consulta = `CREATE TABLE IF NOT EXISTS usuarios(
         id_usuario_pk INTEGER PRIMARY KEY NOT NULL,
-        NOMBRE TEXT,
-        CORREO TEXT,
-        PASSWORD TEXT,
-        TIPO_USUARIO TEXT
+        nombre TEXT,
+        correo TEXT,
+        password TEXT,
+        tipo_usuario TEXT
     )`;
 
     consulta = `CREATE TABLE IF NOT EXISTS empresas(
@@ -44,28 +26,46 @@ function crearTabla() {
     )`;
 
     consulta = `CREATE TABLE IF NOT EXISTS ingenieros(
-        id_admin_pk INTEGER PRIMARY KEY NOT NULL,
+        id_ingeniero_pk INTEGER PRIMARY KEY NOT NULL,
         id_usuario_fk INTEGER,
-        edad int,
+        categoria TEXT,
         FOREIGN KEY(id_usuario_fk) REFERENCES usuarios(id_usuario_pk)
     )`;
 
-    consulta = `CREATE TABLE IF NOT EXISTS tikets(
-        id_tiket_pk INTEGER PRIMARY KEY NOT NULL,
+    consulta = `CREATE TABLE IF NOT EXISTS tickets(
+        id_ticket_pk INTEGER PRIMARY KEY NOT NULL,
         id_empresa_fk INTEGER,
         id_ingeniero_fk INTEGER,
-        referencia TEXT,
+        id_referencia_fk TEXT,
         descripcion TEXT,
+        fecha DATE,
         tiempo INTEGER,
         version TEXT,
         prioridad TEXT,
         estado TEXT,
-        FOREIGN KEY(id_empresa_fk) REFERENCES empresas(id_empresa_pk)
+        FOREIGN KEY(id_empresa_fk) REFERENCES empresas(id_empresa_pk),
+        FOREIGN KEY(id_ingeniero_fk) REFERENCES ingenieros(id_ingeniero_pk)
     )`;
 
-    consulta = `INSERT INTO usuarios(nombre, correo, password, tipo_usuario) VALUES("Jose Torres", "Jose123@gmai.com", "Jose123", "Administrador")`;
+    consulta = `CREATE TABLE IF NOT EXISTS comentarios(
+        id_comentario_pk INTEGER PRIMARY KEY NOT NULL,
+        id_ticket_fk INTEGER,
+        contenido TEXT,
+        FOREIGN KEY(id_ticket_fk) REFERENCES tickets(id_ticket_pk)
+    )`;
 
-    consulta = `SELECT * FROM empresas`;
+    consulta = `CREATE TABLE IF NOT EXISTS referencia(
+        id_referencia_pk INTEGER PRIMARY KEY NOT NULL,
+        contenido TEXT
+    )`;
+
+    // consulta = `INSERT INTO usuarios(nombre, correo, password, tipo_usuario) VALUES("Jose Torres", "Jose123@gmai.com", "Jose123", "Administrador")`;
+
+    consulta = `SELECT * FROM tickets`;
+
+    // consulta = `DELETE FROM tickets`;
+
+    // consulta = `INSERT INTO referencia(contenido) VALUES("Error de version")`;
 
     db.all(consulta, (err, row) => {
         if(err) {

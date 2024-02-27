@@ -1,3 +1,14 @@
 <%- include('base.ejs') %>
 
-<h1>Error chavo :D</h1>
+<link rel="stylesheet" href="/css/out-log.css">
+
+<div class="container">
+    <div class="alert <%= tipo %>" role="alert">
+        <h4><%= titulo %></h4>
+        <p><%= mensaje %></p>
+        <hr>
+        <a name="" id="" class="alert-link" href="<%= link %>" role="button">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i> Aceptar
+        </a>
+    </div>
+</div>

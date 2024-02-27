@@ -1,0 +1,10 @@
+.container{
+    height: 80vh;
+    display: flex;
+    align-items: center;
+}
+
+.container .alert{
+    width: 50%;
+    margin: auto;
+}

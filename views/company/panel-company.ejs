@@ -1,0 +1,79 @@
+<%- include("base-panel.ejs") %>
+<link rel="stylesheet" href="/css/company/panel-company.css">
+<title><%= name %></title>
+
+<div class="container">
+    <div class="content-top">
+        <h1>Mis Tickets</h1>
+        <hr>
+        <div class="buttons">
+            <a name="" id="" class="btn btn-primary" href="/ticket-generate" role="button">
+                <i class="fa-solid fa-ticket"></i> Nuevo Ticket
+            </a>
+            <a name="" id="" class="btn btn-link" href="#" role="button">
+                <i class="fa fa-check-circle-o" aria-hidden="true"></i> Finalizado
+            </a>
+            <a name="" id="" class="btn btn-link" href="#" role="button">
+                <i class="fa fa-cogs" aria-hidden="true"></i> En Proceso
+            </a>
+        </div>
+    </div>
+    <div class="content-middle">
+        <% if(tickets.length === 0 || tickets === undefined) { %>
+            No hay tickets para mostrar. 😥😥
+        <% } else { %>
+            <table class="table table-striped table-hover">
+                <tr>
+                    <th>#</th>
+                    <th>Referencia</th>
+                    <th>Fecha</th>
+                    <th>Version</th>
+                    <th>Prioridad</th>
+                    <th>Estado</th>
+                    <th>Función</th>
+                </tr>
+                <% for(let i = 0; i < tickets.length; i++) { %>
+                    <tr>
+                        <td><%= tickets[i].id_ticket_pk %></td>
+                        <td><%= tickets[i].id_referencia_fk %></td>
+                        <td><%= tickets[i].fecha %></td>
+                        <td><%= tickets[i].version %></td>
+                        <td>
+                            <% if(tickets[i].prioridad == "Por evaluar") { %>
+                                <span class="badge bg-secondary"><%= tickets[i].prioridad %></span>
+                            <% } else if(tickets[i].prioridad == "Baja") { %>
+                                <span class="badge bg-info"><%= tickets[i].prioridad %></span>
+                            <% } else if(tickets[i].prioridad == "Normal") { %>
+                                <span class="badge bg-success"><%= tickets[i].prioridad %></span>
+                            <% } else if(tickets[i].prioridad == "Alta") { %>
+                                <span class="badge bg-warning"><%= tickets[i].prioridad %></span>
+                            <% } else { %>
+                                <span class="badge bg-danger"><%= tickets[i].prioridad %></span>
+                            <% } %>
+                        </td>
+                        <td>
+                            <% if(tickets[i].estado == "Abierto") { %>
+                                <span class="badge bg-danger rounded-pill"><%= tickets[i].estado %></span>
+                            <% } else if(tickets[i].estado == "En proceso") { %>
+                                <span class="badge bg-warning rounded-pill"><%= tickets[i].estado %></span>
+                            <% } else { %>
+                                <span class="badge bg-success rounded-pill"><%= tickets[i].estado %></span>
+                            <% } %>
+                        </td>
+                        <td>
+                            <div class="buttons">
+                                <a name="" id="" class="btn btn-primary" href="#" role="button">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </a>
+                                <a name="" id="" class="btn btn-primary" href="#" role="button">
+                                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                <% } %>
+            </table>
+        <% } %>
+    </div>
+</div>
+
