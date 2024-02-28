@@ -5,7 +5,6 @@ const path = require("path");
 const sqlite3 = require("sqlite3");
 const db = new sqlite3.Database("mesa.db");
 const session = require("express-session");
-const Swal = require("sweetalert2");
 var body = require('body-parser');
 
 app.use(session({
@@ -43,6 +42,13 @@ app.post("/company-login", (req, res) => {
             res.redirect("/company-panel");
         }
     });
+});
+
+app.get("/company-logout", (req, res) => {
+    delete req.session.idCompany;
+    delete req.session.nameCompany;
+    delete req.session.idEmpresa;
+    res.redirect("/");
 });
 
 app.get("/company-panel", (req, res) => {
