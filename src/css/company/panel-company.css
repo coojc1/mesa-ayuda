@@ -5,30 +5,61 @@
 }
 
 .container{
-    margin-top: 5vh;
 }
 
-.container .content-top h1{
+.content-top h1{
+    font-size: 20pt;
     color: var(--Color-1);
 }
 
 .content-top .buttons{
-    margin-bottom: 2vh;
     display: flex;
 }
 
 .buttons .btn-primary{
     background-color: var(--Color-1);
-    border: none;
     margin-right: auto;
+    border: none;
     font-weight: bold;
-    &:hover{
-        background-color: var(--Color-1);
-    }
 }
 
 .buttons .btn-link{
-    text-decoration: none;
     font-weight: bold;
     color: var(--Color-1);
+    text-decoration: none;
 }
+
+.container .content-middle{
+    display: flex;
+    margin-top: 10px;
+}
+
+.content-middle .table-out{
+    width: 70%;
+    height: fit-content;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table-out p{
+    font-size: 25pt;
+    font-weight: bold;
+    text-align: center;
+    width: fit-content;
+    margin: 10vh auto;
+    color: var(--Color-3);
+    align-self: center;
+}
+
+.table-out table{
+    margin: auto;
+    text-align: center;
+}
+
+.content-middle .chart-out{
+    /* background-color: green; */
+    margin: auto;
+    width: 30%;
+    height: fit-content;
+}
+

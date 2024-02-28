@@ -59,12 +59,33 @@ app.get("/company-panel", (req, res) => {
             req.session.idEmpresa = id_empresa_pk;
 
             db.all(consulta, [id_empresa_pk], (err, row) => {
-                let data = {
-                    "name": req.session.nameCompany,
-                    "tickets": row
-                }
+                // CONTAR EL ESTADO DE LOS TICKETS
+                let tickets = row;
+                let ticketsEstados = [];
+                const estadosOrdenados = ['Abierto', 'Liberado', 'En proceso'];
 
-                res.render("company/panel-company.ejs", data);
+                estadosOrdenados.forEach(estado => {
+                    ticketsEstados.push(0);
+                });
+
+                consulta = `SELECT estado, COUNT(id_ticket_pk) as cantidad FROM tickets WHERE id_empresa_fk = ? AND estado IN ('Abierto', 'Liberado', 'En proceso') GROUP BY estado`;
+
+                db.all(consulta, [id_empresa_pk], (err, row) => {
+                    row.forEach(row => {
+                        const estadoIndex = estadosOrdenados.indexOf(row.estado);
+                        if (estadoIndex !== -1) {
+                            ticketsEstados[estadoIndex] = row.cantidad;
+                        }
+                    });
+
+                    let data = {
+                        "name": req.session.nameCompany,
+                        "tickets": tickets,
+                        "ticketsEstados": JSON.stringify(ticketsEstados)
+                    }
+
+                    res.render("company/panel-company.ejs", data);
+                });
             });
         });
     } else {
@@ -92,14 +113,12 @@ app.get("/ticket-generate", (req, res) => {
 app.post("/ticket-generate/new", (req, res) => {
     let id_empresa_fk = req.session.idEmpresa;
     let referencia = req.body.referencia;
-    let fLocal = new Date();
-    let fecha = fLocal.getDay + "/" + fLocal.getMonth + "/" + fLocal.getFullYear;
     let version = req.body.version;
     let descripcion = req.body.descripcion;
 
-    let consulta = `INSERT INTO tickets(id_empresa_fk, id_referencia_fk, descripcion, fecha, version, prioridad, estado) VALUES(?,?,?,?,?,"Por evaluar", "Abierto")`;
+    let consulta = `INSERT INTO tickets(id_empresa_fk, id_referencia_fk, descripcion, fecha, version, prioridad, estado) VALUES(?,?,?,date("now"),?,"Por evaluar", "Abierto")`;
 
-    db.all(consulta, [id_empresa_fk, referencia, descripcion, fecha, version], (err, row) => {
+    db.all(consulta, [id_empresa_fk, referencia, descripcion, version], (err, row) => {
         if (err) {
             console.log(err);
         } else {

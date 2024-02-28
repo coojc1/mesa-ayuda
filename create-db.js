@@ -61,9 +61,11 @@ function crearTabla() {
 
     // consulta = `INSERT INTO usuarios(nombre, correo, password, tipo_usuario) VALUES("Jose Torres", "Jose123@gmai.com", "Jose123", "Administrador")`;
 
-    consulta = `SELECT * FROM tickets`;
+    // consulta = `SELECT * FROM tickets`;
 
-    // consulta = `DELETE FROM tickets`;
+    // consulta = `UPDATE tickets SET estado = "Liberado" WHERE id_ticket_pk = 1`;
+
+    consulta = `DELETE FROM tickets`;
 
     // consulta = `INSERT INTO referencia(contenido) VALUES("Error de version")`;
 
