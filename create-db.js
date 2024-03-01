@@ -59,9 +59,13 @@ function crearTabla() {
         contenido TEXT
     )`;
 
-    consulta = `INSERT INTO comentarios(id_ticket_fk, contenido, tipo_usuario) VALUES(1, "Comentario del soporte", "Soporte")`;
+    consulta = `CREATE TABLE imagenes(
+        id_imagen_pk INTEGER NOT NULL PRIMARY KEY,
+        id_ticket_fk INTEGER,
+        ruta TEXT
+    )`;
 
-    consulta = `SELECT * FROM comentarios`;
+    consulta = `DELETE FROM imagenes`;
 
     db.all(consulta, (err, row) => {
         if(err) {

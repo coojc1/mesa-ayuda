@@ -3,7 +3,6 @@
     <title>Información del ticket</title>
 
     <div class="container">
-
         <div class="card">
             <div class="card-header">
                 <h4>
@@ -64,7 +63,6 @@
             <div class="card-footer">
                 <div class="commets">
                     <h4>Comentarios</h4>
-
                     <form action="/ticket-info-comment/post" method="post">
                         <label for=""><i class="fa-regular fa-comment"></i> Nuevo comentario</label>
                         <div class="form-group">
@@ -106,6 +104,33 @@
                                     <% } %> 
                                 </div>
                                 <hr>
+                            <% } %>
+                        <% } %>
+                    </div>
+
+                    <h4>Imágenes de referencia</h4>
+                    <form action="/ticket-info-img/post" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                          <label for=""><i class="fas fa-image    "></i> Subir imagen de referencia</label>
+                          <input type="file" name="imagen" id="" class="form-control">
+                          <button type="submit" name="" id="" class="btn btn-primary">
+                            <i class="fa fa-paper-plane-o" aria-hidden="true"></i> Subir imagen
+                          </button>
+                        </div>
+                    </form>
+                    <hr>
+                    <div class="imagenes">
+                        <% if(imagenes.length == 0) { %>
+                            <p>No hay imágenes para mostrar. 😥😥</p>
+                        <% } else { %>
+                            <% for(let i = 0; i < imagenes.length; i++) { %>
+                                <div class="img">
+                                    <a name="" id="" class="btn btn-link" href="/ticket-info-img/delete/<%= imagenes[i].id_imagen_pk %>" role="button">
+                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                    </a>
+
+                                    <img src="<%= imagenes[i].ruta %>" alt="">
+                                </div>
                             <% } %>
                         <% } %>
                     </div>

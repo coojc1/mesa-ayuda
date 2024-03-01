@@ -5,7 +5,19 @@ const path = require("path");
 const sqlite3 = require("sqlite3");
 const db = new sqlite3.Database("mesa.db");
 const session = require("express-session");
+const multer = require("multer");
+const fs = require("fs");
 var body = require('body-parser');
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'src/uploads');
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname);
+    }
+  });
+  const upload = multer({ storage: storage });
 
 app.use(session({
     secret: "3b792f6f1d1f078e2c593d93ff3bba",
@@ -174,20 +186,25 @@ app.get("/ticket-info/:id_ticket", (req, res) => {
         id_ticket = req.params.id_ticket;
         let info_tickets = [];
         let comentarios = [];
+        let imagenes = [];
 
         db.all("SELECT descripcion, version, prioridad, estado, contenido FROM tickets, referencia WHERE id_ticket_pk = ? AND tickets.id_referencia_fk = referencia.id_referencia_pk", [id_ticket], (err, row) => {
             info_tickets = row;
 
             db.all("SELECT id_comentario_pk, contenido, tipo_usuario FROM comentarios WHERE id_ticket_fk = ?", [id_ticket], (err, row) => {
                 comentarios = row;
-                data = {
-                    "name": req.session.nameCompany,
-                    "id_ticket": id_ticket,
-                    "ticket": info_tickets,
-                    "comentarios": comentarios
-                }
-                console.log(data);
-                res.render("company/ticket-info.ejs", data);
+                
+                db.all("SELECT ruta, id_imagen_pk FROM imagenes WHERE id_ticket_fk = ?", [id_ticket], (err, row) => {
+                    imagenes = row;
+                    data = {
+                        "name": req.session.nameCompany,
+                        "id_ticket": id_ticket,
+                        "ticket": info_tickets,
+                        "comentarios": comentarios,
+                        "imagenes": imagenes
+                    }
+                    res.render("company/ticket-info.ejs", data);
+                });
             });
         });
     } else {
@@ -211,6 +228,49 @@ app.get("/ticket-info-comment/delete/:id_comentario", (req, res) => {
     });
 });
 
+app.post('/ticket-info-img/post', upload.single('imagen'), (req, res) => {
+    if (!req.file) {
+      res.status(400).send('No se ha enviado ninguna imagen');
+      return;
+    }
+  
+    const ruta = "/uploads/" + req.file.originalname;
+    // Aquí puedes hacer algo con el nombre del archivo, como guardarlo en una base de datos
+    console.log('Imagen subida correctamente - ' + ruta);
+    db.all("INSERT INTO imagenes(id_ticket_fk, ruta) VALUES(?,?)", [id_ticket, ruta], (err, row) => {
+        res.redirect("/ticket-info/" + id_ticket);
+    });
+});
+
+app.get("/ticket-info-img/delete/:id_imagen", (req, res) => {
+    let id_imagen = req.params.id_imagen;
+    db.all("SELECT ruta FROM imagenes WHERE id_imagen_pk = ?", [id_imagen], (err, row) => {
+        let ruta_imagen = __dirname + "/src" + row[0].ruta;
+        fs.access(ruta_imagen, fs.constants.F_OK, (err) => {
+        fs.unlink(ruta_imagen, (err) => {
+            db.all("DELETE FROM imagenes WHERE id_imagen_pk = ?", [id_imagen], (err, row) => {
+                res.redirect("/ticket-info/" + id_ticket);
+            });
+        });
+    });
+    });
+});
+
+app.get("/ticket-info/edit/:id_ticket", (req, res) => {
+    if (req.session.idCompany != undefined) {
+        id_ticket = req.params.id_ticket;
+        db.all("SELECT id_ticket_pk, descripcion, fecha, version, contenido FROM tickets, referencia WHERE tickets.id_referencia_fk = referencia.id_referencia_pk AND id_ticket_pk = ?", [id_ticket], (err, row) => {
+            data = {
+                "name": req.session.nameCompany,
+                "ticket": row
+            }
+            console.log(data);
+            res.render("company/ticket-edit.ejs", data);
+        });
+    } else {
+        res.redirect("/");
+    }
+});
 
 // REGISTRO DE UNA NUEVA EMPRESA ****************************************************************************
 app.get("/register-company", (req, res) => {
