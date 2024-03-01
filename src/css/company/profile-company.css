@@ -1,0 +1,106 @@
+:root{
+    --Color-1: #004AAD;
+    --Color-2: #fff;
+    --Color-3: #A6A6A6;
+}
+
+.container{
+    height: 80vh;
+    display: flex;
+}
+
+.container form{
+    display: flex;
+    align-self: center;
+    margin: auto;
+    height: fit-content;
+    width: 70%;
+    border-radius: 10px;
+    padding: 5px;
+    background-color: var(--Color-1);
+    box-shadow: 0px 0px 10px var(--Color-3);
+}
+
+.container form .content-left{
+    width: 40%;
+    display: flex;
+    align-items: center;
+}
+
+.content-left .profile-img{
+    margin: auto;
+}
+
+.profile-img .img{
+    background-color: var(--Color-2);
+    height: 200px;
+    width: 200px;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.profile-img .img i{
+    font-size: 80pt;
+    margin: auto;
+    color: var(--Color-1);
+}
+
+.profile-img h1{
+    text-align: center;
+    color: var(--Color-2);
+}
+
+.container form hr{
+    transform: rotate(90deg);
+}
+
+.container form .content-right{
+    background-color: var(--Color-2);
+    width: 60%;
+    border-radius: 10px;
+}
+
+.content-right .form-group{
+    padding: 10px;
+}
+
+.content-right .form-group p{
+    font-size: 12pt;
+    font-weight: bold;
+    color: var(--Color-1);
+    width: fit-content;
+    margin-left: 5%;
+}
+
+.content-right .form-group label{
+    font-weight: bold;
+    color: var(--Color-1);
+    width: fit-content;
+    margin-left: 5%;
+}
+
+.content-right .form-group input{
+    width: 90%;
+    margin: auto;
+    margin-bottom: 3vh;
+}
+
+.form-group .buttons{
+    display: flex;
+    width: 90%;
+    margin: auto;
+}
+
+.buttons button{
+    background-color: var(--Color-1);
+    border: none;
+    font-weight: bold;
+    margin-right: auto;
+}
+
+.buttons a{
+    font-weight: bold;
+    color: red;
+    text-decoration: none;
+}

@@ -1,0 +1,51 @@
+<%- include("base-panel.ejs") %>
+
+    <link rel="stylesheet" href="/css/company/profile-company.css">
+    <title>Profile Company</title>
+
+    <div class="container">
+        <form action="/company-profile/update" method="post">
+            <div class="content-left">
+                <div class="profile-img">
+                    <div class="img">
+                        <i class="fa fa-building-o" aria-hidden="true"></i>
+                    </div>
+                    <h1>
+                        <%= name %>
+                    </h1>
+                </div>
+            </div>
+            <hr>
+            <div class="content-right">
+                <div class="form-group">
+                    <p>Información sobre la empresa</p>
+                    <label for="">
+                        <i class="fas fa-mail-bulk    "></i> Correo:
+                    </label>
+                    <input type="text" name="correo" id="" class="form-control" placeholder="Correo" required
+                        autocomplete="off" value="<%= correo %>">
+
+                    <label for="">
+                        <i class="fa fa-phone" aria-hidden="true"></i> Teléfono:
+                    </label>
+                    <input type="text" name="telefono" id="" class="form-control" placeholder="Teléfono" required
+                        autocomplete="off" value="<%= telefono %>">
+
+                    <label for="">
+                        <i class="fa fa-lock" aria-hidden="true"></i> Contraseña:
+                    </label>
+                    <input type="text" name="password" id="" class="form-control" placeholder="Contraseña" required
+                        autocomplete="off" value="<%= password %>">
+
+                    <div class="buttons">
+                        <button type="submit" name="" id="" class="btn btn-primary">
+                            <i class="fas fa-user-cog    "></i> Guardar Cambios
+                        </button>
+                        <a name="" id="" class="btn btn-link" href="/company-panel" role="button">
+                            <i class="fa fa-arrow-left" aria-hidden="true"></i> Regresar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>

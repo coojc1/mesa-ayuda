@@ -80,7 +80,7 @@
                             </td>
                             <td>
                                 <div class="buttons">
-                                    <a name="" id="" class="btn btn-link" href="#" role="button">
+                                    <a name="" id="" class="btn btn-link" href="/ticket-info/<%= tickets[i].id_ticket_pk %>" role="button">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </a>
                                     <a name="" id="" class="btn btn-link" href="#" role="button">
@@ -100,7 +100,6 @@
     </div>
 </div>
 
-
 <script>
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
@@ -108,7 +107,7 @@
         data: {
             labels: ['Abierto', 'Liberado', 'En proceso'],
             datasets: [{
-                label: '# of Votes',
+                label: 'No. Tickets',
                 data: JSON.parse('<%= ticketsEstados %>'),
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',

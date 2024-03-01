@@ -1,0 +1,115 @@
+<%- include("base-panel.ejs") %>
+    <link rel="stylesheet" href="/css/company/ticket-info.css">
+    <title>Información del ticket</title>
+
+    <div class="container">
+
+        <div class="card">
+            <div class="card-header">
+                <h4>
+                    <%= ticket[0].contenido %>
+                        <% if(ticket[0].prioridad=="Por evaluar" ) { %>
+                            <span class="badge bg-secondary">
+                                <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+                                <%= ticket[0].prioridad %>
+                            </span>
+                        <% } else if(ticket[0].prioridad=="Baja" ) { %>
+                            <span class="badge bg-info">
+                                <i class="fa fa-arrow-down" aria-hidden="true"></i>
+                                <%= ticket[0].prioridad %>
+                            </span>
+                        <% } else if(ticket[0].prioridad=="Normal" ) { %>
+                            <span class="badge bg-success">
+                                <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                                    <%= ticket[0].prioridad %>
+                                </span>
+                        <% } else if(ticket[0].prioridad=="Alta" ) { %>
+                            <span class="badge bg-warning">
+                                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                    <%= ticket[0].prioridad %>
+                            </span>
+                        <% } else { %>
+                            <span class="badge bg-danger">
+                                <i class="fa fa-fire" aria-hidden="true"></i>
+                                    <%= ticket[0].prioridad %>
+                            </span>
+                        <% } %>
+                        <% if(ticket[0].estado=="Abierto" ) { %>
+                            <span class="badge bg-danger rounded-pill">
+                                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                    <%= ticket[0].estado %>
+                            </span>
+                        <% } else if(ticket[0].estado=="En proceso" ) { %>
+                            <span class="badge bg-warning rounded-pill">
+                                <i class="fa fa-cog" aria-hidden="true"></i>
+                                    <%= ticket[0].estado %>
+                            </span>
+                        <% } else { %>
+                            <span class="badge bg-success rounded-pill">
+                                <i class="fa-regular fa-flag"></i>
+                                    <%= ticket[0].estado %>
+                            </span>
+                    <% } %>
+                </h4>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Descripción</h4>
+                <p><i class="fa-solid fa-code-branch"></i> Version del software: <%= ticket[0].version %>
+                </p>
+                <hr>
+                <p class="card-text">
+                    <%= ticket[0].descripcion %>
+                </p>
+            </div>
+            <div class="card-footer">
+                <div class="commets">
+                    <h4>Comentarios</h4>
+
+                    <form action="/ticket-info-comment/post" method="post">
+                        <label for=""><i class="fa-regular fa-comment"></i> Nuevo comentario</label>
+                        <div class="form-group">
+                            <input type="text" name="comentario" class="form-control" placeholder="Comentar..." required
+                                autocomplete="off">
+                            <input type="text" name="id_ticket" class="form-control" required
+                                autocomplete="off" value="<%= id_ticket %>" hidden readonly>
+                            <button type="submit" name="" id="" class="btn btn-primary" btn-lg btn-block">
+                                <i class="fa-regular fa-comments"></i> Agregar comentario
+                            </button>
+                        </div>
+                    </form>
+                    <hr>
+                    <div class="commets-text">
+                        <% if(comentarios.length==0) { %>
+                            <p class="no-comments">No hay comentarios para mostrar. 😥😥</p>
+                        <% } else { %>
+                            <% for(let i = 0; i < comentarios.length; i++) { %>
+                                <div class="user-comment">
+                                    <% if(comentarios[i].tipo_usuario == "Empresa") { %>
+                                        <div class="user">
+                                            <p>
+                                                <i class="fa fa-building-o" aria-hidden="true"></i> Empresa
+                                            </p>
+                                            <a name="" id="" class="btn btn-link" href="/ticket-info-comment/delete/<%= comentarios[i].id_comentario_pk %>" role="button">
+                                                <i class="fa fa-times" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                        <p>
+                                            <%= comentarios[i].contenido %>
+                                        </p>
+                                    <% } else { %>
+                                        <div class="user">
+                                            <p><i class="fa-solid fa-headset"></i> Soporte</p>
+                                        </div>
+                                        <p>
+                                            <%= comentarios[i].contenido %>
+                                        </p>
+                                    <% } %> 
+                                </div>
+                                <hr>
+                            <% } %>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

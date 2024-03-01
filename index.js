@@ -139,6 +139,79 @@ app.post("/ticket-generate/new", (req, res) => {
     });
 });
 
+app.get("/company-profile", (req, res) => {
+    if (req.session.idCompany != undefined) {
+        db.all("SELECT nombre, correo, telefono, password FROM usuarios, empresas WHERE id_usuario_fk = ? AND id_usuario_pk = ?", [req.session.idCompany, req.session.idCompany], (err, row) => {
+            data = {
+                "name": req.session.nameCompany,
+                "correo": row[0].correo,
+                "telefono": row[0].telefono,
+                "password": row[0].password
+            }
+            res.render("company/profile-company.ejs", data);
+        });
+    } else {
+        res.redirect("/");
+    }
+});
+
+app.post("/company-profile/update", (req, res) => {
+    let correo = req.body.correo;
+    let telefono = req.body.telefono;
+    let password = req.body.password;
+    let idCompany = req.session.idCompany;
+
+    db.run("UPDATE usuarios SET correo = ?, password = ? WHERE id_usuario_pk = ?", [correo, password, idCompany], (err) => {
+        db.run("UPDATE empresas SET telefono = ? WHERE id_usuario_fk = ?", [telefono, idCompany], (err) => {
+            res.redirect("/company-profile");
+        });
+    });
+});
+
+let id_ticket;
+app.get("/ticket-info/:id_ticket", (req, res) => {
+    if (req.session.idCompany != undefined) {
+        id_ticket = req.params.id_ticket;
+        let info_tickets = [];
+        let comentarios = [];
+
+        db.all("SELECT descripcion, version, prioridad, estado, contenido FROM tickets, referencia WHERE id_ticket_pk = ? AND tickets.id_referencia_fk = referencia.id_referencia_pk", [id_ticket], (err, row) => {
+            info_tickets = row;
+
+            db.all("SELECT id_comentario_pk, contenido, tipo_usuario FROM comentarios WHERE id_ticket_fk = ?", [id_ticket], (err, row) => {
+                comentarios = row;
+                data = {
+                    "name": req.session.nameCompany,
+                    "id_ticket": id_ticket,
+                    "ticket": info_tickets,
+                    "comentarios": comentarios
+                }
+                console.log(data);
+                res.render("company/ticket-info.ejs", data);
+            });
+        });
+    } else {
+        res.redirect('/');
+    }
+});
+
+app.post("/ticket-info-comment/post", (req, res) => {
+    let comentario = req.body.comentario;
+    let id_ticket = req.body.id_ticket;
+
+    db.all("INSERT INTO comentarios(id_ticket_fk, contenido, tipo_usuario) VALUES(?,?, 'Empresa')", [id_ticket, comentario], (err, row) => {
+        res.redirect("/ticket-info/" + id_ticket);
+    });
+});
+
+app.get("/ticket-info-comment/delete/:id_comentario", (req, res) => {
+    let id_comentario = req.params.id_comentario;
+    db.all("DELETE FROM comentarios WHERE id_comentario_pk = ?", [id_comentario], (err, row) => {
+        res.redirect("/ticket-info/" + id_ticket);
+    });
+});
+
+
 // REGISTRO DE UNA NUEVA EMPRESA ****************************************************************************
 app.get("/register-company", (req, res) => {
     res.render("company/register-company.ejs");
@@ -171,7 +244,6 @@ app.post("/register-company/new", (req, res) => {
                             "link": "/",
                             "tipo": "alert-success"
                         }
-
                         res.render("out-log.ejs", data);
                     });
                 });
@@ -193,5 +265,7 @@ app.post("/register-company/new", (req, res) => {
 //  RUTAS DE LA APLICACION --------------------------------------------------------------------------------
 
 // CONFIGURACION DEL PUERTO
-app.listen(3000);
+app.listen(3000, (req, res) => {
+    console.log("u can see the project in http://localhost:3000");
+});
 

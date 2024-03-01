@@ -59,15 +59,9 @@ function crearTabla() {
         contenido TEXT
     )`;
 
-    // consulta = `INSERT INTO usuarios(nombre, correo, password, tipo_usuario) VALUES("Jose Torres", "Jose123@gmai.com", "Jose123", "Administrador")`;
+    consulta = `INSERT INTO comentarios(id_ticket_fk, contenido, tipo_usuario) VALUES(1, "Comentario del soporte", "Soporte")`;
 
-    // consulta = `SELECT * FROM tickets`;
-
-    // consulta = `UPDATE tickets SET estado = "Liberado" WHERE id_ticket_pk = 1`;
-
-    consulta = `DELETE FROM tickets`;
-
-    // consulta = `INSERT INTO referencia(contenido) VALUES("Error de version")`;
+    consulta = `SELECT * FROM comentarios`;
 
     db.all(consulta, (err, row) => {
         if(err) {
