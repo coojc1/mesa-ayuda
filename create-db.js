@@ -65,7 +65,7 @@ function crearTabla() {
         ruta TEXT
     )`;
 
-    consulta = `DELETE FROM imagenes`;
+    consulta = `DELETE FROM tickets`;
 
     db.all(consulta, (err, row) => {
         if(err) {

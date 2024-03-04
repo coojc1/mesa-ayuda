@@ -38,6 +38,10 @@ app.get("/", (req, res) => {
     res.render("index.ejs")
 });
 
+
+// #########################################################################################################
+//                                        PANEL DE EMPRESAS
+// ########################################################################################################
 app.post("/company-login", (req, res) => {
     let correo = req.body.correo;
     let password = req.body.password;
@@ -235,8 +239,6 @@ app.post('/ticket-info-img/post', upload.single('imagen'), (req, res) => {
     }
   
     const ruta = "/uploads/" + req.file.originalname;
-    // Aquí puedes hacer algo con el nombre del archivo, como guardarlo en una base de datos
-    console.log('Imagen subida correctamente - ' + ruta);
     db.all("INSERT INTO imagenes(id_ticket_fk, ruta) VALUES(?,?)", [id_ticket, ruta], (err, row) => {
         res.redirect("/ticket-info/" + id_ticket);
     });
@@ -259,23 +261,68 @@ app.get("/ticket-info-img/delete/:id_imagen", (req, res) => {
 app.get("/ticket-info/edit/:id_ticket", (req, res) => {
     if (req.session.idCompany != undefined) {
         id_ticket = req.params.id_ticket;
-        db.all("SELECT id_ticket_pk, descripcion, fecha, version, contenido FROM tickets, referencia WHERE tickets.id_referencia_fk = referencia.id_referencia_pk AND id_ticket_pk = ?", [id_ticket], (err, row) => {
-            data = {
-                "name": req.session.nameCompany,
-                "ticket": row
-            }
-            console.log(data);
-            res.render("company/ticket-edit.ejs", data);
+        let ticket = [];
+        db.all("SELECT id_ticket_pk, descripcion, version, contenido FROM tickets, referencia WHERE tickets.id_referencia_fk = referencia.id_referencia_pk AND id_ticket_pk = ?", [id_ticket], (err, row) => {
+            ticket = row;
+
+            db.all("SELECT * FROM referencia", (err, row) => {
+                data = {
+                    "name": req.session.nameCompany,
+                    "ticket": ticket,
+                    "referencia": row
+                }
+                res.render("company/ticket-edit.ejs", data);
+            });
         });
     } else {
         res.redirect("/");
     }
 });
 
-// REGISTRO DE UNA NUEVA EMPRESA ****************************************************************************
+app.post("/ticket-info/edit/update", (req, res) => {
+    let version = req.body.version;
+    let descripcion = req.body.descripcion;
+    let referencia = req.body.referencia;
+
+    db.run("UPDATE tickets SET version = ?, descripcion = ?, id_referencia_fk = ? WHERE id_ticket_pk = ?", [version, descripcion, referencia, id_ticket], () => {
+        res.redirect("/ticket-info/edit/"+id_ticket);
+    });
+});
+
+app.get("/tickets-info/ended", (req, res) => {
+    if (req.session.idCompany == undefined) {
+        res.redirect("/");
+    } else {
+        let id_empresa = req.session.idEmpresa;
+        db.all("SELECT id_ticket_pk, id_referencia_fk, fecha, version, prioridad, estado FROM tickets WHERE estado = 'Finalizado' AND id_empresa_fk = ?", [id_empresa], (err, row) => {
+            let data = {
+                "name": req.session.nameCompany,
+                "tickets": row
+            }
+            res.render("company/tickets-ended.ejs", data);
+        });
+    }
+});
+
+app.get("/tickets-info/process", (req, res) => {
+    if (req.session.idCompany == undefined) {
+        res.redirect("/");
+    } else {
+        let id_empresa = req.session.idEmpresa;
+        db.all("SELECT id_ticket_pk, id_referencia_fk, fecha, version, prioridad, estado FROM tickets WHERE estado = 'En proceso' AND id_empresa_fk = ?", [id_empresa], (err, row) => {
+            let data = {
+                "name": req.session.nameCompany,
+                "tickets": row
+            }
+            res.render("company/tickets-process.ejs", data);
+        });
+    }
+});
+
 app.get("/register-company", (req, res) => {
     res.render("company/register-company.ejs");
 });
+
 
 app.post("/register-company/new", (req, res) => {
     let nombre = req.body.nombre;
@@ -320,7 +367,10 @@ app.post("/register-company/new", (req, res) => {
         }
     });
 });
-// REGISTRO DE UNA NUEVA EMPRESA ****************************************************************************
+
+// #########################################################################################################
+//                                        PANEL DE EMPRESAS
+// #########################################################################################################
 
 //  RUTAS DE LA APLICACION --------------------------------------------------------------------------------
 
