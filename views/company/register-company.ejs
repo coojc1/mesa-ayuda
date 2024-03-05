@@ -17,20 +17,38 @@
                 <label for=""><i class="fa fa-building-o" aria-hidden="true"></i> Nombre/Razón social:</label>
                 <input type="text" name="nombre" id="" class="form-control" required autocomplete="off" placeholder="Razón social">
 
-                <label for=""><i class="fas fa-mail-bulk    "></i> Correo:</label>
-                <input type="email" name="correo" id="" class="form-control" required autocomplete="off" placeholder="Correo">
+                <label for=""><i class="fas fa-mail-bulk    "></i> Correo del representante:</label>
+                <input type="email" name="correo" id="" class="form-control" required autocomplete="off" placeholder="Correo del representante">
+
+                <label for=""><i class="fas fa-mail-bulk    "></i> Correo empresarial:</label>
+                <input type="email" name="correo_empresa" id="" class="form-control" required autocomplete="off" placeholder="Correo de la empresa">
 
                 <label for=""><i class="fa fa-phone" aria-hidden="true"></i> Teléfono:</label>
                 <input type="tel" name="telefono" id="" class="form-control" required autocomplete="off" placeholder="Teléfono">
 
-                <label for=""><i class="fa fa-lock" aria-hidden="true"></i> Contraseña:</label>
+                <label for=""><i class="fas fa-shield-alt    "></i> ¿Cuenta con póliza?</label>
+                <div class="radio-group">
+                    <div class="radio-button">
+                        <label for="">Si</label>
+                        <input type="radio" name="poliza" id="" value="Si">
+                    </div>
+                    <div class="radio-button">
+                        <label for="">No</label>
+                        <input type="radio" name="poliza" id="" value="No">
+                    </div>
+                </div>
+
+                <label for=""><i class="fa fa-key" aria-hidden="true"></i> Contraseña:</label>
                 <input type="password" name="password" id="" class="form-control" required autocomplete="off" placeholder="Crea una contraseña">
+
+                <label for=""><i class="fa fa-lock" aria-hidden="true"></i> No. De Candado:</label>
+                <input type="tel" name="no_candado" id="" class="form-control" required autocomplete="off" placeholder="Numero de candado">
 
                 <div class="buttons">
                     <button type="submit" name="" id="" class="btn btn-primary" btn-lg btn-block">
                         <i class="fa fa-user-plus" aria-hidden="true"></i> Registrarse
                     </button>
-                    <a name="" id="" class="btn btn-primary" href="/" role="button">
+                    <a name="" id="" class="btn btn-link" href="/" role="button">
                         <i class="fa fa-paper-plane-o" aria-hidden="true"></i> Iniciar Sesión
                     </a>
                 </div>

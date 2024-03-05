@@ -41,7 +41,7 @@ app.get("/", (req, res) => {
 
 // #########################################################################################################
 //                                        PANEL DE EMPRESAS
-// ########################################################################################################
+// #########################################################################################################
 app.post("/company-login", (req, res) => {
     let correo = req.body.correo;
     let password = req.body.password;
@@ -327,24 +327,18 @@ app.get("/register-company", (req, res) => {
 app.post("/register-company/new", (req, res) => {
     let nombre = req.body.nombre;
     let correo = req.body.correo;
+    let correo_empresa = req.body.correo_empresa;
     let telefono = req.body.telefono;
+    let poliza = req.body.poliza;
     let password = req.body.password;
+    let no_candado = req.body.no_candado;
 
-    let consulta = `SELECT id_usuario_pk FROM usuarios WHERE nombre = ? OR correo = ?`;
-
-    db.all(consulta, [nombre, correo], (err, row) => {
-        if (row === undefined || row.length === 0) {
-            console.log(row);
-            consulta = `INSERT INTO usuarios(nombre, correo, password, tipo_usuario) VALUES(?,?,?,'Empresa')`;
-
-            db.all(consulta, [nombre, correo, password], (err) => {
-                consulta = `SELECT id_usuario_pk FROM usuarios WHERE correo = ?`;
-
-                db.all(consulta, [correo], (err, row) => {
+    db.all("SELECT COUNT(id_usuario_fk) as id_user FROM empresas WHERE razon = ? OR telefono = ? OR correo_empresarial = ? OR no_candado = ?", [nombre, telefono, correo_empresa, no_candado], (err, row) => {
+        if (row[0].id_user === 0) {
+            db.all("INSERT INTO usuarios(nombre, correo, password, tipo_usuario) VALUES(?,?,?,'Empresa')", [nombre, correo, password], (err) => {
+                db.all("SELECT id_usuario_pk FROM usuarios WHERE correo = ?", [correo], (err, row) => {
                     id = row[0].id_usuario_pk;
-                    consulta = `INSERT INTO empresas(id_usuario_fk, razon, telefono) VALUES(?,?,?)`;
-
-                    db.all(consulta, [id, nombre, telefono], (err) => {
+                    db.all("INSERT INTO empresas(id_usuario_fk, razon, telefono, correo_empresarial, poliza, no_candado) VALUES(?,?,?,?,?,?)", [id, nombre, telefono, correo_empresa, poliza, no_candado], (err) => {
                         let data = {
                             "titulo": "Registro exitoso",
                             "mensaje": "Listo... has sido registrado en la plataforma como " + nombre + ". 😁😁",
@@ -356,6 +350,7 @@ app.post("/register-company/new", (req, res) => {
                 });
             });
         } else {
+            console.log(row);
             let data = {
                 "titulo": "Error de registro",
                 "mensaje": "Ups... al parecer ya existe una cuenta con los datos que has proporcionado. 😥😥",
@@ -370,6 +365,57 @@ app.post("/register-company/new", (req, res) => {
 
 // #########################################################################################################
 //                                        PANEL DE EMPRESAS
+// #########################################################################################################
+
+// #########################################################################################################
+//                                        PANEL DE SOPORTE
+// #########################################################################################################
+
+
+
+// #########################################################################################################
+//                                        PANEL DE SOPORTE
+// #########################################################################################################
+
+
+
+// #########################################################################################################
+//                                        PANEL DE ADMINISTRADOR
+// #########################################################################################################
+
+app.get("/login-admin", (req, res) => {
+    res.render("login-admin.ejs");
+});
+
+app.post("/login-admin/session", (req, res) => {
+    let correo = req.body.correo;
+    let password = req.body.password;
+
+    db.all("SELECT id_usuario_pk, nombre FROM usuarios WHERE correo = ? AND password = ?", [correo, password], (err, row) => {
+        if (row.length === 0 || row === undefined) {
+            res.redirect("/login-admin");
+        } else {
+            req.session.idAdministrador = row[0].id_usuario_pk;
+            req.session.nameAdmin = row[0].nombre;
+
+            res.redirect("/dashboard-admin");
+        }
+    });
+});
+
+app.get("/dashboard-admin", (req, res) => {
+    if (req.session.idAdministrador === undefined) {
+        res.redirect("/login-admin");
+    } else {
+        let data = {
+            "name": req.session.nameAdmin
+        }
+        res.render("admin/panel-admin.ejs", data);
+    }
+});
+
+// #########################################################################################################
+//                                        PANEL DE ADMINISTRADOR
 // #########################################################################################################
 
 //  RUTAS DE LA APLICACION --------------------------------------------------------------------------------

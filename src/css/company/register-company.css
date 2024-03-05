@@ -1,26 +1,29 @@
-:root{
-    --Color-1: #004AAD;
-    --Color-2: #fff;
-    --Color-3: #A6A6A6;
+:root {
+    --Color-1: #ff8623;
+    --Color-2: #202427;
+    --Color-3: #fff;
+    --Color-4: #e9e6e2;
 }
 
-.container{
-    height: 90vh;
+.container {
+    height: fit-content;
     display: flex;
     align-items: center;
+    margin-top: 5vh;
+    margin-bottom: 5vh;
 }
 
-.container form{
+.container form {
     background-color: var(--Color-1);
     border-radius: 10px;
     margin: auto;
     height: fit-content;
     width: 60%;
-    box-shadow: 0px 0px 10px var(--Color-3);
+    box-shadow: 0px 0px 10px var(--Color-4);
     display: flex;
 }
 
-.container form .icon-holder{
+.container form .icon-holder {
     width: 40%;
     padding: 10px;
     text-align: center;
@@ -28,22 +31,22 @@
     align-items: center;
 }
 
-.icon-holder .icon{
+.icon-holder .icon {
     margin: auto;
 }
 
-form .icon-holder h1{
-    color: var(--Color-2);
+form .icon-holder h1 {
+    color: var(--Color-3);
     font-size: 35pt;
 }
 
-form .icon-holder i{
-    color: var(--Color-2);
+form .icon-holder i {
+    color: var(--Color-3);
     font-size: 60pt;
 }
 
-form .form-group{
-    background-color: var(--Color-2);
+form .form-group {
+    background-color: var(--Color-3);
     border-radius: 10px;
     width: 60%;
     padding: 10px;
@@ -51,57 +54,78 @@ form .form-group{
     color: var(--Color-1);
 }
 
-.form-group h1{
+.form-group h1 {
     font-size: 35pt;
     width: 90%;
     margin: auto;
     margin-bottom: 0px;
 }
 
-.form-group p{
+.form-group p {
     font-weight: bold;
     width: 90%;
     margin: auto;
     margin-bottom: 4vh;
 }
 
-.form-group label{
+.form-group label {
     font-weight: bold;
     width: 90%;
     margin: auto 5%;
 }
 
-.form-group input{
+.form-group .radio-group {
+    display: flex;
+    width: 90%;
+    margin: auto;
+    margin-bottom: 5vh;
+}
+
+.radio-group .radio-button {
+    width: fit-content;
+    display: flex;
+    margin-right: 5vh;
+}
+
+.radio-button label {
+    width: fit-content;
+}
+
+.form-group input {
     width: 90%;
     margin: auto;
     margin-bottom: 4vh;
 }
 
-.form-group .buttons{
+.radio-button input {
+    margin: 0px;
+    margin-left: 10px;
+}
+
+.form-group .buttons {
     width: 90%;
     margin: auto;
     display: flex;
     align-items: center;
 }
 
-.buttons button{
+.buttons button {
     background-color: var(--Color-1);
+    border: none;
+    color: var(--Color-3);
     margin-right: auto;
     font-weight: bold;
-    &:hover{
+    &:hover {
         background-color: var(--Color-1);
     }
 }
 
-.buttons a{
-    background-color: var(--Color-2);
+.buttons a {
     border: none;
     font-weight: bold;
     color: var(--Color-1);
-    padding: 0px;
-    height: fit-content;
-    &:hover{
-        background-color: var(--Color-2);
+    text-decoration: none;
+    &:hover {
         color: var(--Color-1);
     }
 }

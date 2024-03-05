@@ -65,7 +65,13 @@ function crearTabla() {
         ruta TEXT
     )`;
 
-    consulta = `DELETE FROM tickets`;
+    consulta = `INSERT INTO usuarios(nombre, correo, password, tipo_usuario) VALUES("admin", "admin@gmail.com", "root", "Administrador")`;
+    
+    consulta = `INSERT INTO administradores(id_usuario_fk, edad) VALUES(2, 25)`;
+    
+    consulta = `INSERT INTO comentarios(id_ticket_fk, contenido, tipo_usuario) VALUES(1, "Si claro su problema esta siendo revisado por el ingeniero tal...", "Soporte")`;
+
+    consulta = `DELETE FROM usuarios`
 
     db.all(consulta, (err, row) => {
         if(err) {
