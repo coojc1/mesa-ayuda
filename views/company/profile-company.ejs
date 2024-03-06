@@ -20,22 +20,44 @@
                 <div class="form-group">
                     <p>Información sobre la empresa</p>
                     <label for="">
+                        <i class="fa fa-building-o" aria-hidden="true"></i> Razón:
+                    </label>
+                    <input type="text" name="nombre" id="" class="form-control" placeholder="Razón" required
+                        autocomplete="off" value="<%= name %>">
+
+                    <label for="">
                         <i class="fas fa-mail-bulk    "></i> Correo:
                     </label>
                     <input type="text" name="correo" id="" class="form-control" placeholder="Correo" required
                         autocomplete="off" value="<%= correo %>">
 
                     <label for="">
-                        <i class="fa fa-phone" aria-hidden="true"></i> Teléfono:
+                        <i class="fas fa-mail-bulk    "></i> Correo de la empresa:
                     </label>
-                    <input type="text" name="telefono" id="" class="form-control" placeholder="Teléfono" required
-                        autocomplete="off" value="<%= telefono %>">
+                    <input type="text" name="correo_empresarial" id="" class="form-control" placeholder="Correo empresarial" required autocomplete="off" value="<%= correo_empresarial %>">
 
                     <label for="">
-                        <i class="fa fa-lock" aria-hidden="true"></i> Contraseña:
+                        <i class="fa fa-phone" aria-hidden="true"></i> Teléfono:
                     </label>
-                    <input type="text" name="password" id="" class="form-control" placeholder="Contraseña" required
-                        autocomplete="off" value="<%= password %>">
+                    <input type="tel" name="telefono" id="" class="form-control" placeholder="Correo" required autocomplete="off" value="<%= telefono %>">
+
+                    <label for="">
+                        <i class="fas fa-shield-alt    "></i> Póliza: <%= poliza %>
+                    </label>
+                    <select name="poliza" id="" class="form-control">
+                        <option value="Si">Si</option>
+                        <option value="No">No</option>
+                    </select>
+
+                    <label for="">
+                        <i class="fa fa-key" aria-hidden="true"></i> Contraseña:
+                    </label>
+                    <input type="text" name="password" id="" class="form-control" placeholder="Contraseña" required autocomplete="off" value="<%= password %>">
+
+                    <label for="">
+                        <i class="fa fa-lock" aria-hidden="true"></i> No. Candado:
+                    </label>
+                    <input type="text" name="no_candado" id="" class="form-control" placeholder="Contraseña" required autocomplete="off" value="<%= no_candado %>">
 
                     <div class="buttons">
                         <button type="submit" name="" id="" class="btn btn-primary">

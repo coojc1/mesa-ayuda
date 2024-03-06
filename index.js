@@ -157,12 +157,15 @@ app.post("/ticket-generate/new", (req, res) => {
 
 app.get("/company-profile", (req, res) => {
     if (req.session.idCompany != undefined) {
-        db.all("SELECT nombre, correo, telefono, password FROM usuarios, empresas WHERE id_usuario_fk = ? AND id_usuario_pk = ?", [req.session.idCompany, req.session.idCompany], (err, row) => {
+        db.all("SELECT correo, password, telefono, correo_empresarial, poliza, no_candado FROM usuarios, empresas WHERE id_usuario_fk = ? AND id_usuario_pk = ?", [req.session.idCompany, req.session.idCompany], (err, row) => {
             data = {
                 "name": req.session.nameCompany,
                 "correo": row[0].correo,
+                "password": row[0].password,
                 "telefono": row[0].telefono,
-                "password": row[0].password
+                "correo_empresarial": row[0].correo_empresarial,
+                "poliza": row[0].poliza,
+                "no_candado": row[0].no_candado
             }
             res.render("company/profile-company.ejs", data);
         });
@@ -172,13 +175,18 @@ app.get("/company-profile", (req, res) => {
 });
 
 app.post("/company-profile/update", (req, res) => {
+    let nombre = req.body.nombre;
     let correo = req.body.correo;
+    let correo_empresarial = req.body.correo_empresarial;
     let telefono = req.body.telefono;
+    let poliza = req.body.poliza;
     let password = req.body.password;
+    let no_candado = req.body.no_candado;
     let idCompany = req.session.idCompany;
 
-    db.run("UPDATE usuarios SET correo = ?, password = ? WHERE id_usuario_pk = ?", [correo, password, idCompany], (err) => {
-        db.run("UPDATE empresas SET telefono = ? WHERE id_usuario_fk = ?", [telefono, idCompany], (err) => {
+    db.run("UPDATE usuarios SET nombre = ?, correo = ?, password = ? WHERE id_usuario_pk = ?", [nombre, correo, password, idCompany], (err) => {
+        db.run("UPDATE empresas SET telefono = ?, correo_empresarial = ?, poliza = ?, no_candado = ? WHERE id_usuario_fk = ?", [telefono, correo_empresarial, poliza, no_candado, idCompany], (err) => {
+            req.session.nameCompany = nombre;
             res.redirect("/company-profile");
         });
     });

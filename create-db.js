@@ -71,7 +71,7 @@ function crearTabla() {
     
     consulta = `INSERT INTO comentarios(id_ticket_fk, contenido, tipo_usuario) VALUES(1, "Si claro su problema esta siendo revisado por el ingeniero tal...", "Soporte")`;
 
-    consulta = `DELETE FROM usuarios`
+    consulta = `SELECT * FROM empresas`
 
     db.all(consulta, (err, row) => {
         if(err) {

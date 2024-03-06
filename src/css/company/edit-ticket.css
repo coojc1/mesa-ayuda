@@ -1,7 +1,8 @@
-:root{
-    --Color-1: #004AAD;
-    --Color-2: #fff;
-    --Color-3: #A6A6A6;
+:root {
+    --Color-1: #ff8623;
+    --Color-2: #3f3f3f;
+    --Color-3: #fff;
+    --Color-4: #e9e6e2;
 }
 
 .container{
@@ -12,6 +13,7 @@
 
 .container form{
     background-color: var(--Color-1);
+    box-shadow: 0px 0px 10px var(--Color-4);
     height: fit-content;
     width: 45%;
     padding: 10px;
@@ -25,17 +27,17 @@ form .content-top{
 }
 
 form .content-top i{
-    color: var(--Color-2);
+    color: var(--Color-3);
     font-size: 40pt;
 }
 
 form .content-top h4{
-    color: var(--Color-2);
+    color: var(--Color-3);
     text-align: center;
 }
 
 form .form-group{
-    background-color: var(--Color-2);
+    background-color: var(--Color-3);
     border-radius: 10px;
     padding: 10px;
 }
@@ -72,7 +74,10 @@ form .form-group{
 
 .buttons a{
     text-decoration: none;
-    color: red;
+    color: var(--Color-1);
     font-weight: bold;
+    &:hover {
+        color: var(--Color-2);
+    }
 }
 
