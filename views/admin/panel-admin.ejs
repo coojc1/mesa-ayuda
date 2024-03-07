@@ -8,62 +8,211 @@
     <script src="https://kit.fontawesome.com/c55ac3095c.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/css/admin/nav-panel.css">
     <link rel="stylesheet" href="/css/admin/panel-admin.css">
+    <link rel="shortcut icon" href="/res/logo-5.png" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title><%= name %></title>
 </head>
 
 <body>
-    <div class="container">
+    <div class="container-fluid">
+
         <%- include("nav-panel.ejs") %>
 
         <div class="content">
             <div class="stats">
-                <div class="stat-card">
+                <div class="stat-card c1">
                     <div class="icon">
                         <i class="fas fa-headset    "></i>
                     </div>
                     <div class="text">
                         <h3>Ingenieros</h3>
-                        <p>1502</p>
+                        <p><%= ingenieros %></p>
                     </div>
                 </div>
 
-                <div class="stat-card">
+                <div class="stat-card c2">
                     <div class="icon">
                         <i class="fa fa-building-o" aria-hidden="true"></i>
                     </div>
                     <div class="text">
                         <h3>Empresas</h3>
-                        <p>1502</p>
+                        <p><%= empresas %></p>
                     </div>
                 </div>
 
-                <div class="stat-card">
+                <div class="stat-card c3">
                     <div class="icon">
                         <i class="fa fa-ticket" aria-hidden="true"></i>
                     </div>
                     <div class="text">
-                        <h3>Tickets</h3>
-                        <p>1502</p>
+                        <h3>Abiertos</h3>
+                        <p><%= abiertos %></p>
                     </div>
                 </div>
 
-                <div class="stat-card">
+                <div class="stat-card c4">
                     <div class="icon">
                         <i class="fa fa-ticket" aria-hidden="true"></i>
                     </div>
                     <div class="text">
-                        <h3>Tickets</h3>
-                        <p>1502</p>
+                        <h3>Finalizados</h3>
+                        <p><%= liberados %></p>
                     </div>
                 </div>
             </div>
 
             <div class="charts">
-                <div class="tickets-mensuales"></div>
-                <div class="tickets-general"></div>
+                <div class="tickets-charts">
+                    <canvas id="myChart"></canvas>
+                    <canvas id="myChart-2"></canvas>
+                </div>
+
+                <div class="tickets-table">
+                    <div class="div-table">
+                        <table class="table table-hover table-striped table-borderless">
+                            <tr>
+                                <th>#</th>
+                                <th>Empresa</th>
+                                <th>Referencia</th>
+                                <th>Fecha</th>
+                                <th>Versión</th>
+                                <th>Prioridad</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                            <% for(let i = 0; i < tickets.length; i++) { %>
+                                <td><%= tickets[i].id_ticket_pk %></td>
+                                <td><%= tickets[i].id_empresa_fk %></td>
+                                <td><%= tickets[i].id_referencia_fk %></td>
+                                <td><%= tickets[i].fecha %></td>
+                                <td><%= tickets[i].version %></td>
+                                <td>
+                                    <% if(tickets[i].prioridad == "Por evaluar") { %>
+                                        <span class="badge bg-secondary">
+                                            <i class="fa fa-question-circle-o" aria-hidden="true"></i> <%= tickets[i].prioridad %>
+                                        </span>
+                                    <% } else if(tickets[i].prioridad == "Baja") { %>
+                                        <span class="badge bg-info">
+                                            <i class="fa fa-arrow-down" aria-hidden="true"></i> <%= tickets[i].prioridad %>
+                                        </span>
+                                    <% } else if(tickets[i].prioridad == "Normal") { %>
+                                        <span class="badge bg-success">
+                                            <i class="fa fa-exclamation-circle" aria-hidden="true"></i> <%= tickets[i].prioridad %>
+                                        </span>
+                                    <% } else if(tickets[i].prioridad == "Alta") { %>
+                                        <span class="badge bg-warning">
+                                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> <%= tickets[i].prioridad %>
+                                        </span>
+                                    <% } else { %>
+                                        <span class="badge bg-danger">
+                                            <i class="fa fa-fire" aria-hidden="true"></i> <%= tickets[i].prioridad %>
+                                        </span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <% if(tickets[i].estado == "Abierto") { %>
+                                        <span class="badge bg-danger rounded-pill">
+                                            <i class="fa fa-clock-o" aria-hidden="true"></i> <%= tickets[i].estado %>
+                                        </span>
+                                    <% } else if(tickets[i].estado == "En proceso") { %>
+                                        <span class="badge bg-warning rounded-pill">
+                                            <i class="fa fa-cog" aria-hidden="true"></i> <%= tickets[i].estado %>
+                                        </span>
+                                    <% } else { %>
+                                        <span class="badge bg-success rounded-pill">
+                                            <i class="fa-regular fa-flag"></i> <%= tickets[i].estado %>
+                                        </span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <a name="" id="" class="btn btn-link" href="#" role="button">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                        </tr>
+                            <% } %>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </body>
+
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Abierto', 'Liberado', 'En proceso'],
+            datasets: [{
+                label: 'No. Tickets',
+                data: JSON.parse('<%= estados %>'),
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top'
+                },
+                title: {
+                    display: true,
+                    text: 'Estados de los Tickets'
+                }
+            }
+        }
+    });
+
+    var ctx2 = document.getElementById('myChart-2').getContext('2d');
+    var myChart = new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: ['Por evaluar', 'Baja', 'Normal', 'Alta', 'Urgente'],
+            datasets: [{
+                label: 'No. Tickets',
+                data: JSON.parse('<%= prioridades %>'),
+                backgroundColor: [
+                    'rgba(237, 231, 225, 0.2)', // SIN EVALUAR - GRIS
+                    'rgba(54, 162, 235, 0.2)', //BAJA - VERDE
+                    'rgba(255, 206, 86, 0.2)', // NORMAL - AMARILLO
+                    'rgba(241, 90, 34, 0.2)', //ALTA - NARANJA
+                    'rgba(207, 0, 15, 0.2)' // URGENTE - ROJO
+                ],
+                borderColor: [
+                    'rgba(237, 231, 225, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(241, 90, 34, 1)',
+                    'rgba(207, 0, 15, 1)' 
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top'
+                },
+                title: {
+                    display: true,
+                    text: 'Estados de los Tickets'
+                }
+            }
+        }
+    });
+</script>
 
 </html>

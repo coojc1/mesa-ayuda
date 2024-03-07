@@ -395,6 +395,11 @@ app.get("/login-admin", (req, res) => {
     res.render("login-admin.ejs");
 });
 
+app.get("/logout-admin", (req, res) => {
+    req.session.destroy(); // Destruir la sesión actual
+    res.redirect('/login-admin');
+});
+
 app.post("/login-admin/session", (req, res) => {
     let correo = req.body.correo;
     let password = req.body.password;
@@ -415,11 +420,74 @@ app.get("/dashboard-admin", (req, res) => {
     if (req.session.idAdministrador === undefined) {
         res.redirect("/login-admin");
     } else {
-        let data = {
-            "name": req.session.nameAdmin
-        }
-        res.render("admin/panel-admin.ejs", data);
+        let consulta = `SELECT(SELECT COUNT(*) FROM tickets WHERE estado = "Abierto") as abiertos,
+            (SELECT COUNT(*) FROM tickets WHERE estado = "En proceso") as proceso,
+            (SELECT COUNT(*) FROM tickets WHERE estado = "Liberado") as liberado,
+            (SELECT COUNT(*) FROM tickets WHERE prioridad = "Por evaluar") as por_evaluar,
+            (SELECT COUNT(*) FROM tickets WHERE prioridad = "Baja") as baja,
+            (SELECT COUNT(*) FROM tickets WHERE prioridad = "Normal") as normal,
+            (SELECT COUNT(*) FROM tickets WHERE prioridad = "Alta") as alta,
+            (SELECT COUNT(*) FROM tickets WHERE prioridad = "Urgente") as urgente,
+            (SELECT COUNT(*) FROM usuarios WHERE tipo_usuario = "Empresa") as empresas,
+            (SELECT COUNT(*) FROM usuarios WHERE tipo_usuario = "Ingeniero") as ingenieros`;
+
+        let estados = [], prioridades = [], abiertos, liberados, empresas, ingenieros;
+
+        db.all(consulta, (err, row) => {
+            estados = [row[0].abiertos, row[0].proceso, row[0].liberado];
+            prioridades = [row[0].por_evaluar, row[0].baja, row[0].normal, row[0].alta, row[0].urgente];
+            abiertos = row[0].abiertos;
+            liberados = row[0].liberado;
+            empresas = row[0].empresas;
+            ingenieros = row[0].ingenieros;
+
+            db.all("SELECT id_ticket_pk, id_empresa_fk, id_referencia_fk, fecha, version, prioridad, estado FROM tickets", (err, row) => {
+                let data = {
+                    "name": req.session.nameAdmin,
+                    "estados": JSON.stringify(estados),
+                    "prioridades": JSON.stringify(prioridades),
+                    "abiertos": abiertos,
+                    "liberados": liberados,
+                    "empresas": empresas,
+                    "ingenieros": ingenieros,
+                    "tickets": row
+                }
+                res.render("admin/panel-admin.ejs", data);
+            });
+        });
     }
+});
+
+app.get("/dashboard-admin/support", (req, res) => {
+    if (req.session.idAdministrador === undefined) {
+        res.redirect("/login-admin");
+    } else {
+        db.all("SELECT id_usuario_pk, nombre, correo, password, categoria FROM usuarios, ingenieros WHERE usuarios.id_usuario_pk = ingenieros.id_usuario_fk AND tipo_usuario = 'Ingeniero'", (err, row) => {
+            data = {
+                "name": req.session.nameAdmin,
+                "administradores": row
+            }
+            res.render("admin/panel-admin-support.ejs", data);
+        });
+    }
+});
+
+app.post("/dashboard-admin/support/register", (req, res) => {
+    let nombre = req.body.nombre;
+    let correo = req.body.correo;
+    let categoria = req.body.categoria;
+
+    let fecha = new Date();
+    let password = fecha.getDate() + '' + (fecha.getMonth() + 1) + '' + fecha.getFullYear() + '' + fecha.getHours() + '' + fecha.getMinutes() + '' + fecha.getSeconds();
+
+    db.all("INSERT INTO usuarios(nombre, correo, password, tipo_usuario) VALUES(?,?,?, 'Ingeniero')", [nombre, correo, password], (err, row) => {
+        db.all("SELECT id_usuario_pk FROM usuarios WHERE correo = ?", [correo], (err, row) => {
+            id_usuario_pk = row[0].id_usuario_pk;
+            db.all("INSERT INTO ingenieros(id_usuario_fk, categoria) VALUES(?, ?)", [id_usuario_pk, categoria], (err, row) => {
+                res.redirect("/dashboard-admin/support");
+            });
+        });
+    });
 });
 
 // #########################################################################################################

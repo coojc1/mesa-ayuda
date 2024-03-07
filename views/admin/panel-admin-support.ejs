@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/bootstrap-5.3.3-dist/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/c55ac3095c.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/admin/nav-panel.css">
+    <link rel="stylesheet" href="/css/admin/panel-admin-support.css">
+    <link rel="shortcut icon" href="/res/logo-5.png" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Ingenieros</title>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <%- include("nav-panel.ejs") %>
+
+            <div class="content">
+                <form action="/dashboard-admin/support/register" method="post">
+                    <i class="fa fa-user-plus" aria-hidden="true"></i>
+                    <h4>Agregar un nuevo ingeniero</h4>
+                    <p>Agregar a un ingeniero como soporte.</p>
+                    <div class="form-group">
+                        <label for="">
+                            <i class="fa fa-user-circle-o" aria-hidden="true"></i> Nombre completo:
+                        </label>
+                        <input type="text" name="nombre" id="" class="form-control" placeholder="Nombre completo" required autocomplete="off">
+
+                        <label for="">
+                            <i class="fas fa-mail-bulk    "></i> Correo:
+                        </label>
+                        <input type="email" name="correo" id="" class="form-control" placeholder="Correo" required autocomplete="off">
+
+                        <label for="">
+                            <i class="fa fa-tags" aria-hidden="true"></i> Categoría:
+                        </label>
+                        <select name="categoria" id="" class="form-control">
+                            <option value="Básico">Básico</option>
+                            <option value="Intermedio">Intermedio</option>
+                            <option value="Avanzado">Avanzado</option>
+                        </select>
+
+                        <button type="submit" name="" id="" class="btn btn-primary" >
+                            <i class="fa fa-user-plus" aria-hidden="true"></i> Agregar Ingeniero
+                        </button>
+                    </div>
+                </form>
+
+                <div class="div-table">
+                    <% if(administradores.length == 0) { %>
+                        <p>No nay administradores registrados para mostrar. 😥😥</p>
+                    <% } else { %>
+                        <table class="table table-borderless table-hover table-striped">
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre</th>
+                                <th>Correo</th>
+                                <th>Contraseña</th>
+                                <th>Categoría</th>
+                                <th>Acción</th>
+                            </tr>
+                            <% for(let i = 0; i < administradores.length; i++) { %>
+                                <tr>
+                                    <td><%= administradores[i].id_usuario_pk %></td>
+                                    <td><%= administradores[i].nombre %></td>
+                                    <td>
+                                        <a name="" id="" class="btn btn-primary" href="mailto:<%= administradores[i].correo %>" role="button">
+                                            <span class="badge bg-primary">
+                                                <%= administradores[i].correo %>
+                                            </span>
+                                        </a>
+                                    </td>
+                                    <td><%= administradores[i].password %></td>
+                                    <td>
+                                        <% if(administradores[i].categoria == "Básico") { %>
+                                            <span class="badge rounded-pill bg-success">
+                                                <%= administradores[i].categoria %>
+                                            </span>
+                                        <% } else if(administradores[i].categoria == "Intermedio") { %>
+                                            <span class="badge rounded-pill bg-warning">
+                                                <%= administradores[i].categoria %>
+                                            </span>
+                                        <% } else { %>
+                                            <span class="badge rounded-pill bg-danger">
+                                                <%= administradores[i].categoria %>
+                                            </span>
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <a name="" id="" class="btn btn-link" href="#" role="button">
+                                            <i class="fa fa-eye" aria-hidden="true"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </table>
+                    <% } %>
+                </div>
+            </div>
+    </div>
+</body>
+
+</html>

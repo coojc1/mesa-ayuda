@@ -1,15 +1,26 @@
-:root{
-    --Color-1: #004AAD;
-    --Color-2: #fff;
-    --Color-3: #A6A6A6;
+:root {
+    --GhostWhite: ghostwhite;
+    --Color-1: #ff8623;
+    --Color-1-dashed: #ff862323;
+    --Color-2: #202427;
+    --Color-3: #fff;
+    --Color-4: #e9e6e2;
 }
 
-.container{
+body{
+    background-color: var(--Color-3);
 }
 
-.container .content{
+.container-fluid{
+    margin-top: 10px;
+    margin-bottom: 5vh;
+}
+
+.container-fluid .content{
+    height: fit-content;
+    width: 90%;
+    margin: auto;
     margin-top: 5vh;
-    height: 80vh;
 }
 
 .content .stats{
@@ -18,12 +29,24 @@
 }
 
 .stats .stat-card{
-    border: 1px solid var(--Color-3);
+    background-color: var(--Color-1-dashed);
     padding: 10px;
-    border-radius: 10px;
     margin: auto;
-    width: 25%;
+    width: 20%;
     display: flex !important;
+    border-radius: 5px;
+    transition: all 0.3s;
+    &:hover{
+        background-color: var(--Color-2);
+    }
+}
+
+.stats .c1{
+    margin-left: 0px;
+}
+
+.stats .c4{
+    margin-right: 0px;
 }
 
 .stat-card .icon{
@@ -47,6 +70,7 @@
 .text h3{
     width: fit-content;
     margin: auto;
+    font-size: 15pt;
     color: var(--Color-1);
 }
 
@@ -54,4 +78,54 @@
     text-align: center;
     color: var(--Color-1);
     margin: 0px;
+}
+
+.charts{
+    height: fit-content;
+    display: flex;
+    align-items: start;
+    margin-top: 5vh;
+}
+
+.charts  > div {
+    padding: 10px;
+    height: 100%;
+    margin: auto;
+}
+
+.charts .tickets-charts{
+    border-radius: 5px;
+    margin-left: 0px;
+    width: 39%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.5s;
+    &:hover{
+        background-color: var(--Color-1-dashed);
+    }
+}
+
+.charts .tickets-table{
+    margin: 0px;
+    width: 60%;
+    height: fit-content;
+    padding: 0px 5px 5px 5px;
+}
+
+.tickets-table .div-table{
+    margin: 0px;
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+.div-table table{
+    margin: 0px;
+    text-align: center;
+}
+
+.charts canvas{
+    margin: auto;
+    width: 90%;
+    margin-top: 5vh;
 }
