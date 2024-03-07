@@ -105,8 +105,10 @@ form .form-group{
     background: none;
     padding: 0px;
     border: none;
+    color: var(--Color-1);
     &:hover{
         background-color: transparent;
+        color: var(--Color-2);
     }
 }
 

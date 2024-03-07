@@ -1,0 +1,85 @@
+:root {
+    --GhostWhite: ghostwhite;
+    --Color-1: #ff8623;
+    --Color-1-dashed: #ff862323;
+    --Color-2: #202427;
+    --Color-3: #fff;
+    --Color-4: #e9e6e2;
+}
+
+body{
+    background-color: var(--Color-3);
+}
+
+.container-fluid{
+    margin-top: 10px;
+    margin-bottom: 5vh;
+}
+
+.container-fluid .content{
+    height: fit-content;
+    width: 90%;
+    margin: auto;
+    margin-top: 5vh;
+    display: flex;
+}
+
+.content form{
+    background-color: var(--Color-1);
+    width: 60%;
+    padding: 10px;
+    align-self: center;
+    margin: auto;
+    border-radius: 5px;
+    display: flex;
+}
+
+.content .content-left{
+    width: 30%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+
+.content-left .icon-holder{
+    color: var(--Color-3);
+    margin: auto;
+}
+
+.icon-holder i{
+    font-size: 40pt;
+}
+
+.icon-holder h3{
+    font-weight: bold;
+}
+
+.content .form-group{
+    width: 70%;
+    background-color: var(--Color-3);
+    border-radius: 5px;
+    padding: 10px;
+    color: var(--Color-1);
+    font-weight: bold;
+}
+
+.form-group input, .form-group select{
+    margin-bottom: 5vh;
+}
+
+.form-group .buttons{
+    display: flex;
+}
+
+.buttons button{
+    margin-right: auto;
+    background-color: var(--Color-1);
+    border: none;
+}
+
+.buttons a{
+    font-weight: bold;
+    text-decoration: none;
+    color: red;
+}
+

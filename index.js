@@ -490,6 +490,21 @@ app.post("/dashboard-admin/support/register", (req, res) => {
     });
 });
 
+app.get("/support-info/:id", (req, res) => {
+    if (req.session.idAdministrador === undefined) {
+        res.redirect("/login-admin");
+    } else {
+        let id = req.params.id;
+        db.all("SELECT nombre, correo, password, categoria FROM usuarios, ingenieros WHERE usuarios.id_usuario_pk = ? AND usuarios.id_usuario_pk = ingenieros.id_usuario_fk", [id], (err, row) => {
+            data = {
+                "name": req.session.nameAdmin,
+                "ingeniero": row
+            }
+            res.render("admin/panel-admin-support-info.ejs", data);
+        });
+    }
+});
+
 // #########################################################################################################
 //                                        PANEL DE ADMINISTRADOR
 // #########################################################################################################
