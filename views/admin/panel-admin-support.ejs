@@ -50,7 +50,7 @@
 
                 <div class="div-table">
                     <% if(administradores.length == 0) { %>
-                        <p>No nay administradores registrados para mostrar. 😥😥</p>
+                        <p>No nay ingenieros registrados para mostrar. 😥😥</p>
                     <% } else { %>
                         <table class="table table-borderless table-hover table-striped">
                             <tr>
@@ -76,21 +76,24 @@
                                     <td>
                                         <% if(administradores[i].categoria == "Básico") { %>
                                             <span class="badge rounded-pill bg-success">
-                                                <%= administradores[i].categoria %>
+                                                <i class="fa-solid fa-chart-simple"></i> <%= administradores[i].categoria %>
                                             </span>
                                         <% } else if(administradores[i].categoria == "Intermedio") { %>
                                             <span class="badge rounded-pill bg-warning">
-                                                <%= administradores[i].categoria %>
+                                                <i class="fa-solid fa-chart-simple"></i> <%= administradores[i].categoria %>
                                             </span>
                                         <% } else { %>
                                             <span class="badge rounded-pill bg-danger">
-                                                <%= administradores[i].categoria %>
+                                                <i class="fa-solid fa-chart-simple"></i> <%= administradores[i].categoria %>
                                             </span>
                                         <% } %>
                                     </td>
                                     <td>
                                         <a name="" id="" class="btn btn-link" href="/support-info/<%= administradores[i].id_usuario_pk %>" role="button">
                                             <i class="fa fa-eye" aria-hidden="true"></i>
+                                        </a>
+                                        <a name="" id="" class="btn btn-link" href="/support-info/delete/<%= administradores[i].id_usuario_pk %>" role="button">
+                                            <i class="fa fa-trash-o" aria-hidden="true"></i>
                                         </a>
                                     </td>
                                 </tr>

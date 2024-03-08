@@ -490,12 +490,14 @@ app.post("/dashboard-admin/support/register", (req, res) => {
     });
 });
 
+let id_ingeniero;
+
 app.get("/support-info/:id", (req, res) => {
     if (req.session.idAdministrador === undefined) {
         res.redirect("/login-admin");
     } else {
-        let id = req.params.id;
-        db.all("SELECT nombre, correo, password, categoria FROM usuarios, ingenieros WHERE usuarios.id_usuario_pk = ? AND usuarios.id_usuario_pk = ingenieros.id_usuario_fk", [id], (err, row) => {
+        id_ingeniero = req.params.id;
+        db.all("SELECT nombre, correo, password, categoria FROM usuarios, ingenieros WHERE usuarios.id_usuario_pk = ? AND usuarios.id_usuario_pk = ingenieros.id_usuario_fk", [id_ingeniero], (err, row) => {
             data = {
                 "name": req.session.nameAdmin,
                 "ingeniero": row
@@ -503,6 +505,28 @@ app.get("/support-info/:id", (req, res) => {
             res.render("admin/panel-admin-support-info.ejs", data);
         });
     }
+});
+
+app.post("/support-info/update", (req, res) => {
+    let nombre = req.body.nombre;
+    let correo = req.body.correo;
+    let password = req.body.password;
+    let categoria = req.body.categoria;
+
+    db.run("UPDATE usuarios SET nombre = ?, correo = ?, password = ? WHERE id_usuario_pk = ?", [nombre, correo, password, id_ingeniero], () => {
+        db.run("UPDATE ingenieros SET categoria = ? WHERE id_usuario_fk = ?", [categoria, id_ingeniero], () =>{
+            res.redirect("/support-info/" + id_ingeniero);
+        });
+    });
+});
+
+app.get("/support-info/delete/:id", (req, res) => {
+    let id = req.params.id;
+    db.run("DELETE FROM ingenieros WHERE id_usuario_fk = ?", [id], () => {
+        db.run("DELETE FROM usuarios WHERE id_usuario_pk = ?", [id], () => {
+            res.redirect("/dashboard-admin/support");
+        });
+    });
 });
 
 // #########################################################################################################
