@@ -441,7 +441,7 @@ app.get("/dashboard-admin", (req, res) => {
             empresas = row[0].empresas;
             ingenieros = row[0].ingenieros;
 
-            db.all("SELECT id_ticket_pk, id_empresa_fk, id_referencia_fk, fecha, version, prioridad, estado FROM tickets", (err, row) => {
+            db.all("SELECT id_ticket_pk, id_empresa_fk, id_ingeniero_fk, id_referencia_fk, fecha, version, prioridad, estado FROM tickets", (err, row) => {
                 let data = {
                     "name": req.session.nameAdmin,
                     "estados": JSON.stringify(estados),
@@ -454,6 +454,55 @@ app.get("/dashboard-admin", (req, res) => {
                 }
                 res.render("admin/panel-admin.ejs", data);
             });
+        });
+    }
+});
+
+app.get("/dashboard-admin/ticket-info/:id_ticket", (req, res) => {
+    if (req.session.idAdministrador === undefined) {
+        res.redirect("/login-admin");
+    } else {
+        let id_ticket = req.params.id_ticket;
+
+        db.all("SELECT id_ticket_pk, id_empresa_fk, id_ingeniero_fk, id_referencia_fk, descripcion, fecha, tiempo, version, prioridad, estado, contenido, id_usuario_fk, telefono, correo_empresarial, nombre, correo FROM tickets, referencia, empresas, usuarios WHERE id_ticket_pk = ? AND id_empresa_fk = id_empresa_pk AND id_referencia_fk = id_referencia_pk AND id_usuario_fk = id_usuario_pk", [id_ticket], (err, row) => {
+            let info_ticket = row;
+
+            if (row[0].id_ingeniero_fk === null) {
+                db.all("SELECT contenido, tipo_usuario FROM comentarios WHERE id_ticket_fk = ?", (err, row) => {
+                    let comentarios = row;
+                    db.all("SELECT ruta FROM imagenes WHERE id_ticket_fk = ?", [id_ticket], (err, row) => {
+                        let imagenes = row;
+                        let data = {
+                            "name": req.session.nameAdmin,
+                            "ticket": info_ticket,
+                            "comentarios": comentarios,
+                            "imagenes": imagenes
+                        }
+                        console.log(data);
+                        res.render("admin/panel-admin-ticket.ejs", data);
+                    });
+                });
+            } else {
+                let id_ingeniero = row[0].id_ingeniero_fk;
+                db.all("SELECT id_usuario_fk, categoria, nombre FROM ingenieros, usuarios WHERE id_usuario_fk = id_usuario_pk AND id_ingeniero_pk = ?", [id_ingeniero], (err, row) => {
+                    let ingeniero = row;
+                    db.all("SELECT contenido, tipo_usuario FROM comentarios WHERE id_ticket_fk = ?", [id_ticket], (err, row) => {
+                        let comentarios = row;
+                        db.all("SELECT ruta FROM imagenes WHERE id_ticket_fk = ?", [id_ticket], (err, row) => {
+                            let imagenes = row;
+                            let data = {
+                                "name": req.session.nameAdmin,
+                                "ticket": info_ticket,
+                                "ingeniero": ingeniero,
+                                "comentarios": comentarios,
+                                "imagenes": imagenes
+                            }
+                            console.log(data);
+                            res.render("admin/panel-admin-ticket.ejs", data);
+                        });
+                    });
+                });
+            }
         });
     }
 });

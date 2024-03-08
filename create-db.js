@@ -73,7 +73,13 @@ function crearTabla() {
 
     consulta = `INSERT INTO administradores(id_usuario_fk, edad) VALUES(2, 25)`;
 
-    consulta = `SELECT * FROM ingenieros`;
+    consulta = `SELECT * FROM tickets WHERE id_ticket_pk = 1`;
+
+    // consulta = `UPDATE tickets SET id_ingeniero_fk = 1 WHERE id_ticket_pk = 1`;
+
+    consulta = `SELECT id_usuario_fk, categoria, nombre FROM ingenieros, usuarios WHERE id_usuario_fk = id_usuario_pk AND id_ingeniero_pk = 1`;
+
+    consulta = `SELECT * FROM imagenes`;
 
     db.all(consulta, (err, row) => {
         if(err) {
