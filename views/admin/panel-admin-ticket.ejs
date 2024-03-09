@@ -85,7 +85,7 @@
                         </h3>
                     </div>
                     <div class="card-body">
-                        <h4 class="card-title">Descripción</h4>
+                        <h3 class="card-title">Descripción</h3>
                         <p class="card-text"><i class="fa-solid fa-code-branch"></i> Version del software: <%= ticket[0].version %></p>
                         <p class="card-text"><%= ticket[0].descripcion %></p>
                     </div>
@@ -97,13 +97,17 @@
                                     <i class="fas fa-headset    "></i> Ingeniero: <span class="badge rounded-pill bg-secondary"><i class="fa-solid fa-person-circle-question"></i> No asignado</span>
                                 </p>
 
-                                <form action="" method="post">
+                                <form action="/dashboard-admin/ticket-info/asign-inge" method="post">
                                     <div class="form-group">
+                                        <input type="text" name="id_ticket" id="" value="<%= ticket[0].id_ticket_pk %>" readonly hidden>
                                       <label for=""><i class="fa fa-user-plus" aria-hidden="true"></i> Asignar ingeniero:</label>
                                       <select name="ingeniero" id="" class="form-control">
+                                        <% for(let i = 0; i < ingenieros.length; i++) { %>
+                                            <option value="<%= ingenieros[i].id_ingeniero_pk %>"><%= ingenieros[i].nombre %></option>
+                                        <% } %>
                                       </select>
                                       <button type="submit" name="" id="" class="btn btn-primary">
-                                        Asignar
+                                        <i class="fa fa-user-plus" aria-hidden="true"></i> Asignar Ingeniero
                                       </button>
                                     </div>
                                 </form>
@@ -137,8 +141,9 @@
                                     <%= ticket[0].prioridad %>
                                 </span></p>
 
-                                <form action="" method="post">
+                                <form action="/dashboard-admin/ticket-info/asign-priority" method="post">
                                     <div class="form-group">
+                                        <input type="text" name="id_ticket" id="" value="<%= ticket[0].id_ticket_pk %>" readonly hidden>
                                       <label for=""><i class="fas fa-chart-line    "></i> Asignar prioridad</label>
                                       <select name="prioridad" id="" class="form-control">
                                         <option value="Baja">Baja</option>
@@ -146,37 +151,76 @@
                                         <option value="Alta">Alta</option>
                                         <option value="Urgente">Urgente</option>
                                       </select>
-                                      <button type="button" name="" id="" class="btn btn-primary">
-                                        Asignar
+                                      <button type="submit" name="" id="" class="btn btn-primary">
+                                        <i class="fas fa-chart-line    "></i> Asignar Prioridad
                                     </button>
                                     </div>
                                 </form>
                             <% } else { %>
-                                <% if(ticket[0].prioridad=="Baja" ) { %>
-                                    <span class="badge bg-info">
+                                <p>
+                                    <i class="fas fa-chart-line    "></i> Prioridad:
+                                    <% if(ticket[0].prioridad=="Baja" ) { %>
+                                        <span class="badge bg-info">
                                         <i class="fa fa-arrow-down" aria-hidden="true"></i>
                                         <%= ticket[0].prioridad %>
-                                    </span>
-                                <% } else if(ticket[0].prioridad=="Normal" ) { %>
-                                    <span class="badge bg-success">
-                                        <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-                                            <%= ticket[0].prioridad %>
                                         </span>
-                                <% } else if(ticket[0].prioridad=="Alta" ) { %>
-                                    <span class="badge bg-warning">
-                                        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                                            <%= ticket[0].prioridad %>
-                                    </span>
-                                <% } else { %>
-                                    <span class="badge bg-danger">
-                                        <i class="fa fa-fire" aria-hidden="true"></i>
-                                            <%= ticket[0].prioridad %>
-                                    </span>
+                                    <% } else if(ticket[0].prioridad=="Normal" ) { %>
+                                        <span class="badge bg-success">
+                                            <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                                                <%= ticket[0].prioridad %>
+                                            </span>
+                                    <% } else if(ticket[0].prioridad=="Alta" ) { %>
+                                        <span class="badge bg-warning">
+                                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                                <%= ticket[0].prioridad %>
+                                        </span>
+                                    <% } else { %>
+                                        <span class="badge bg-danger">
+                                            <i class="fa fa-fire" aria-hidden="true"></i>
+                                                <%= ticket[0].prioridad %>
+                                        </span>
+                                    <% } %>
+                                </p>
+                            <% } %>
+                        </div>
+
+                        <hr>
+
+                        <div class="commets">
+                            <h3>Comentarios</h3>
+                            <% if(comentarios.length === 0) { %>
+                                <p>No hay comentarios para mostrar. 😥😥</p>
+                            <% } else { %>
+                                <% for(let i = 0; i < comentarios.length; i++){ %>
+                                    <div class="comentario">
+                                        <p class="usuario">
+                                            <% if(comentarios[i].tipo_usuario == "Empresa") { %>
+                                                <i class="fa fa-building-o" aria-hidden="true"></i> Empresa
+                                            <% } else { %>
+                                                <i class="fas fa-headset    "></i> Soporte
+                                            <% } %>
+                                        </p>
+                                        <p class="comentario-contenido"><%= comentarios[i].contenido %></p>
+                                    </div>
+                                    <hr>
                                 <% } %>
                             <% } %>
                         </div>
 
                         <hr>
+
+                        <div class="imagenes">
+                            <h3>Imágenes</h3>
+                            <% if(imagenes.length === 0) { %>
+                                <p>No hay imágenes para mostrar. 😥😥</p>
+                            <% } else { %>
+                                <div class="img">
+                                    <% for(let i = 0; i < imagenes.length; i++) { %>
+                                        <img src="<%= imagenes[i].ruta %>" alt="">
+                                    <% } %>
+                                </div>
+                            <% } %>
+                        </div>
                     </div>
                 </div>
             </div>

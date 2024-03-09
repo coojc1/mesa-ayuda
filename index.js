@@ -472,14 +472,17 @@ app.get("/dashboard-admin/ticket-info/:id_ticket", (req, res) => {
                     let comentarios = row;
                     db.all("SELECT ruta FROM imagenes WHERE id_ticket_fk = ?", [id_ticket], (err, row) => {
                         let imagenes = row;
-                        let data = {
-                            "name": req.session.nameAdmin,
-                            "ticket": info_ticket,
-                            "comentarios": comentarios,
-                            "imagenes": imagenes
-                        }
-                        console.log(data);
-                        res.render("admin/panel-admin-ticket.ejs", data);
+                        db.all("SELECT id_ingeniero_pk, nombre FROM ingenieros, usuarios WHERE id_usuario_fk = id_usuario_pk", (err, row) => {
+                            let ingenieros = row;
+                            let data = {
+                                "name": req.session.nameAdmin,
+                                "ticket": info_ticket,
+                                "comentarios": comentarios,
+                                "imagenes": imagenes,
+                                "ingenieros": ingenieros
+                            }
+                            res.render("admin/panel-admin-ticket.ejs", data);
+                        });
                     });
                 });
             } else {
@@ -497,7 +500,6 @@ app.get("/dashboard-admin/ticket-info/:id_ticket", (req, res) => {
                                 "comentarios": comentarios,
                                 "imagenes": imagenes
                             }
-                            console.log(data);
                             res.render("admin/panel-admin-ticket.ejs", data);
                         });
                     });
@@ -505,6 +507,24 @@ app.get("/dashboard-admin/ticket-info/:id_ticket", (req, res) => {
             }
         });
     }
+});
+
+app.post("/dashboard-admin/ticket-info/asign-inge", (req, res) => {
+    let id_ticket = req.body.id_ticket;
+    let ingeniero = req.body.ingeniero;
+
+    db.all("UPDATE tickets SET id_ingeniero_fk = ? WHERE id_ticket_pk = ?", [ingeniero, id_ticket], (err, row) => {
+        res.redirect("/dashboard-admin/ticket-info/" + id_ticket);
+    });
+});
+
+app.post("/dashboard-admin/ticket-info/asign-priority", (req, res) => {
+    let id_ticket = req.body.id_ticket;
+    let prioridad = req.body.prioridad;
+
+    db.all("UPDATE tickets SET prioridad = ? WHERE id_ticket_pk = ?", [prioridad, id_ticket], (err, row) => {
+        res.redirect("/dashboard-admin/ticket-info/" + id_ticket);
+    });
 });
 
 app.get("/dashboard-admin/support", (req, res) => {
