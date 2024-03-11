@@ -1,0 +1,61 @@
+:root {
+    --GhostWhite: ghostwhite;
+    --Color-1: #ff8623;
+    --Color-1-dashed: #ff862323;
+    --Color-2: #202427;
+    --Color-3: #fff;
+    --Color-4: #e9e6e2;
+}
+
+body{
+    background-color: var(--Color-3);
+}
+
+.container-fluid{
+    margin-top: 10px;
+    margin-bottom: 5vh;
+}
+
+.container-fluid .content{
+    height: fit-content;
+    width: 90%;
+    margin: auto;
+    margin-top: 5vh;
+}
+
+.content .nav-tickets a{
+    font-weight: bold;
+    text-decoration: none;
+    color: var(--Color-1);
+}
+
+.div-data{
+    margin-top: 2vh;
+}
+
+.div-data h3{
+    width: fit-content;
+    margin: 0px;
+    font-size: 20pt;
+    font-weight: bold;
+    color: var(--Color-1);
+}
+
+.div-data .div-table{
+    margin-top: 2vh;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.div-data .div-table p{
+    padding: 5vh 0vh;
+    font-weight: bold;
+    font-size: 25pt;
+    color: var(--Color-2);
+    text-align: center;
+}
+
+.div-table table{
+    margin: 0px;
+    text-align: center;
+}

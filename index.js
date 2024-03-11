@@ -527,6 +527,48 @@ app.post("/dashboard-admin/ticket-info/asign-priority", (req, res) => {
     });
 });
 
+app.get("/dashboard-admin/tickets", (req, res) => {
+    if (req.session.idAdministrador === undefined) {
+        res.redirect("/login-admin");
+    } else {
+        db.all("SELECT id_ticket_pk, razon, contenido, fecha, version, prioridad, razon FROM tickets, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND id_referencia_fk = id_referencia_pk AND estado = 'Abierto'", (err, row) => {
+            let data = {
+                "name": req.session.nameAdmin,
+                "tickets": row
+            }
+            res.render("admin/panel-admin-tickets.ejs", data);
+        });
+    }
+});
+
+app.get("/dashboard-admin/tickets-process", (req, res) => {
+    if (req.session.idAdministrador === undefined) {
+        res.redirect("/login-admin");
+    } else {
+        db.all("SELECT id_ticket_pk, razon, contenido, fecha, version, prioridad, razon FROM tickets, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND id_referencia_fk = id_referencia_pk AND estado = 'En proceso'", (err, row) => {
+            let data = {
+                "name": req.session.nameAdmin,
+                "tickets": row
+            }
+            res.render("admin/panel-admin-tickets-process.ejs", data);
+        });
+    }
+});
+
+app.get("/dashboard-admin/tickets-terminados", (req, res) => {
+    if (req.session.idAdministrador === undefined) {
+        res.redirect("/login-admin");
+    } else {
+        db.all("SELECT id_ticket_pk, razon, contenido, fecha, version, prioridad, razon FROM tickets, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND id_referencia_fk = id_referencia_pk AND estado = 'Liberado'", (err, row) => {
+            let data = {
+                "name": req.session.nameAdmin,
+                "tickets": row
+            }
+            res.render("admin/panel-admin-tickets-ended.ejs", data);
+        });
+    }
+});
+
 app.get("/dashboard-admin/support", (req, res) => {
     if (req.session.idAdministrador === undefined) {
         res.redirect("/login-admin");

@@ -67,6 +67,8 @@ function crearTabla() {
 
    consulta = `DELETE FROM tickets`;
 
+//    consulta = `SELECT id_ticket_pk, razon, contenido, fecha, version, prioridad, razon FROM tickets, empresas, ingenieros, referencia WHERE id_empresa_fk = id_empresa_pk AND id_referencia_fk = id_referencia_pk AND id_ingeniero_fk = id_ingeniero_pk AND estado = 'Abierto'`;
+
     db.all(consulta, (err, row) => {
         if(err) {
             return console.log(err);
