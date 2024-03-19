@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/bootstrap-5.3.3-dist/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/c55ac3095c.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/admin/nav-panel.css">
+    <link rel="stylesheet" href="/css/admin/panel-admin-references.css">
+    <link rel="shortcut icon" href="/res/logo-5.png" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Referencias</title>
+</head>
+<body>
+    <div class="container-fluid">
+        <%- include("nav-panel.ejs") %>
+
+        <div class="content">
+            <form action="/dashboard-admin/references/register" method="post">
+                <i class="fa fa-question-circle-o top-icon" aria-hidden="true"></i>
+                <h3>Registrar referencias</h3>
+                <div class="form-group">
+                  <label for=""><i class="fa fa-question-circle-o" aria-hidden="true"></i> Referencia</label>
+                  <input type="text" name="referencia" id="" class="form-control" placeholder="Referencia" required autocomplete="off">
+                  <button type="submit" name="" id="" class="btn btn-primary">
+                    <i class="fa fa-paper-plane-o" aria-hidden="true"></i> Registrar
+                  </button>
+                </div>
+            </form>
+
+            <div class="table-div">
+                <% if(referencias.length === 0) { %>
+                    <p>No hay referencias para mostrar. 😥😥</p>
+                <% } else { %>
+                    <table class="table table-hover table-striped table-borderless">
+                        <tr>
+                            <th>#</th>
+                            <th>Referencia</th>
+                        </tr>
+                        <% for(let i = 0; i < referencias.length; i++) { %>
+                            <tr>
+                                <td><%= referencias[i].id_referencia_pk %></td>
+                                <td><%= referencias[i].contenido %></td>
+                            </tr>
+                        <% } %>
+                    </table>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

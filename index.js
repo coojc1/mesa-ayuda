@@ -441,7 +441,7 @@ app.get("/dashboard-admin", (req, res) => {
             empresas = row[0].empresas;
             ingenieros = row[0].ingenieros;
 
-            db.all("SELECT id_ticket_pk, id_empresa_fk, id_ingeniero_fk, id_referencia_fk, fecha, version, prioridad, estado FROM tickets", (err, row) => {
+            db.all("SELECT id_ticket_pk, id_empresa_fk, id_ingeniero_fk, id_referencia_fk, fecha, version, prioridad, estado FROM tickets ORDER BY prioridad DESC", (err, row) => {
                 let data = {
                     "name": req.session.nameAdmin,
                     "estados": JSON.stringify(estados),
@@ -639,6 +639,136 @@ app.get("/support-info/delete/:id", (req, res) => {
         });
     });
 });
+
+app.get("/dashboard-admin/company-list", (req, res) => {
+    if (req.session.idAdministrador === undefined) {
+        res.redirect("/login-admin");
+    } else {
+        db.all("SELECT id_usuario_pk, nombre, correo, telefono, correo_empresarial, poliza, no_candado FROM usuarios, empresas WHERE id_usuario_pk = id_usuario_fk", (err, row) => {
+            let data = {
+                "name": req.session.nameAdmin,
+                "empresas": row
+            }
+            res.render("admin/panel-admin-company-list.ejs", data);
+        });
+    }
+});
+
+app.get("/dashboard-admin/company-list/company-info/:id", (req, res) => {
+    if (req.session.idAdministrador === undefined) {
+        res.redirect("/login-admin");
+    } else {
+        let id = req.params.id;
+        db.all("SELECT nombre, correo, telefono, id_empresa_pk, correo_empresarial, poliza, no_candado FROM usuarios, empresas WHERE id_usuario_pk = id_usuario_fk AND id_usuario_pk = ?", [id], (err, row) => {
+            let info_empresa = row;
+            let id_empresa = row[0].id_empresa_pk;
+            db.all("SELECT id_ticket_pk, nombre, contenido, fecha, version, estado, prioridad FROM tickets, ingenieros, usuarios, referencia WHERE id_ingeniero_fk = id_ingeniero_pk AND id_usuario_fk = id_usuario_pk AND id_referencia_fk = id_referencia_pk AND id_empresa_fk = ?", [id_empresa], (err, row) => {
+                let data = {
+                    "name": req.session.nameAdmin,
+                    "empresa": info_empresa,
+                    "tickets": row
+                }
+                res.render("admin/panel-admin-company-info.ejs", data);
+            });
+        });
+    }
+});
+
+app.get("/dashboard-admin/references", (req, res) => {
+    if (req.session.idAdministrador === undefined) {
+        res.redirect("/login-admin");
+    } else {
+        db.all("SELECT id_referencia_pk, contenido FROM referencia", (err, row) => {
+            let data = {
+                "name": req.session.nameAdmin,
+                "referencias": row
+            }
+            res.render("admin/panel-admin-references.ejs", data);
+        });
+    }
+});
+
+app.post("/dashboard-admin/references/register", (req, res) => {
+    let referencia = req.body.referencia;
+    db.all("INSERT INTO referencia(contenido) VALUES(?)", [referencia], () => {
+        res.redirect("/dashboard-admin/references");
+    });
+});
+
+app.get("/dashboard-admin/reportes", (req, res) => {
+    if (req.session.idAdministrador === undefined) {
+        res.redirect("/login-admin");
+    } else {
+        db.all("SELECT id_reporte_pk, mes, year, fecha FROM reportes ORDER BY id_reporte_pk DESC", (err, row) => {
+            var fecha = new Date();
+            let mes = fecha.getMonth();
+
+            let data = {
+                "name": req.session.nameAdmin,
+                "mes": mes,
+                "reportes": row
+            }
+            res.render("admin/panel-admin-reports.ejs", data);
+        });
+    }
+});
+
+app.post("/dashboard-admin/reportes/register", (req, res) => {
+    let mes = req.body.mes;
+    let fecha = new Date;
+    let year = fecha.getFullYear();
+
+    let fecha_completa = fecha.getDay() + "-" + (fecha.getMonth()+1) + "-" + fecha.getFullYear();
+
+    db.all("INSERT INTO reportes(mes, year, fecha) VALUES(?,?, ?)", [mes, year, fecha_completa], (err, row) => {
+        res.redirect("/dashboard-admin/reportes");
+    });
+});
+
+app.get("/dashboard-admin/reportes/delete/:id", (req, res) => {
+    let id = req.params.id;
+
+    db.run("DELETE FROM reportes WHERE id_reporte_pk = ?", [id], () => {
+        res.redirect("/dashboard-admin/reportes");
+    });
+});
+
+app.get("/dashboard-admin/reportes/info/:id", (req, res) => {
+    if (req.session.idAdministrador === undefined) {
+        res.redirect("/login-admin");
+    } else {
+        let id = req.params.id;
+
+        db.all("SELECT mes, year FROM reportes WHERE id_reporte_pk = ?", [id], (err, row) => {
+            let mes = "0" + row[0].mes;
+            let year = row[0].year;
+
+            db.all("SELECT COUNT(id_ticket_pk) as cant_tickets, id_ticket_pk, id_empresa_fk, fecha, version, tiempo, prioridad, nombre, contenido FROM tickets, usuarios, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND empresas.id_usuario_fk = usuarios.id_usuario_pk AND id_referencia_fk = id_referencia_pk AND estado = 'Liberado' AND id_empresa_fk = id_empresa_pk AND id_usuario_fk = id_usuario_pk AND strftime('%m', fecha) = '"+mes+"' AND strftime('%Y', fecha) = '"+year+"'",(err, row) => {
+                let data = {
+                    "tickets": row
+                }
+                console.log(data);
+                res.render("admin/template-report.ejs", data);
+            });
+        });
+    }
+});
+
+app.get("/dashboard-admin/profile", (req, res) => {
+    if (req.session.idAdministrador === undefined) {
+        res.redirect("/login-admin");
+    } else {
+        let id_admin = req.session.idAdministrador;
+        db.all("SELECT id_usuario_pk, nombre, correo, password FROM usuarios WHERE id_usuario_pk = ?", [id_admin], (err, row) => {
+            let data = {
+                "name": req.session.nameAdmin,
+                "admin": row
+            }
+            res.render("admin/panel-admin-profile.ejs", data);
+        });
+    }
+});
+
 
 // #########################################################################################################
 //                                        PANEL DE ADMINISTRADOR

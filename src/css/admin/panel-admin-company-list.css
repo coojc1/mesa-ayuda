@@ -1,0 +1,42 @@
+:root {
+    --GhostWhite: ghostwhite;
+    --Color-1: #ff8623;
+    --Color-1-dashed: #ff862323;
+    --Color-2: #202427;
+    --Color-3: #fff;
+    --Color-4: #e9e6e2;
+}
+
+body{
+    background-color: var(--Color-3);
+}
+
+.container-fluid{
+    margin-top: 10px;
+    margin-bottom: 5vh;
+}
+
+.container-fluid .content{
+    height: fit-content;
+    width: 90%;
+    margin: auto;
+    margin-top: 5vh;
+}
+
+.content .div-table{
+    height: fit-content;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.content table{
+    text-align: center;
+    margin: 0px;
+}
+
+.content table td a.btn-primary{
+    padding: 0px;
+    height: fit-content;
+    width: fit-content;
+    border: none;
+}

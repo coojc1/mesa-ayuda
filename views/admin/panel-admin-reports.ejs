@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/bootstrap-5.3.3-dist/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/c55ac3095c.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/admin/nav-panel.css">
+    <link rel="stylesheet" href="/css/admin/panel-admin-reports.css">
+    <link rel="shortcut icon" href="/res/logo-5.png" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Reportes</title>
+</head>
+<body>
+    <div class="container-fluid">
+        <%- include("nav-panel.ejs") %>
+
+        <div class="content">
+            <form action="/dashboard-admin/reportes/register" method="post">
+                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                <h3>Generar Reporte</h3>
+                <div class="form-group">
+                  <label for=""><i class="fa fa-calendar" aria-hidden="true"></i> Mes de reporte:</label>
+                  <select name="mes" id="" class="form-control">
+                    <% const meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]; %>
+
+                    <% const value_meses = ["01","02","03","04","05","06","07","08","09","10","11","12"] %>
+
+                    <% for(let i = 0; i < (mes+1); i++) { %>
+                        <option value="<%= value_meses[i] %>"><%= meses[i] %></option>
+                    <% } %>
+                  </select>
+                  <button type="submit" name="" id="" class="btn btn-primary">
+                    <i class="fa fa-file-o" aria-hidden="true"></i> Generar Reporte
+                    </button>
+                </div>
+            </form>
+
+            <div class="div-table">
+                <% if(reportes.length === 0) { %>
+                    <p>Aún no hay reportes generados. 😥😥</p>
+                <% } else { %>
+                    <table class="table table-borderless table-hover table-striped ">
+                        <tr>
+                            <th>#</th>
+                            <th>Mes</th>
+                            <th>Año</th>
+                            <th>Fecha de generación</th>
+                            <th>Acción</th>
+                        </tr>
+                        <% for(let i = 0; i < reportes.length; i++) { %>
+                            <tr>
+                                <td><%= reportes[i].id_reporte_pk %></td>
+                                <td><%= reportes[i].mes %></td>
+                                <td><%= reportes[i].year %></td>
+                                <td><%= reportes[i].fecha %></td>
+                                <td>
+                                    <div class="buttons">
+                                        <a name="" id="" class="btn btn-link" href="/dashboard-admin/reportes/info/<%= reportes[i].id_reporte_pk %>" role="button" target="_blank" >
+                                            <i class="fa fa-eye" aria-hidden="true"></i>
+                                        </a>
+                                        <a name="" id="" class="btn btn-link" href="/dashboard-admin/reportes/delete/<%= reportes[i].id_reporte_pk %>" role="button">
+                                            <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </table>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

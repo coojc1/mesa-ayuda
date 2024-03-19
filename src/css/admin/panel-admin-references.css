@@ -1,0 +1,87 @@
+:root {
+    --GhostWhite: ghostwhite;
+    --Color-1: #ff8623;
+    --Color-1-dashed: #ff862323;
+    --Color-2: #202427;
+    --Color-3: #fff;
+    --Color-4: #e9e6e2;
+}
+
+body{
+    background-color: var(--Color-3);
+}
+
+.container-fluid{
+    margin-top: 10px;
+    margin-bottom: 5vh;
+}
+
+.container-fluid .content{
+    height: fit-content;
+    width: 90%;
+    margin: auto;
+    margin-top: 5vh;
+    display: flex;
+}
+
+.content form{
+    width: 30%;
+    background-color: var(--Color-1);
+    padding: 10px;
+    border-radius: 10px;
+    color: var(--Color-3);
+}
+
+
+.content form i.top-icon{
+    font-size: 40pt;
+    width: 100%;
+    text-align: center;
+}
+
+.content form h3{
+    text-align: center;
+}
+
+form .form-group{
+    background-color: var(--Color-3);
+    padding: 10px;
+    border-radius: 10px;
+    font-size: medium;
+}
+
+.form-group label{
+    color: var(--Color-1);
+    font-weight: bold;
+    text-align: left !important;
+}
+
+.form-group input{
+    margin-bottom: 5vh;
+}
+
+.form-group button{
+    background-color: var(--Color-1);
+    border: none;
+}
+
+.table-div{
+    width: 68%;
+    margin-left: auto;
+    height: fit-content;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.table-div p{
+    font-size: 25pt;
+    color: var(--Color-2);
+    font-weight: bold;
+    padding: 5vh 0px;
+    text-align: center;
+}
+
+.table-div table{
+    margin: 0px;
+    text-align: center;
+}

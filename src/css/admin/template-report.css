@@ -1,0 +1,74 @@
+:root {
+    --GhostWhite: ghostwhite;
+    --Color-1: #ff8623;
+    --Color-1-dashed: #ff862323;
+    --Color-2: #202427;
+    --Color-3: #fff;
+    --Color-4: #e9e6e2;
+}
+
+body{
+    padding: 0px;
+}
+
+.container-fluid{
+}
+
+.container-fluid .top{
+    display: flex;
+    align-items: center;
+}
+
+.top img{
+    width: 20%;
+}
+
+.top .text{
+    height: 100%;
+    margin: 0px;
+    margin-left: auto;
+}
+
+.text p{
+    margin: 0px;
+    font-size: 10pt;
+}
+
+hr{
+    background-color: var(--Color-1) !important;
+    border: 1px solid var(--Color-1);
+}
+
+table{
+    font-size: 10pt;
+}
+
+.table-top table th{ 
+    background-color: var(--Color-4);
+}
+
+.table-report table{
+    text-align: center;
+}
+
+.table-report p{
+    padding: 5vh 0px;
+    text-align: center;
+    font-size: 25pt;
+    color: var(--Color-2);
+    font-weight: bold;
+}
+
+.table-report table th{
+    background-color: var(--Color-4);
+}
+
+table th.total{
+    text-align: right;
+    padding-right: 2vh;
+}
+
+table td.no_total{
+    text-align: left;
+    padding-left: 2vh;
+}

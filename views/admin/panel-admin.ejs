@@ -144,7 +144,7 @@
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Abierto', 'Liberado', 'En proceso'],
+            labels: ['Abierto', 'En proceso', 'Liberado'],
             datasets: [{
                 label: 'No. Tickets',
                 data: JSON.parse('<%= estados %>'),
@@ -185,17 +185,17 @@
                 data: JSON.parse('<%= prioridades %>'),
                 backgroundColor: [
                     'rgba(237, 231, 225, 0.2)', // SIN EVALUAR - GRIS
-                    'rgba(54, 162, 235, 0.2)', //BAJA - VERDE
-                    'rgba(255, 206, 86, 0.2)', // NORMAL - AMARILLO
-                    'rgba(241, 90, 34, 0.2)', //ALTA - NARANJA
-                    'rgba(207, 0, 15, 0.2)' // URGENTE - ROJO
+                    'rgba(0, 255, 255, 0.2)', //BAJA - AZUL
+                    'rgba(0, 255, 0, 0.2)', // NORMAL - VERDE
+                    'rgba(255, 255, 0, 0.2)', //ALTA - NARANJA
+                    'rgba(255, 0, 0, 0.2)' // URGENTE - ROJO
                 ],
                 borderColor: [
-                    'rgba(237, 231, 225, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(241, 90, 34, 1)',
-                    'rgba(207, 0, 15, 1)' 
+                    'rgba(237, 231, 225, 1)', // SIN EVALUAR - GRIS
+                    'rgba(0, 255, 255, 1)', //BAJA - AZUL
+                    'rgba(0, 255, 0, 1)', // NORMAL - VERDE
+                    'rgba(255, 255, 0, 1)', //ALTA - NARANJA
+                    'rgba(255, 0, 0, 1)' // URGENTE - ROJO
                 ],
                 borderWidth: 1
             }]

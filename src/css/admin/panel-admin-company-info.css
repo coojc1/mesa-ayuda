@@ -1,0 +1,84 @@
+:root {
+    --GhostWhite: ghostwhite;
+    --Color-1: #ff8623;
+    --Color-1-dashed: #ff862323;
+    --Color-2: #202427;
+    --Color-3: #fff;
+    --Color-4: #e9e6e2;
+}
+
+body{
+    background-color: var(--Color-3);
+}
+
+.container-fluid{
+    margin-top: 10px;
+    margin-bottom: 5vh;
+}
+
+.container-fluid .content{
+    height: fit-content;
+    width: 90%;
+    margin: auto;
+    margin-top: 5vh;
+    display: flex;
+}
+
+.content .info-company{
+    width: 32%;
+}
+
+.card .card-header{
+    text-align: center;
+    background-color: var(--Color-1);
+    color: var(--Color-3);
+}
+
+.card-header i{
+    font-size: 40pt;
+}
+
+.card-header h3{
+    font-weight: bold;
+}
+
+.card .card-body h3{
+    text-align: center;
+    font-weight: bold;
+    color: var(--Color-1);
+}
+
+.card .card-body .card-text a{
+    padding: 0px;
+    border: none;
+    margin: auto;
+}
+
+.content .tickets-company{
+    height: fit-content;
+    width: 66%;
+    margin-left: auto;
+}
+
+.tickets-company h3{
+    color: var(--Color-1);
+    margin: 0px;
+    margin-bottom: 2vh;
+}
+
+.tickets-company .table-tickets{
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+.table-tickets p{   
+    text-align: center;
+    padding: 5vh 0px;
+    font-size: 25pt;
+    font-weight: bold;
+}
+
+.table-tickets table{
+    margin: 0px;    
+    text-align: center;
+}
