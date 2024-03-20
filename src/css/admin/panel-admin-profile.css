@@ -60,3 +60,8 @@ form label{
 form input{
     margin-bottom: 2vh;
 }
+
+form button{
+    background-color: var(--Color-1) !important;
+    border: none !important;
+}

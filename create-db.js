@@ -71,11 +71,12 @@ function crearTabla() {
         year INTEGER
     )`;
 
-   consulta = `SELECT id_ticket_pk, id_empresa_fk, fecha, version, tiempo, prioridad, nombre, contenido FROM tickets, usuarios, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND empresas.id_usuario_fk = usuarios.id_usuario_pk AND id_referencia_fk = id_referencia_pk AND estado = 'Abierto' AND strftime('%m', fecha) = '03' AND strftime('%Y', fecha) = '2024'`;
+    consulta = `CREATE TABLE IF NOT EXISTS passwords(
+        id_password_pk INTEGER NOT NULL PRIMARY KEY,
+        password TEXT
+    )`;
 
-   consulta = `SELECT id_ticket_pk, id_empresa_fk, id_ingeniero_fk, id_referencia_fk, fecha, version, prioridad, estado FROM tickets ORDER BY prioridad DESC`;
-   
-   consulta = `DELETE FROM usuarios WHERE tipo_usuario = 'Empresa'`;
+    consulta = `SELECT * FROM usuarios`
     
 
 //    consulta = `SELECT id_ticket_pk, razon, contenido, fecha, version, prioridad, razon FROM tickets, empresas, ingenieros, referencia WHERE id_empresa_fk = id_empresa_pk AND id_referencia_fk = id_referencia_pk AND id_ingeniero_fk = id_ingeniero_pk AND estado = 'Abierto'`;

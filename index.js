@@ -509,6 +509,22 @@ app.get("/dashboard-admin/ticket-info/:id_ticket", (req, res) => {
     }
 });
 
+app.get("/dashboard-admin/ticket-infor/delete-inge/:id_ticket", (req, res) => {
+    let id_ticket = req.params.id_ticket;
+
+    db.run("UPDATE tickets SET id_ingeniero_fk = NULL WHERE id_ticket_pk = ?",[id_ticket], (err, row) => {
+        res.redirect("/dashboard-admin/ticket-info/" + id_ticket);
+    });
+});
+
+app.get("/dashboard-admin/ticket-infor/delete-priority/:id_ticket", (req, res) => {
+    let id_ticket = req.params.id_ticket;
+
+    db.run("UPDATE tickets SET prioridad = 'Por evaluar' WHERE id_ticket_pk = ?",[id_ticket], (err, row) => {
+        res.redirect("/dashboard-admin/ticket-info/" + id_ticket);
+    });
+});
+
 app.post("/dashboard-admin/ticket-info/asign-inge", (req, res) => {
     let id_ticket = req.body.id_ticket;
     let ingeniero = req.body.ingeniero;
@@ -662,12 +678,13 @@ app.get("/dashboard-admin/company-list/company-info/:id", (req, res) => {
         db.all("SELECT nombre, correo, telefono, id_empresa_pk, correo_empresarial, poliza, no_candado FROM usuarios, empresas WHERE id_usuario_pk = id_usuario_fk AND id_usuario_pk = ?", [id], (err, row) => {
             let info_empresa = row;
             let id_empresa = row[0].id_empresa_pk;
-            db.all("SELECT id_ticket_pk, nombre, contenido, fecha, version, estado, prioridad FROM tickets, ingenieros, usuarios, referencia WHERE id_ingeniero_fk = id_ingeniero_pk AND id_usuario_fk = id_usuario_pk AND id_referencia_fk = id_referencia_pk AND id_empresa_fk = ?", [id_empresa], (err, row) => {
+            db.all("SELECT id_ticket_pk, contenido, fecha, version, estado, prioridad FROM tickets, ingenieros, usuarios, referencia WHERE id_usuario_fk = id_usuario_pk AND id_referencia_fk = id_referencia_pk AND id_empresa_fk = ?", [id_empresa], (err, row) => {
                 let data = {
                     "name": req.session.nameAdmin,
                     "empresa": info_empresa,
                     "tickets": row
                 }
+                console.log(data);
                 res.render("admin/panel-admin-company-info.ejs", data);
             });
         });
@@ -767,6 +784,35 @@ app.get("/dashboard-admin/profile", (req, res) => {
             res.render("admin/panel-admin-profile.ejs", data);
         });
     }
+});
+
+app.post("/dashboard-admin/profile/update", (req, res) => {
+    let id_admin = req.session.idAdministrador;
+    let nombre = req.body.nombre;
+    let correo = req.body.correo;
+    let password = req.body.password;
+
+    db.run("UPDATE usuarios SET nombre = ?, correo = ?, password = ? WHERE id_usuario_pk = ?", [nombre, correo, password, id_admin], (err, row) => {
+        res.redirect("/dashboard-admin/profile");
+    })
+});
+
+app.post("/dashboard-admin/profile/new-admin", (req, res) => {
+    let password_auth = req.body.password_auth;
+
+    db.all("SELECT COUNT(id_password_pk) as pass FROM passwords WHERE password = ?", [password_auth], (err, row) => {
+        if (row[0].pass > 0) {
+            let nombre = req.body.nombre;
+            let correo = req.body.correo;
+            let password = req.body.password;
+
+            db.all("INSERT INTO usuarios(nombre, correo, password, tipo_usuario) VALUES(?, ?, ?, 'Admin')", [nombre, correo, password], (err, row) => {
+                res.redirect("/dashboard-admin/profile");
+            });
+        } else {
+            res.redirect("/dashboard-admin/profile");
+        }
+    });
 });
 
 

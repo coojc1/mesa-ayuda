@@ -26,7 +26,12 @@
                         <h4 class="card-title">Datos de contacto</h4>
                         <p class="card-text">
                             <i class="fa fa-phone" aria-hidden="true"></i> Teléfono: <%= ticket[0].telefono %> <br>
-                            <i class="fas fa-mail-bulk    "></i> Correo de la empresa: <%= ticket[0].correo_empresarial %> <br>
+                            
+                            <i class="fas fa-mail-bulk    "></i> Correo empresarial: 
+                                <a name="" id="" class="btn btn-link" href="mailto:<%= ticket[0].correo_empresarial %>" role="button">
+                                    <span class="badge bg-primary"><%= ticket[0].correo_empresarial %></span>
+                                </a>
+                            <br>
                             <i class="fas fa-mail-bulk    "></i> Correo del representante: 
                                 <a name="" id="" class="btn btn-link" href="mailto:<%= ticket[0].correo %>" role="button">
                                     <span class="badge bg-primary"><%= ticket[0].correo %></span>
@@ -91,29 +96,30 @@
                     </div>
                     <div class="card-footer text-muted">
                         <div class="support">
-                            <h3>Ingeniero</h3>
+                            <h3>Consultor</h3>
+                            
                             <% if(ticket[0].id_ingeniero_fk === null) { %>
                                 <p>
-                                    <i class="fas fa-headset    "></i> Ingeniero: <span class="badge rounded-pill bg-secondary"><i class="fa-solid fa-person-circle-question"></i> No asignado</span>
+                                    <i class="fas fa-headset    "></i> Consultor: <span class="badge rounded-pill bg-secondary"><i class="fa-solid fa-person-circle-question"></i> No asignado</span>
                                 </p>
 
                                 <form action="/dashboard-admin/ticket-info/asign-inge" method="post">
                                     <div class="form-group">
                                         <input type="text" name="id_ticket" id="" value="<%= ticket[0].id_ticket_pk %>" readonly hidden>
-                                      <label for=""><i class="fa fa-user-plus" aria-hidden="true"></i> Asignar ingeniero:</label>
+                                      <label for=""><i class="fa fa-user-plus" aria-hidden="true"></i> Asignar consultor:</label>
                                       <select name="ingeniero" id="" class="form-control">
                                         <% for(let i = 0; i < ingenieros.length; i++) { %>
                                             <option value="<%= ingenieros[i].id_ingeniero_pk %>"><%= ingenieros[i].nombre %></option>
                                         <% } %>
                                       </select>
                                       <button type="submit" name="" id="" class="btn btn-primary">
-                                        <i class="fa fa-user-plus" aria-hidden="true"></i> Asignar Ingeniero
+                                        <i class="fa fa-user-plus" aria-hidden="true"></i> Asignar Consultor
                                       </button>
                                     </div>
                                 </form>
                             <% } else { %>
                                 <p>
-                                    <i class="fas fa-headset    "></i> Ingeniero: <%= ingeniero[0].nombre %>
+                                    <i class="fas fa-headset    "></i> Consultor: <%= ingeniero[0].nombre %>
                                     <% if(ingeniero[0].categoria == "Básico") { %>
                                         <span class="badge rounded-pill bg-success">
                                             <i class="fa-solid fa-chart-simple"></i> <%= ingeniero[0].categoria %>
@@ -127,6 +133,10 @@
                                             <i class="fa-solid fa-chart-simple"></i> <%= ingeniero[0].categoria %>
                                         </span>
                                     <% } %>
+
+                                    <a name="" id="" class="btn btn-link" href="/dashboard-admin/ticket-infor/delete-inge/<%= ticket[0].id_ticket_pk %>" role="button">
+                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                    </a>
                                 </p>
                             <% } %>
                         </div>
@@ -134,9 +144,9 @@
                         <hr>
 
                         <div class="prioridad">
-                            <h3>Prioridad del problema</h3>
+                            <h3>Estado del problema</h3>
                             <% if(ticket[0].prioridad === "Por evaluar") { %>
-                                <p><i class="fas fa-chart-line    "></i> Prioridad: <span class="badge bg-secondary">
+                                <p><i class="fas fa-chart-line    "></i> Estado: <span class="badge bg-secondary">
                                     <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                                     <%= ticket[0].prioridad %>
                                 </span></p>
@@ -144,7 +154,7 @@
                                 <form action="/dashboard-admin/ticket-info/asign-priority" method="post">
                                     <div class="form-group">
                                         <input type="text" name="id_ticket" id="" value="<%= ticket[0].id_ticket_pk %>" readonly hidden>
-                                      <label for=""><i class="fas fa-chart-line    "></i> Asignar prioridad</label>
+                                      <label for=""><i class="fas fa-chart-line    "></i> Asignar estado</label>
                                       <select name="prioridad" id="" class="form-control">
                                         <option value="Baja">Baja</option>
                                         <option value="Normal">Normal</option>
@@ -152,13 +162,13 @@
                                         <option value="Urgente">Urgente</option>
                                       </select>
                                       <button type="submit" name="" id="" class="btn btn-primary">
-                                        <i class="fas fa-chart-line    "></i> Asignar Prioridad
+                                        <i class="fas fa-chart-line    "></i> Asignar Estado
                                     </button>
                                     </div>
                                 </form>
                             <% } else { %>
                                 <p>
-                                    <i class="fas fa-chart-line    "></i> Prioridad:
+                                    <i class="fas fa-chart-line    "></i> Estado:
                                     <% if(ticket[0].prioridad=="Baja" ) { %>
                                         <span class="badge bg-info">
                                         <i class="fa fa-arrow-down" aria-hidden="true"></i>
@@ -180,6 +190,10 @@
                                                 <%= ticket[0].prioridad %>
                                         </span>
                                     <% } %>
+
+                                    <a name="" id="" class="btn btn-link" href="/dashboard-admin/ticket-infor/delete-priority/<%= ticket[0].id_ticket_pk %>" role="button">
+                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                    </a>
                                 </p>
                             <% } %>
                         </div>

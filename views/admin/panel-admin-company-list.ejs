@@ -40,7 +40,10 @@
                                         <span class="badge badge-primary"><%= empresas[i].correo %></span>
                                     </a>
                                 </td>
-                                <td><%= empresas[i].correo_empresarial %></td>
+                                <td>
+                                    <a name="" id="" class="btn btn-primary" href="mailto:<%= empresas[i].correo_empresarial %>" role="button">
+                                        <span class="badge badge-primary"><%= empresas[i].correo_empresarial %></span>
+                                    </a>
                                 <td><%= empresas[i].telefono %></td>
                                 <td>
                                     <% if(empresas[i].poliza === "Si") { %>

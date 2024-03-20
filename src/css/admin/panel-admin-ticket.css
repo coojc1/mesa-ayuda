@@ -123,3 +123,9 @@ body{
     border-radius: 5px;
     margin: auto;
 }
+
+.support .btn-link, .prioridad .btn-link{
+    padding: 0px;
+    height: fit-content;
+    color: red;
+}

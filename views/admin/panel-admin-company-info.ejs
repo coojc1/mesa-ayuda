@@ -30,7 +30,9 @@
                             </a>
                         </p>
                         <p class="card-text">
-                            <i class="fas fa-mail-bulk    "></i> Correo empresarial: <%= empresa[0].correo_empresarial %>
+                            <i class="fas fa-mail-bulk    "></i> Correo empresarial: <a name="" id="" class="btn btn-link" href="mailto:<%= empresa[0].correo_empresarial %>" role="button">
+                                <span class="badge bg-primary"><%= empresa[0].correo_empresarial %></span>
+                            </a>
                         </p>
                         <p class="card-text">
                             <i class="fa fa-phone" aria-hidden="true"></i> Teléfono: <%= empresa[0].telefono %>
@@ -63,26 +65,16 @@
                         <table class="table table-hover table-striped table-borderless">
                             <tr>
                                 <th>#</th>
-                                <th>Ingeniero</th>
                                 <th>Referencia</th>
                                 <th>Fecha</th>
                                 <th>Versión</th>
+                                <th>Estatus</th>
                                 <th>Estado</th>
-                                <th>Prioridad</th>
                                 <th>Acción</th>
                             </tr>
                             <% for(let i = 0; i < tickets.length; i++){ %>
                                 <tr>
                                     <td><%= tickets[i].id_ticket_pk %></td>
-                                    <td>
-                                        <% if(tickets[i].nombre === null) { %>
-                                            <span class="badge bd-secondary">
-                                                <i class="fa fa-question-circle-o" aria-hidden="true"></i> No asignado
-                                            </span>
-                                        <% } else { %>
-                                            <%= tickets[i].nombre %>
-                                        <% } %>
-                                    </td>
                                     <td><%= tickets[i].contenido %></td>
                                     <td><%= tickets[i].fecha %></td>
                                     <td><%= tickets[i].version %></td>
