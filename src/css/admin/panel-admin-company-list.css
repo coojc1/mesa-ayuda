@@ -29,6 +29,13 @@ body{
     overflow: hidden;
 }
 
+.div-table p{
+    font-size: 25pt;
+    text-align: center;
+    padding: 5vh 0px;
+    font-weight: bold;
+}
+
 .content table{
     text-align: center;
     margin: 0px;
