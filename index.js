@@ -337,7 +337,7 @@ app.post("/register-company/new", (req, res) => {
     let correo = req.body.correo;
     let correo_empresa = req.body.correo_empresa;
     let telefono = req.body.telefono;
-    let poliza = req.body.poliza;
+    
     let password = req.body.password;
     let no_candado = req.body.no_candado;
 
@@ -346,7 +346,7 @@ app.post("/register-company/new", (req, res) => {
             db.all("INSERT INTO usuarios(nombre, correo, password, tipo_usuario) VALUES(?,?,?,'Empresa')", [nombre, correo, password], (err) => {
                 db.all("SELECT id_usuario_pk FROM usuarios WHERE correo = ?", [correo], (err, row) => {
                     id = row[0].id_usuario_pk;
-                    db.all("INSERT INTO empresas(id_usuario_fk, razon, telefono, correo_empresarial, poliza, no_candado) VALUES(?,?,?,?,?,?)", [id, nombre, telefono, correo_empresa, poliza, no_candado], (err) => {
+                    db.all("INSERT INTO empresas(id_usuario_fk, razon, telefono, correo_empresarial, no_candado) VALUES(?,?,?,?,?)", [id, nombre, telefono, correo_empresa, no_candado], (err) => {
                         let data = {
                             "titulo": "Registro exitoso",
                             "mensaje": "Listo... has sido registrado en la plataforma como " + nombre + ". 😁😁",
