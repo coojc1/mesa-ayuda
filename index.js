@@ -331,7 +331,6 @@ app.get("/register-company", (req, res) => {
     res.render("company/register-company.ejs");
 });
 
-
 app.post("/register-company/new", (req, res) => {
     let nombre = req.body.nombre;
     let correo = req.body.correo;
@@ -379,7 +378,9 @@ app.post("/register-company/new", (req, res) => {
 //                                        PANEL DE SOPORTE
 // #########################################################################################################
 
-
+app.get("/support-login", (req, res) => {
+    res.render("login-support.ejs");
+});
 
 // #########################################################################################################
 //                                        PANEL DE SOPORTE
