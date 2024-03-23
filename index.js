@@ -11,13 +11,13 @@ var body = require('body-parser');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'src/uploads');
+        cb(null, 'src/uploads');
     },
     filename: function (req, file, cb) {
-      cb(null, file.originalname);
+        cb(null, file.originalname);
     }
-  });
-  const upload = multer({ storage: storage });
+});
+const upload = multer({ storage: storage });
 
 app.use(session({
     secret: "3b792f6f1d1f078e2c593d93ff3bba",
@@ -179,13 +179,12 @@ app.post("/company-profile/update", (req, res) => {
     let correo = req.body.correo;
     let correo_empresarial = req.body.correo_empresarial;
     let telefono = req.body.telefono;
-    let poliza = req.body.poliza;
     let password = req.body.password;
     let no_candado = req.body.no_candado;
     let idCompany = req.session.idCompany;
 
     db.run("UPDATE usuarios SET nombre = ?, correo = ?, password = ? WHERE id_usuario_pk = ?", [nombre, correo, password, idCompany], (err) => {
-        db.run("UPDATE empresas SET telefono = ?, correo_empresarial = ?, poliza = ?, no_candado = ? WHERE id_usuario_fk = ?", [telefono, correo_empresarial, poliza, no_candado, idCompany], (err) => {
+        db.run("UPDATE empresas SET telefono = ?, correo_empresarial = ?, no_candado = ? WHERE id_usuario_fk = ?", [telefono, correo_empresarial, no_candado, idCompany], (err) => {
             req.session.nameCompany = nombre;
             res.redirect("/company-profile");
         });
@@ -205,7 +204,7 @@ app.get("/ticket-info/:id_ticket", (req, res) => {
 
             db.all("SELECT id_comentario_pk, contenido, tipo_usuario FROM comentarios WHERE id_ticket_fk = ?", [id_ticket], (err, row) => {
                 comentarios = row;
-                
+
                 db.all("SELECT ruta, id_imagen_pk FROM imagenes WHERE id_ticket_fk = ?", [id_ticket], (err, row) => {
                     imagenes = row;
                     data = {
@@ -242,10 +241,10 @@ app.get("/ticket-info-comment/delete/:id_comentario", (req, res) => {
 
 app.post('/ticket-info-img/post', upload.single('imagen'), (req, res) => {
     if (!req.file) {
-      res.status(400).send('No se ha enviado ninguna imagen');
-      return;
+        res.status(400).send('No se ha enviado ninguna imagen');
+        return;
     }
-  
+
     const ruta = "/uploads/" + req.file.originalname;
     db.all("INSERT INTO imagenes(id_ticket_fk, ruta) VALUES(?,?)", [id_ticket, ruta], (err, row) => {
         res.redirect("/ticket-info/" + id_ticket);
@@ -257,12 +256,12 @@ app.get("/ticket-info-img/delete/:id_imagen", (req, res) => {
     db.all("SELECT ruta FROM imagenes WHERE id_imagen_pk = ?", [id_imagen], (err, row) => {
         let ruta_imagen = __dirname + "/src" + row[0].ruta;
         fs.access(ruta_imagen, fs.constants.F_OK, (err) => {
-        fs.unlink(ruta_imagen, (err) => {
-            db.all("DELETE FROM imagenes WHERE id_imagen_pk = ?", [id_imagen], (err, row) => {
-                res.redirect("/ticket-info/" + id_ticket);
+            fs.unlink(ruta_imagen, (err) => {
+                db.all("DELETE FROM imagenes WHERE id_imagen_pk = ?", [id_imagen], (err, row) => {
+                    res.redirect("/ticket-info/" + id_ticket);
+                });
             });
         });
-    });
     });
 });
 
@@ -293,7 +292,7 @@ app.post("/ticket-info/edit/update", (req, res) => {
     let referencia = req.body.referencia;
 
     db.run("UPDATE tickets SET version = ?, descripcion = ?, id_referencia_fk = ? WHERE id_ticket_pk = ?", [version, descripcion, referencia, id_ticket], () => {
-        res.redirect("/ticket-info/edit/"+id_ticket);
+        res.redirect("/ticket-info/edit/" + id_ticket);
     });
 });
 
@@ -336,7 +335,7 @@ app.post("/register-company/new", (req, res) => {
     let correo = req.body.correo;
     let correo_empresa = req.body.correo_empresa;
     let telefono = req.body.telefono;
-    
+
     let password = req.body.password;
     let no_candado = req.body.no_candado;
 
@@ -380,6 +379,45 @@ app.post("/register-company/new", (req, res) => {
 
 app.get("/support-login", (req, res) => {
     res.render("login-support.ejs");
+});
+
+app.post("/support-login/login", (req, res) => {
+    let correo = req.body.correo;
+    let password = req.body.password;
+
+    db.all("SELECT id_usuario_pk, nombre, id_ingeniero_pk FROM usuarios, ingenieros WHERE id_usuario_pk = id_usuario_fk AND correo = ? AND password = ?", [correo, password], (err, row) => {
+        req.session.idUser = row[0].id_usuario_pk;
+        req.session.nameSupport = row[0].nombre;
+        req.session.idSupport = row[0].id_ingeniero_pk;
+
+        res.redirect("/dashboard-support");
+    });
+});
+
+app.get("/dashboard-support", (req, res) => {
+    if (req.session.idSupport === undefined) {
+        res.redirect("/support-login");
+    } else {
+        let id_support = req.session.idSupport;
+        db.all("SELECT (SELECT COUNT(*) FROM tickets WHERE estado = 'Abierto' AND id_ingeniero_fk = ?) as abiertos, (SELECT COUNT(*) FROM tickets WHERE estado = 'En proceso' AND id_ingeniero_fk = ?) as proceso, (SELECT COUNT(*) FROM  tickets WHERE estado = 'Liberado' AND id_ingeniero_fk = ?) as liberado", [id_support], (err, row) => {
+            let stats = [row[0].abiertos, row[0].proceso, row[0].liberado];
+
+            db.all("SELECT SUM(CASE WHEN prioridad = 'Por evaluar' THEN 1 ELSE 0 END) as evaluar, SUM(CASE WHEN prioridad = 'Baja' THEN 1 ELSE 0 END) as baja, SUM(CASE WHEN prioridad = 'Normal' THEN 1 ELSE 0 END) as normal, SUM(CASE WHEN prioridad = 'Alta' THEN 1 ELSE 0 END) as alta, SUM(CASE WHEN prioridad = 'Urgente' THEN 1 ELSE 0 END) as urgente FROM tickets WHERE id_ingeniero_fk = ?;", [id_support],  (err, row) => {
+                let prioridad = [row[0].evaluar, row[0].baja, row[0].normal, row[0].alta, row[0].urgente];
+
+                db.all("SELECT id_ticket_pk, fecha, version, prioridad, estado, razon, contenido FROM tickets, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND id_referencia_fk = id_referencia_pk AND id_ingeniero_fk = ? AND estado = 'Abierto' ORDER BY id_ticket_pk DESC", [id_support], (err, row) => {
+                    let data = {
+                        "name": req.session.nameSupport,
+                        "stats": stats,
+                        "prioridad": prioridad,
+                        "tickets": row
+                    }
+                    console.log(data);
+                    res.render("support/panel-support.ejs", data);
+                });
+            });
+        });
+    }
 });
 
 // #########################################################################################################
@@ -513,7 +551,7 @@ app.get("/dashboard-admin/ticket-info/:id_ticket", (req, res) => {
 app.get("/dashboard-admin/ticket-infor/delete-inge/:id_ticket", (req, res) => {
     let id_ticket = req.params.id_ticket;
 
-    db.run("UPDATE tickets SET id_ingeniero_fk = NULL WHERE id_ticket_pk = ?",[id_ticket], (err, row) => {
+    db.run("UPDATE tickets SET id_ingeniero_fk = NULL WHERE id_ticket_pk = ?", [id_ticket], (err, row) => {
         res.redirect("/dashboard-admin/ticket-info/" + id_ticket);
     });
 });
@@ -521,7 +559,7 @@ app.get("/dashboard-admin/ticket-infor/delete-inge/:id_ticket", (req, res) => {
 app.get("/dashboard-admin/ticket-infor/delete-priority/:id_ticket", (req, res) => {
     let id_ticket = req.params.id_ticket;
 
-    db.run("UPDATE tickets SET prioridad = 'Por evaluar' WHERE id_ticket_pk = ?",[id_ticket], (err, row) => {
+    db.run("UPDATE tickets SET prioridad = 'Por evaluar' WHERE id_ticket_pk = ?", [id_ticket], (err, row) => {
         res.redirect("/dashboard-admin/ticket-info/" + id_ticket);
     });
 });
@@ -642,7 +680,7 @@ app.post("/support-info/update", (req, res) => {
     let categoria = req.body.categoria;
 
     db.run("UPDATE usuarios SET nombre = ?, correo = ?, password = ? WHERE id_usuario_pk = ?", [nombre, correo, password, id_ingeniero], () => {
-        db.run("UPDATE ingenieros SET categoria = ? WHERE id_usuario_fk = ?", [categoria, id_ingeniero], () =>{
+        db.run("UPDATE ingenieros SET categoria = ? WHERE id_usuario_fk = ?", [categoria, id_ingeniero], () => {
             res.redirect("/support-info/" + id_ingeniero);
         });
     });
@@ -736,7 +774,7 @@ app.post("/dashboard-admin/reportes/register", (req, res) => {
     let fecha = new Date;
     let year = fecha.getFullYear();
 
-    let fecha_completa = fecha.getDay() + "-" + (fecha.getMonth()+1) + "-" + fecha.getFullYear();
+    let fecha_completa = fecha.getDay() + "-" + (fecha.getMonth() + 1) + "-" + fecha.getFullYear();
 
     db.all("INSERT INTO reportes(mes, year, fecha) VALUES(?,?, ?)", [mes, year, fecha_completa], (err, row) => {
         res.redirect("/dashboard-admin/reportes");
@@ -761,7 +799,7 @@ app.get("/dashboard-admin/reportes/info/:id", (req, res) => {
             let mes = "0" + row[0].mes;
             let year = row[0].year;
 
-            db.all("SELECT COUNT(id_ticket_pk) as cant_tickets, id_ticket_pk, id_empresa_fk, fecha, version, tiempo, prioridad, nombre, contenido FROM tickets, usuarios, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND empresas.id_usuario_fk = usuarios.id_usuario_pk AND id_referencia_fk = id_referencia_pk AND estado = 'Liberado' AND id_empresa_fk = id_empresa_pk AND id_usuario_fk = id_usuario_pk AND strftime('%m', fecha) = '"+mes+"' AND strftime('%Y', fecha) = '"+year+"'",(err, row) => {
+            db.all("SELECT COUNT(id_ticket_pk) as cant_tickets, id_ticket_pk, id_empresa_fk, fecha, version, tiempo, prioridad, nombre, contenido FROM tickets, usuarios, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND empresas.id_usuario_fk = usuarios.id_usuario_pk AND id_referencia_fk = id_referencia_pk AND estado = 'Liberado' AND id_empresa_fk = id_empresa_pk AND id_usuario_fk = id_usuario_pk AND strftime('%m', fecha) = '" + mes + "' AND strftime('%Y', fecha) = '" + year + "'", (err, row) => {
                 let data = {
                     "tickets": row
                 }

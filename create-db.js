@@ -78,7 +78,9 @@ function crearTabla() {
 
     consulta = `INSERT INTO usuarios(nombre, correo, password, tipo_usuario) VALUES('Carlos Osvaldo', 'admin@gmail.com', 'root', 'Admin')`;
 
-    consulta = `SELECT * FROM empresas`;
+    consulta = `SELECT * FROM tickets WHERE id_ingeniero_fk = 1`;
+
+    consulta = `SELECT (SELECT COUNT(*) FROM tickets WHERE prioridad = 'Baja' AND id_ingeniero_fk = 1) as baja, (SELECT COUNT(*) FROM tickets WHERE prioridad = 'Normal' AND id_ingeniero_fk = 1) as normal, (SELECT COUNT(*) FROM tickets WHERE prioridad = 'Alta' AND id_ingeniero_fk = 1) as alta, (SELECT COUNT(*) FROM tickets WHERE prioridad = 'Urgente' AND id_ingeniero_fk = 1) as urgente`;
     
 
 //    consulta = `SELECT id_ticket_pk, razon, contenido, fecha, version, prioridad, razon FROM tickets, empresas, ingenieros, referencia WHERE id_empresa_fk = id_empresa_pk AND id_referencia_fk = id_referencia_pk AND id_ingeniero_fk = id_ingeniero_pk AND estado = 'Abierto'`;
