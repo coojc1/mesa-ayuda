@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/res/logo-5.png" type="image/x-icon">
+    <link rel="stylesheet" href="/bootstrap-5.3.3-dist/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/c55ac3095c.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/support/panel-support-ticket-info.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Información del Ticket</title>
+</head>
+<body>
+    <div class="container-fluid">
+        <%- include("nav-support.ejs") %>
+
+        <div class="content">
+            <div class="empresa-info">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fa fa-ticket" aria-hidden="true"></i>
+                        <h3><%= empresa[0].razon %></h3>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">Datos de contacto</h4>
+                        <p class="card-text">
+                            <i class="fa fa-phone" aria-hidden="true"></i> Teléfono: <%= empresa[0].telefono %>
+                        </p>
+                        <p class="card-text">
+                            <i class="fas fa-mail-bulk    "></i> Correo de la empresa: 
+                            <a name="" id="" class="btn btn-primary" href="mailto:empresa[0].correo_empresarial" role="button">
+                                <span class="badge bg-primary">
+                                    <%= empresa[0].correo_empresarial %>
+                                </span>
+                            </a>
+                        </p>
+                        <p class="card-text">
+                            <i class="fas fa-mail-bulk    "></i> Correo del representante: 
+                            <a name="" id="" class="btn btn-primary" href="mailto:empresa[0].correo" role="button">
+                                <span class="badge bg-primary">
+                                    <%= empresa[0].correo %>
+                                </span>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ticket-info">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>
+                            <%= ticket[0].contenido %>
+                            <% if(ticket[0].prioridad=="Por evaluar" ) { %>
+                                <span class="badge bg-secondary">
+                                    <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+                                    <%= ticket[0].prioridad %>
+                                </span>
+                            <% } else if(ticket[0].prioridad=="Baja" ) { %>
+                                <span class="badge bg-info">
+                                    <i class="fa fa-arrow-down" aria-hidden="true"></i>
+                                    <%= ticket[0].prioridad %>
+                                </span>
+                            <% } else if(ticket[0].prioridad=="Normal" ) { %>
+                                <span class="badge bg-success">
+                                    <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                                        <%= ticket[0].prioridad %>
+                                    </span>
+                            <% } else if(ticket[0].prioridad=="Alta" ) { %>
+                                <span class="badge bg-warning">
+                                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                        <%= ticket[0].prioridad %>
+                                </span>
+                            <% } else { %>
+                                <span class="badge bg-danger">
+                                    <i class="fa fa-fire" aria-hidden="true"></i>
+                                        <%= ticket[0].prioridad %>
+                                </span>
+                            <% } %>
+                            <% if(ticket[0].estado=="Abierto" ) { %>
+                                <span class="badge bg-danger rounded-pill">
+                                    <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                        <%= ticket[0].estado %>
+                                </span>
+                            <% } else if(ticket[0].estado=="En proceso" ) { %>
+                                <span class="badge bg-warning rounded-pill">
+                                    <i class="fa fa-cog" aria-hidden="true"></i>
+                                        <%= ticket[0].estado %>
+                                </span>
+                            <% } else { %>
+                                <span class="badge bg-success rounded-pill">
+                                    <i class="fa-regular fa-flag"></i>
+                                        <%= ticket[0].estado %>
+                                </span>
+                        <% } %>
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">Descripción</h3>
+                        <p class="card-text"><i class="fa-solid fa-code-branch"></i> Version del software: <%= ticket[0].version %></p>
+                        <p class="card-text"><%= ticket[0].descripcion %></p>
+                    </div>
+                    <div class="card-footer text-muted">
+                        <div class="estado">
+                            <h3>Cambiar Estatus</h3>
+                            <p>
+                                <i class="fa fa-clock-o" aria-hidden="true"></i> Tiempo de soporte: 
+                                <span class="badge bg-secondary">
+                                    <% if(ticket[0].tiempo === null){ %> 
+                                        <i class="fa fa-clock-o" aria-hidden="true"></i> Sin Horas de Soporte
+                                    <% } %>
+                                </span>
+                            </p>
+                            <% if(ticket[0].estado === "Abierto") { %>
+                                <a name="" id="" class="btn btn-primary" href="/dashboard-support/ticket-info/status-update/<%= ticket[0].id_ticket_pk %>" role="button">
+                                    <i class="fa fa-cogs" aria-hidden="true"></i> En proceso
+                                </a>
+                            <% } else { %>
+                                <form action="" method="post">
+                                    <div class="form-group">
+                                      <label for="">
+                                        <i class="fa fa-clock-o" aria-hidden="true"></i> Horas de Soporte
+                                    </label>
+                                      <input type="number" name="" id="" class="form-control" placeholder="3" required>
+                                    </div>
+                                    <button type="button" name="" id="" class="btn btn-primary">
+                                        <i class="fa fa-paper-plane-o" aria-hidden="true"></i> Liberar Ticket
+                                    </button>
+                                </form>
+                            <% } %>
+                        </div>
+
+                        <hr>
+
+                        <div class="commets">
+                            <h3>Comentarios</h3>
+
+                            <form action="/dashboard-support/ticket-info/comment-post" method="post">
+                                <div class="form-group">
+                                  <label for="">
+                                    <i class="fa fa-comment-o" aria-hidden="true"></i> Agregar Comentario
+                                </label>
+                                  <input type="text" name="contenido" id="" class="form-control" placeholder="Contenido..." required>
+
+                                  <input type="number" name="id_ticket" value="<%= ticket[0].id_ticket_pk %>" hidden readonly>
+
+                                  <button type="submit" name="" id="" class="btn btn-primary">
+                                    <i class="fa fa-commenting" aria-hidden="true"></i> Comentar
+                                  </button>
+                                </div>
+                            </form>
+
+                            <hr>
+
+                            <% if(comentarios.length === 0) { %>
+                                <p class="no-comment">No hay comentarios para mostrar. 😥😥</p>
+                            <% } else { %>
+                                <% for(let i = 0; i < comentarios.length; i++){ %>
+                                    <div class="comentario">
+                                        <p class="usuario">
+                                            <% if(comentarios[i].tipo_usuario === "Empresa") { %>
+                                                <i class="fa fa-building-o" aria-hidden="true"></i> Empresa
+                                            <% } else { %>
+                                                <i class="fas fa-headset    "></i> Consultor 
+                                                <a name="" id="" class="btn btn-link" href="#" role="button">
+                                                    <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                                                </a>
+                                            <% } %>
+                                        </p>
+                                        <p class="comentario-contenido"><%= comentarios[i].contenido %></p>
+                                    </div>
+                                    <hr>
+                                <% } %>
+                            <% } %>
+                        </div>
+
+                        <hr>
+
+                        <div class="imagenes">
+                            <h3>Imágenes</h3>
+                            <% if(imagenes.length === 0) { %>
+                                <p class="no-img">No hay imágenes para mostrar. 😥😥</p>
+                            <% } else { %>
+                                <div class="img">
+                                    <% for(let i = 0; i < imagenes.length; i++) { %>
+                                        <img src="<%= imagenes[i].ruta %>" alt="">
+                                    <% } %>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

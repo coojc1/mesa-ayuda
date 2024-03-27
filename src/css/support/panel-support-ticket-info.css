@@ -1,0 +1,101 @@
+:root {
+    --GhostWhite: ghostwhite;
+    --Color-1: #ff8623;
+    --Color-1-dashed: #ff862323;
+    --Color-2: #202427;
+    --Color-3: #fff;
+    --Color-4: #e9e6e2;
+}
+
+body{
+    background-color: var(--Color-3);
+}
+
+.container-fluid{
+    margin-top: 10px;
+    margin-bottom: 5vh;
+}
+
+.container-fluid .content{
+    height: fit-content;
+    width: 90%;
+    margin: auto;
+    margin-top: 5vh;
+    display: flex;
+}
+
+.content .empresa-info{
+    height: fit-content;
+    width: 40%;
+}
+
+.empresa-info .card-header{
+    text-align: center;
+    background-color: var(--Color-1);
+    color: var(--Color-3);
+}
+
+.empresa-info .card-header i{
+    font-size: 40pt;
+}
+
+.empresa-info .card-title{
+    font-weight: bold;
+    color: var(--Color-1);
+}
+
+.empresa-info .card-text a{
+    width: fit-content;
+    padding: 0px;
+    background: none;
+    border: none;
+    &:hover{
+        background: none;
+    }
+}
+
+.ticket-info{
+    margin-left: auto;
+    width: 57%;
+}
+
+.ticket-info .card h3{
+    color: var(--Color-1);
+    font-weight: bold;
+}
+
+.ticket-info p, .ticket-info label{
+    color: var(--Color-2);
+}
+
+.ticket-info button{
+    background-color: var(--Color-1);
+    border: none;
+}
+
+.ticket-info input{
+    margin-bottom: 2vh;
+}
+
+.ticket-info .no-comment, .ticket-info .no-img{
+    padding: 5vh 0px;
+    text-align: center;
+    font-size: 25pt;
+    font-weight: bold;
+}
+
+.ticket-info .usuario{
+    background-color: var(--Color-1);
+    width: fit-content;
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-weight: bold;
+    color: var(--Color-3);
+    margin-bottom: 0px;
+}
+
+.ticket-info .usuario a{
+    width: fit-content;
+    padding: 0px 0px;
+    color: var(--Color-3);
+}

@@ -399,10 +399,10 @@ app.get("/dashboard-support", (req, res) => {
         res.redirect("/support-login");
     } else {
         let id_support = req.session.idSupport;
-        db.all("SELECT (SELECT COUNT(*) FROM tickets WHERE estado = 'Abierto' AND id_ingeniero_fk = ?) as abiertos, (SELECT COUNT(*) FROM tickets WHERE estado = 'En proceso' AND id_ingeniero_fk = ?) as proceso, (SELECT COUNT(*) FROM  tickets WHERE estado = 'Liberado' AND id_ingeniero_fk = ?) as liberado", [id_support], (err, row) => {
-            let stats = [row[0].abiertos, row[0].proceso, row[0].liberado];
+        db.all("SELECT SUM(CASE WHEN estado = 'Abierto' THEN 1 ELSE 0 END) as abierto, SUM(CASE WHEN estado = 'En proceso' THEN 1 ELSE 0 END) as proceso, SUM(CASE WHEN estado = 'Liberado' THEN 1 ELSE 0 END) as liberado FROM tickets WHERE id_ingeniero_fk = ?", [id_support], (err, row) => {
+            let stats = [row[0].abierto, row[0].proceso, row[0].liberado];
 
-            db.all("SELECT SUM(CASE WHEN prioridad = 'Por evaluar' THEN 1 ELSE 0 END) as evaluar, SUM(CASE WHEN prioridad = 'Baja' THEN 1 ELSE 0 END) as baja, SUM(CASE WHEN prioridad = 'Normal' THEN 1 ELSE 0 END) as normal, SUM(CASE WHEN prioridad = 'Alta' THEN 1 ELSE 0 END) as alta, SUM(CASE WHEN prioridad = 'Urgente' THEN 1 ELSE 0 END) as urgente FROM tickets WHERE id_ingeniero_fk = ?;", [id_support],  (err, row) => {
+            db.all("SELECT SUM(CASE WHEN prioridad = 'Por evaluar' THEN 1 ELSE 0 END) as evaluar, SUM(CASE WHEN prioridad = 'Baja' THEN 1 ELSE 0 END) as baja, SUM(CASE WHEN prioridad = 'Normal' THEN 1 ELSE 0 END) as normal, SUM(CASE WHEN prioridad = 'Alta' THEN 1 ELSE 0 END) as alta, SUM(CASE WHEN prioridad = 'Urgente' THEN 1 ELSE 0 END) as urgente FROM tickets WHERE id_ingeniero_fk = ?;", [id_support], (err, row) => {
                 let prioridad = [row[0].evaluar, row[0].baja, row[0].normal, row[0].alta, row[0].urgente];
 
                 db.all("SELECT id_ticket_pk, fecha, version, prioridad, estado, razon, contenido FROM tickets, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND id_referencia_fk = id_referencia_pk AND id_ingeniero_fk = ? AND estado = 'Abierto' ORDER BY id_ticket_pk DESC", [id_support], (err, row) => {
@@ -420,11 +420,75 @@ app.get("/dashboard-support", (req, res) => {
     }
 });
 
+app.get("/dashboard-support/ticket-info/:id", (req, res) => {
+    if (req.session.idSupport === undefined) {
+        res.redirect("/support-login");
+    } else {
+        let id_ticket = req.params.id;
+
+        db.all("SELECT id_ticket_pk, id_empresa_fk, descripcion, fecha, tiempo, version, prioridad, estado, contenido FROM tickets, empresas, referencia WHERE id_referencia_fk = id_referencia_pk AND id_ticket_pk = ?", [id_ticket], (err, row) => {
+            let ticket_info = row;
+            let id_empresa = row[0].id_empresa_fk;
+
+            db.all("SELECT razon, telefono, correo_empresarial, correo FROM empresas, usuarios WHERE id_usuario_fk = id_usuario_pk AND id_empresa_pk = ?", [id_empresa], (err, row) => {
+                let empresa = row;
+
+                db.all("SELECT id_comentario_pk, tipo_usuario, contenido FROM comentarios WHERE id_ticket_fk = ?", [id_ticket], (err, row) => {
+                    let comentarios = row;
+                    db.all("SELECT ruta FROM imagenes WHERE id_ticket_fk = ?", [id_ticket], (err, row) => {
+                        let data = {
+                            "name": req.session.nameSupport,
+                            "ticket": ticket_info,
+                            "empresa": empresa,
+                            "comentarios": comentarios,
+                            "imagenes": row
+                        }
+                        console.log(data);
+                        res.render("support/panel-support-ticket-info.ejs", data);
+                    });
+                }); 
+            });
+        });
+    }
+});
+
+app.get("/dashboard-support/ticket-info/status-update/:id", (req, res) => {
+    let id = req.params.id;
+
+    db.all("UPDATE tickets SET estado = 'En proceso' WHERE id_ticket_pk = ?", [id], () => {
+        res.redirect("/dashboard-support/ticket-info/" + id);
+    });
+});
+
+app.post("/dashboard-support/ticket-info/comment-post", (req, res) => {
+    let id_ticket = req.body.id_ticket;
+    let contenido = req.body.contenido;
+
+    db.all("INSERT INTO comentarios(id_ticket_fk, tipo_usuario, contenido) VALUES(?, 'Soporte',?)", [id_ticket, contenido], () => {
+        res.redirect("/dashboard-support/ticket-info/" + id_ticket);
+    })
+});
+
+app.get("/dashboard-support/tickets", (req, res) => {
+    if (req.session.idSupport === undefined) {
+        res.redirect("/support-login");
+    } else {
+        let id_support = req.session.idSupport;
+
+        db.all("SELECT id_ticket_pk, razon, contenido, descripcion, fecha, tiempo, version, prioridad, estado FROM tickets, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND id_referencia_fk = id_referencia_pk AND estado = 'Abierto' AND id_ingeniero_fk = ? ORDER BY id_ticket_pk DESC", [id_support], (err, row) => {
+            let data = {
+                "name": req.session.nameSupport,
+                "tickets": row
+            }
+            console.log(data);
+            res.render("support/panel-support-tickets.ejs", data);
+        });   
+    }
+});
+
 // #########################################################################################################
 //                                        PANEL DE SOPORTE
 // #########################################################################################################
-
-
 
 // #########################################################################################################
 //                                        PANEL DE ADMINISTRADOR
