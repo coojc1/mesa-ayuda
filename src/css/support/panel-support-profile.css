@@ -1,0 +1,68 @@
+:root {
+    --GhostWhite: ghostwhite;
+    --Color-1: #ff8623;
+    --Color-1-dashed: #ff862323;
+    --Color-2: #202427;
+    --Color-3: #fff;
+    --Color-4: #e9e6e2;
+}
+
+body{
+    background-color: var(--Color-3);
+}
+
+.container-fluid{
+    margin-top: 10px;
+    margin-bottom: 5vh;
+}
+
+.container-fluid .content{
+    height: fit-content;
+    width: 90%;
+    margin: auto;
+    margin-top: 5vh;
+}
+
+.content form{
+    background-color: var(--Color-1);
+    padding: 10px;
+    border-radius: 10px;
+    width: 50%;
+    margin: auto;
+}
+
+form .icon-holder{
+    display: flex;
+    align-items: center;
+}
+
+form .icon-holder .icon{
+    margin: auto;
+    text-align: center;
+    color: var(--Color-3);
+}
+
+.icon i{
+    font-size: 40pt;
+}
+
+form .form-group{
+    background-color: var(--Color-3);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.form-group input{
+    margin-bottom: 3vh;
+}
+
+.form-group label, .form-group p{
+    color: var(--Color-1);
+    font-weight: bold;
+}
+
+.form-group button{
+    margin-top: 3vh;
+    background-color: var(--Color-1);
+    border: none;
+}

@@ -301,7 +301,7 @@ app.get("/tickets-info/ended", (req, res) => {
         res.redirect("/");
     } else {
         let id_empresa = req.session.idEmpresa;
-        db.all("SELECT id_ticket_pk, id_referencia_fk, fecha, version, prioridad, estado FROM tickets WHERE estado = 'Finalizado' AND id_empresa_fk = ?", [id_empresa], (err, row) => {
+        db.all("SELECT id_ticket_pk, id_referencia_fk, fecha, version, prioridad, estado FROM tickets WHERE estado = 'Liberado' AND id_empresa_fk = ?", [id_empresa], (err, row) => {
             let data = {
                 "name": req.session.nameCompany,
                 "tickets": row
@@ -384,14 +384,21 @@ app.get("/support-login", (req, res) => {
 app.post("/support-login/login", (req, res) => {
     let correo = req.body.correo;
     let password = req.body.password;
-
+    
     db.all("SELECT id_usuario_pk, nombre, id_ingeniero_pk FROM usuarios, ingenieros WHERE id_usuario_pk = id_usuario_fk AND correo = ? AND password = ?", [correo, password], (err, row) => {
         req.session.idUser = row[0].id_usuario_pk;
         req.session.nameSupport = row[0].nombre;
         req.session.idSupport = row[0].id_ingeniero_pk;
-
+        
         res.redirect("/dashboard-support");
     });
+});
+
+app.get("/support-logout", (req, res) => {
+    delete req.session.nameSupport;
+    delete req.session.idSupport;
+    delete req.session.idUser;
+    res.redirect("/support-login");
 });
 
 app.get("/dashboard-support", (req, res) => {
@@ -460,6 +467,15 @@ app.get("/dashboard-support/ticket-info/status-update/:id", (req, res) => {
     });
 });
 
+app.post("/dashboard-support/ticket-info/status-end", (req, res) => {
+    let id_ticket = req.body.id_ticket;
+    let horas = req.body.horas;
+
+    db.run("UPDATE tickets SET estado = 'Liberado', tiempo = ? WHERE id_ticket_pk = ?", [horas, id_ticket], () => {
+        res.redirect("/dashboard-support/ticket-info/"+id_ticket);
+    });
+});
+
 app.post("/dashboard-support/ticket-info/comment-post", (req, res) => {
     let id_ticket = req.body.id_ticket;
     let contenido = req.body.contenido;
@@ -467,6 +483,15 @@ app.post("/dashboard-support/ticket-info/comment-post", (req, res) => {
     db.all("INSERT INTO comentarios(id_ticket_fk, tipo_usuario, contenido) VALUES(?, 'Soporte',?)", [id_ticket, contenido], () => {
         res.redirect("/dashboard-support/ticket-info/" + id_ticket);
     })
+});
+
+app.get("/dashboard-support/ticket-info/comment-delete/:id/:id_ticket", (req, res) => {
+    let id_comentario = req.params.id;
+    let id_ticket = req.params.id_ticket;
+
+    db.run("DELETE FROM comentarios WHERE id_comentario_pk = ?", [id_comentario], () => {
+        res.redirect("/dashboard-support/ticket-info/" + id_ticket);
+    });
 });
 
 app.get("/dashboard-support/tickets", (req, res) => {
@@ -478,12 +503,77 @@ app.get("/dashboard-support/tickets", (req, res) => {
         db.all("SELECT id_ticket_pk, razon, contenido, descripcion, fecha, tiempo, version, prioridad, estado FROM tickets, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND id_referencia_fk = id_referencia_pk AND estado = 'Abierto' AND id_ingeniero_fk = ? ORDER BY id_ticket_pk DESC", [id_support], (err, row) => {
             let data = {
                 "name": req.session.nameSupport,
-                "tickets": row
+                "tickets": row,
+                "title_table": "Abiertos"
             }
             console.log(data);
             res.render("support/panel-support-tickets.ejs", data);
         });   
     }
+});
+
+app.get("/dashboard-support/tickets-process", (req, res) => {
+    if (req.session.idSupport === undefined) {
+        res.redirect("/support-login");
+    } else {
+        let id_support = req.session.idSupport;
+
+        db.all("SELECT id_ticket_pk, razon, contenido, descripcion, fecha, tiempo, version, prioridad, estado FROM tickets, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND id_referencia_fk = id_referencia_pk AND estado = 'En proceso' AND id_ingeniero_fk = ? ORDER BY id_ticket_pk DESC", [id_support], (err, row) => {
+            let data = {
+                "name": req.session.nameSupport,
+                "tickets": row,
+                "title_table": "En proceso"
+            }
+            console.log(data);
+            res.render("support/panel-support-tickets.ejs", data);
+        });
+    }
+});
+
+app.get("/dashboard-support/tickets-ended", (req, res) => {
+    if (req.session.idSupport === undefined) {
+        res.redirect("/support-login");
+    } else {
+        let id_support = req.session.idSupport;
+
+        db.all("SELECT id_ticket_pk, razon, contenido, descripcion, fecha, tiempo, version, prioridad, estado FROM tickets, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND id_referencia_fk = id_referencia_pk AND estado = 'Liberado' AND id_ingeniero_fk = ? ORDER BY id_ticket_pk DESC", [id_support], (err, row) => {
+            let data = {
+                "name": req.session.nameSupport,
+                "tickets": row,
+                "title_table": "Liberados"
+            }
+            console.log(data);
+            res.render("support/panel-support-tickets.ejs", data);
+        });
+    }
+});
+
+app.get("/dashboard-support/profile", (req, res) => {
+    if (req.session.idSupport === undefined) {
+        res.redirect("/support-login");
+    } else {
+        let id_usuario = req.session.idUser;
+
+        db.all("SELECT nombre, correo, password, categoria FROM usuarios, ingenieros WHERE id_usuario_pk = id_usuario_fk AND id_usuario_pk = ?", [id_usuario], (err, row) => {
+            let data = {
+                "name": req.session.nameSupport,
+                "support": row
+            }
+            console.log(data);
+            res.render("support/panel-support-profile.ejs", data);
+        });
+    }
+});
+
+app.post("/dashboard-support/profile-update", (req, res) => {
+    let nombre = req.body.nombre;
+    let correo = req.body.correo;
+    let password = req.body.password;
+    let id_user = req.session.idUser;
+
+    db.run("UPDATE usuarios SET nombre = ?, correo = ?, password = ? WHERE id_usuario_pk = ?", [nombre, correo, password, id_user], () => {
+        res.redirect("/dashboard-support/profile");
+    });
 });
 
 // #########################################################################################################

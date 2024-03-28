@@ -1,0 +1,40 @@
+:root {
+    --GhostWhite: ghostwhite;
+    --Color-1: #ff8623;
+    --Color-1-dashed: #ff862323;
+    --Color-2: #202427;
+    --Color-3: #fff;
+    --Color-4: #e9e6e2;
+}
+
+.nav{
+    background-color: var(--Color-1);
+    width: 90%;
+    padding: 5px;
+    border-radius: 5px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+}
+
+.nav li{
+    width: fit-content;
+}
+
+.nav li a{
+    color: var(--Color-3);
+    font-weight: bold;
+    &:hover{
+        color: var(--Color-2);
+    }
+}
+
+.nav .name{
+    margin-right: auto;
+    background-color: var(--Color-3);
+    border-radius: 5px;
+}
+
+.nav .name a{   
+    color: var(--Color-1);
+}

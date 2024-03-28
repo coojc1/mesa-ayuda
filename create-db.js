@@ -76,7 +76,7 @@ function crearTabla() {
         password TEXT
     )`;
 
-    consulta = `SELECT * FROM tickets`;
+    consulta = `SELECT * FROM ingenieros`;
 
     db.all(consulta, (err, row) => {
         if(err) {

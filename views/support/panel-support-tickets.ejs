@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="/res/logo-5.png" type="image/x-icon">
     <link rel="stylesheet" href="/bootstrap-5.3.3-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/support/panel-support-tickets.css">
+    <link rel="stylesheet" href="/css/support/nav-support.css">
     <script src="https://kit.fontawesome.com/c55ac3095c.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Tickets</title>
@@ -15,14 +17,14 @@
 
         <div class="content">
             <div class="nav-tickets">
-                <h3>Abiertos</h3>
-                <a name="" id="" class="btn btn-link" href="#" role="button">
+                <h3><%= title_table %></h3>
+                <a name="" id="" class="btn btn-link" href="/dashboard-support/tickets" role="button">
                     <i class="fa fa-clock-o" aria-hidden="true"></i> Abiertos
                 </a>
-                <a name="" id="" class="btn btn-link" href="#" role="button">
+                <a name="" id="" class="btn btn-link" href="/dashboard-support/tickets-process" role="button">
                     <i class="fa fa-cogs" aria-hidden="true"></i> En proceso
                 </a>
-                <a name="" id="" class="btn btn-link" href="#" role="button">
+                <a name="" id="" class="btn btn-link" href="/dashboard-support/tickets-ended" role="button">
                     <i class="fa fa-check-circle-o" aria-hidden="true"></i> Liberados
                 </a>
             </div>

@@ -77,6 +77,11 @@ body{
     margin-bottom: 2vh;
 }
 
+.ticket-info a{
+    background-color: var(--Color-1);
+    border: none;
+}
+
 .ticket-info .no-comment, .ticket-info .no-img{
     padding: 5vh 0px;
     text-align: center;
@@ -98,4 +103,17 @@ body{
     width: fit-content;
     padding: 0px 0px;
     color: var(--Color-3);
+}
+
+.ticket-info .img{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.ticket-info .img img{
+    width: 48%;
+    margin: auto;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    border-radius: 10px;
 }

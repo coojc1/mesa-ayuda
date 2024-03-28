@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/bootstrap-5.3.3-dist/css/bootstrap.min.css">
     <script src="https://kit.fontawesome.com/c55ac3095c.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/css/support/panel-support-ticket-info.css">
+    <link rel="stylesheet" href="/css/support/nav-support.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Información del Ticket</title>
 </head>
@@ -105,25 +106,37 @@
                             <h3>Cambiar Estatus</h3>
                             <p>
                                 <i class="fa fa-clock-o" aria-hidden="true"></i> Tiempo de soporte: 
-                                <span class="badge bg-secondary">
-                                    <% if(ticket[0].tiempo === null){ %> 
+                                <% if(ticket[0].tiempo === null){ %> 
+                                    <span class="badge bg-secondary">
                                         <i class="fa fa-clock-o" aria-hidden="true"></i> Sin Horas de Soporte
-                                    <% } %>
-                                </span>
+                                    </span>
+                                <% } else { %>
+                                    <span class="badge bg-success">
+                                        <i class="fa fa-clock-o" aria-hidden="true"></i> 
+                                        <%= ticket[0].tiempo %> Hrs. Empleadas
+                                    </span>
+                                <% } %>
                             </p>
                             <% if(ticket[0].estado === "Abierto") { %>
                                 <a name="" id="" class="btn btn-primary" href="/dashboard-support/ticket-info/status-update/<%= ticket[0].id_ticket_pk %>" role="button">
                                     <i class="fa fa-cogs" aria-hidden="true"></i> En proceso
                                 </a>
+                            <% } else if(ticket[0].estado === "Liberado") { %>
+                                <p>Estado del ticket: 
+                                    <span class="badge bg-success rounded-pill ">
+                                        <i class="fa-regular fa-flag"></i> Liberado
+                                    </span>
+                                </p>
                             <% } else { %>
-                                <form action="" method="post">
+                                <form action="/dashboard-support/ticket-info/status-end" method="post">
                                     <div class="form-group">
                                       <label for="">
                                         <i class="fa fa-clock-o" aria-hidden="true"></i> Horas de Soporte
                                     </label>
-                                      <input type="number" name="" id="" class="form-control" placeholder="3" required>
+                                      <input type="number" name="horas" id="" class="form-control" required>
+                                      <input type="number" name="id_ticket" id="" class="form-control" required readonly value="<%= ticket[0].id_ticket_pk %>" hidden>
                                     </div>
-                                    <button type="button" name="" id="" class="btn btn-primary">
+                                    <button type="submit" name="" id="" class="btn btn-primary">
                                         <i class="fa fa-paper-plane-o" aria-hidden="true"></i> Liberar Ticket
                                     </button>
                                 </form>
@@ -162,7 +175,7 @@
                                                 <i class="fa fa-building-o" aria-hidden="true"></i> Empresa
                                             <% } else { %>
                                                 <i class="fas fa-headset    "></i> Consultor 
-                                                <a name="" id="" class="btn btn-link" href="#" role="button">
+                                                <a name="" id="" class="btn btn-link" href="/dashboard-support/ticket-info/comment-delete/<%= comentarios[i].id_comentario_pk %>/<%= ticket[i].id_ticket_pk %>" role="button">
                                                     <i class="fa fa-times-circle-o" aria-hidden="true"></i>
                                                 </a>
                                             <% } %>

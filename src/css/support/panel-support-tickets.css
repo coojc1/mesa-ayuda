@@ -1,0 +1,61 @@
+:root {
+    --GhostWhite: ghostwhite;
+    --Color-1: #ff8623;
+    --Color-1-dashed: #ff862323;
+    --Color-2: #202427;
+    --Color-3: #fff;
+    --Color-4: #e9e6e2;
+}
+
+body{
+    background-color: var(--Color-3);
+}
+
+.container-fluid{
+    margin-top: 10px;
+    margin-bottom: 5vh;
+}
+
+.container-fluid .content{
+    height: fit-content;
+    width: 90%;
+    margin: auto;
+    margin-top: 5vh;
+}
+
+.content .nav-tickets{
+    display: flex;
+    align-items: center;
+    margin-bottom: 2vh;
+}
+
+.nav-tickets h3{
+    margin-right: auto;
+    color: var(--Color-1);
+    font-weight: bold;
+}
+
+.nav-tickets a{
+    text-decoration: none;
+    color: var(--Color-1);
+    font-weight: bold;
+}
+
+.content .div-table{
+    border-radius: 10px;
+    height: fit-content;
+    overflow: hidden;
+}
+
+.content .div-table p{
+    padding: 5vh 0px;
+    font-size: 25pt;
+    text-align: center;
+    font-weight: bold;
+    color: var(--Color-2);
+}
+
+.div-table table{
+    margin: 0px;
+    text-align: center;
+}
