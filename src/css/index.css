@@ -7,26 +7,27 @@
 
 
 .container{
-    height: 90vh;
+    height: 80vh;
+    margin-top: 5vh;
     display: flex;
     align-items: center;
 }
 
 .container form{
+    display: flex;
     background-color: var(--Color-1);
+    box-shadow: 0px 0px 10px var(--Color-4);
+    padding: 10px;
     border-radius: 10px;
     margin: auto;
     height: fit-content;
     width: 60%;
-    box-shadow: 0px 0px 10px var(--Color-4);
-    display: flex;
 }
 
 .container form .icon-holder{
     width: 40%;
-    padding: 10px;
-    text-align: center;
     display: flex;
+    text-align: center;
     align-items: center;
 }
 
@@ -34,14 +35,14 @@
     margin: auto;
 }
 
-form .icon-holder h1{
+form .icon-holder h4{
     color: var(--Color-3);
-    font-size: 35pt;
+    font-size: 25pt;
 }
 
 form .icon-holder i{
     color: var(--Color-3);
-    font-size: 60pt;
+    font-size: 50pt;
 }
 
 form .form-group{
@@ -49,22 +50,18 @@ form .form-group{
     border-radius: 10px;
     width: 60%;
     padding: 10px;
-    padding-bottom: 5vh;
     color: var(--Color-1);
 }
 
-.form-group h1{
-    font-size: 35pt;
-    width: 90%;
-    margin: auto;
-    margin-bottom: 0px;
+.form-group h4{
+    color: var(--Color-1);
+    font-weight: bold;
+    margin-left: 5%;
 }
 
 .form-group p{
-    font-weight: bold;
-    width: 90%;
-    margin: auto;
-    margin-bottom: 4vh;
+    margin-left: 5%;
+    color: var(--Color-1);
 }
 
 .form-group label{
@@ -76,7 +73,7 @@ form .form-group{
 .form-group input{
     width: 90%;
     margin: auto;
-    margin-bottom: 4vh;
+    margin-bottom: 5vh;
 }
 
 .form-group .buttons{

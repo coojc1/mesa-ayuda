@@ -38,10 +38,10 @@ form .content-left{
 .icon i{
     color: var(--Color-3);
     margin: auto;
-    font-size: 50pt;
+    font-size: 60pt;
 }
 
-.icon h4{
+.icon h2{
     color: var(--Color-3);
 }
 
