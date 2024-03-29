@@ -8,7 +8,8 @@
 .container{
     height: fit-content;
     margin-top: 5vh;
-    padding: 0px;
+    padding: 0%;
+    width: 90%;
 }
 
 .content-top{
@@ -17,26 +18,24 @@
 
 .content-top h4{
     font-size: 20pt;
+    font-weight: bold;
     margin: 0px;
     margin-right: 10px;
     color: var(--Color-1);
+    margin-right: auto;
 }
 
 .content-top .buttons{
     display: flex;
 }
 
-.buttons .btn-primary{
-    background-color: var(--Color-1);
-    margin-right: auto;
-    border: none;
-    font-weight: bold;
-}
-
 .buttons .btn-link{
     font-weight: bold;
     color: var(--Color-1);
     text-decoration: none;
+    &:hover{
+        color: var(--Color-2);
+    }
 }
 
 .container .content-middle{
@@ -45,7 +44,7 @@
 }
 
 .content-middle .table-out{
-    width: 70%;
+    width: 68%;
     height: fit-content;
     border-radius: 10px;
     overflow: hidden;
@@ -67,9 +66,17 @@
 }
 
 .content-middle .chart-out{
-    /* background-color: green; */
+    background-color: var(--Color-1);
+    border-radius: 10px;
+    padding: 10px;
     margin: auto;
     width: 30%;
     height: fit-content;
+}
+
+.chart-out canvas{
+    background-color: var(--Color-3);
+    padding: 10px;
+    border-radius: 10px;
 }
 

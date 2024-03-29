@@ -7,24 +7,30 @@
 
 .nav{
     width: 90%;
+    background-color: var(--Color-1);
+    border-radius: 10px;
     margin: auto;
     margin-top: 10px;
     display: flex;
-    padding: 10px;
-}
-
-.nav .nombre-empresa{
-    color: var(--Color-1);
-    margin-right: auto;
-    height: fit-content;
-    align-self: center;
-}
-
-.nombre-empresa h4{
-    margin: 0px;
+    padding: 5px;
 }
 
 .nav li a{
     font-weight: bold;
+    color: var(--Color-3);
+    &:hover{
+        color: var(--Color-2);
+    }
+}
+
+.nav .nombre-empresa{
+    color: var(--Color-3);
+    background-color: var(--Color-3);
+    border-radius: 5px;
+    margin-right: auto;
+}
+
+.nav .nombre-empresa a{
     color: var(--Color-1);
 }
+

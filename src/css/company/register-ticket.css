@@ -6,21 +6,23 @@
 }
 
 .container{
-    height: 90vh;
+    height: fit-content;
+    margin-top: 5vh;
+    margin-bottom: 5vh;
     display: flex;
     align-items: center;
 }
 
 .container form{
     border-radius: 10px;
-    width: 40%;
+    width: 50%;
+    padding: 10px;
     margin: auto;
     box-shadow: 0px 0px 10px var(--Color-4);
     background-color: var(--Color-1);
 }
 
 form .content-top{
-    padding: 10px;
     text-align: center;
 }
 
@@ -55,7 +57,7 @@ form .form-group{
 }
 
 .form-group textarea{
-    height: 15vh;
+    height: 10vh;
 }
 
 .form-group .buttons{
