@@ -38,19 +38,6 @@
                             <i class="fa fa-phone" aria-hidden="true"></i> Teléfono: <%= empresa[0].telefono %>
                         </p>
                         <p class="card-text">
-                            <% if(empresa[0].poliza === "Si") { %>
-                                <i class="fas fa-shield-alt    "></i> Póliza:
-                                <span class="badge bg-success rounded-pill">
-                                    <i class="fa fa-check-circle-o" aria-hidden="true"></i> <%= empresa[0].poliza %>
-                                </span>
-                            <% } else { %>
-                                <i class="fas fa-shield-alt    "></i> Póliza: 
-                                <span class="badge bg-danger rounded-pill">
-                                    <i class="fa fa-times-circle-o" aria-hidden="true"></i> <%= empresa[0].poliza %>
-                                </span>
-                            <% } %>
-                        </p>
-                        <p class="card-text">
                             <i class="fa fa-lock" aria-hidden="true"></i> No. Candado: <%= empresa[0].no_candado %>
                         </p>
                     </div>

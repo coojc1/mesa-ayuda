@@ -27,7 +27,6 @@
                             <th>Correo representante</th>
                             <th>Correo empresa</th>
                             <th>Teléfono</th>
-                            <th>Póliza</th>
                             <th>No. Candado</th>
                             <th>Acción</th>
                         </tr>
@@ -45,17 +44,6 @@
                                         <span class="badge badge-primary"><%= empresas[i].correo_empresarial %></span>
                                     </a>
                                 <td><%= empresas[i].telefono %></td>
-                                <td>
-                                    <% if(empresas[i].poliza === "Si") { %>
-                                        <span class="badge rounded-pill bg-success">
-                                            <i class="fas fa-shield-alt    "></i> <%= empresas[i].poliza %>
-                                        </span>
-                                    <% } else { %>
-                                        <span class="badge rounded-pill bg-danger">
-                                            <i class="fas fa-shield-alt    "></i> <%= empresas[i].poliza %>
-                                        </span>
-                                    <% } %>
-                                </td>
                                 <td><%= empresas[i].no_candado %></td>
                                 <td>
                                     <div class="buttons">

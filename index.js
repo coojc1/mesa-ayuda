@@ -76,11 +76,9 @@ app.get("/company-panel", (req, res) => {
         db.all(consulta, [id_usuario], (err, row) => {
             let id_empresa_pk = row[0].id_empresa_pk;
 
-            consulta = `SELECT id_ticket_pk, id_referencia_fk, fecha, version, prioridad, estado FROM tickets WHERE id_empresa_fk = ?`;
-
             req.session.idEmpresa = id_empresa_pk;
 
-            db.all(consulta, [id_empresa_pk], (err, row) => {
+            db.all("SELECT id_ticket_pk, contenido, fecha, version, prioridad, estado FROM tickets, referencia WHERE id_referencia_fk = id_referencia_pk AND id_empresa_fk = ? ORDER BY id_ticket_pk DESC", [id_empresa_pk], (err, row) => {
                 // CONTAR EL ESTADO DE LOS TICKETS
                 let tickets = row;
                 let ticketsEstados = [];
@@ -105,7 +103,6 @@ app.get("/company-panel", (req, res) => {
                         "tickets": tickets,
                         "ticketsEstados": JSON.stringify(ticketsEstados)
                     }
-
                     res.render("company/panel-company.ejs", data);
                 });
             });
@@ -301,7 +298,7 @@ app.get("/tickets-info/ended", (req, res) => {
         res.redirect("/");
     } else {
         let id_empresa = req.session.idEmpresa;
-        db.all("SELECT id_ticket_pk, id_referencia_fk, fecha, version, prioridad, estado FROM tickets WHERE estado = 'Liberado' AND id_empresa_fk = ?", [id_empresa], (err, row) => {
+        db.all("SELECT id_ticket_pk, contenido, fecha, version, prioridad, estado FROM tickets, referencia WHERE id_referencia_fk = id_referencia_pk AND estado = 'Liberado' AND id_empresa_fk = ? ORDER BY id_ticket_pk DESC", [id_empresa], (err, row) => {
             let data = {
                 "name": req.session.nameCompany,
                 "tickets": row
@@ -316,7 +313,7 @@ app.get("/tickets-info/process", (req, res) => {
         res.redirect("/");
     } else {
         let id_empresa = req.session.idEmpresa;
-        db.all("SELECT id_ticket_pk, id_referencia_fk, fecha, version, prioridad, estado FROM tickets WHERE estado = 'En proceso' AND id_empresa_fk = ?", [id_empresa], (err, row) => {
+        db.all("SELECT id_ticket_pk, contenido, fecha, version, prioridad, estado FROM tickets, referencia WHERE estado = 'En proceso' AND id_referencia_fk = id_referencia_pk AND id_empresa_fk = ? ORDER BY id_ticket_pk DESC", [id_empresa], (err, row) => {
             let data = {
                 "name": req.session.nameCompany,
                 "tickets": row

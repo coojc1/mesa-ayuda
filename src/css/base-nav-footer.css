@@ -1,0 +1,35 @@
+:root {
+    --Color-1: #ff8623;
+    --Color-2: #202427;
+    --Color-3: #fff;
+    --Color-4: #e9e6e2;
+}
+
+ul{
+}
+
+.nav-item{
+    margin-left: 1%;
+    margin-right: 1%;
+    transition: all 0.5s;
+    &:hover{
+        background-color: var(--Color-1);
+        border-radius: 0px 0px 10px 10px;
+    }
+}
+
+.nav-item a{
+    color: var(--Color-1);
+    font-weight: bold;
+    &:hover{
+        color: var(--Color-2);
+    }
+}
+
+.footer-nav .nav-item{
+    &:hover{
+        background-color: transparent;
+
+    }
+}
+
