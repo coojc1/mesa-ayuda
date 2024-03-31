@@ -72,6 +72,8 @@
     margin: auto;
     width: 30%;
     height: fit-content;
+    margin: 0px;
+    margin-left: auto;
 }
 
 .chart-out canvas{

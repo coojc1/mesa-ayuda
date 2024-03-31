@@ -631,7 +631,7 @@ app.get("/dashboard-admin", (req, res) => {
             empresas = row[0].empresas;
             ingenieros = row[0].ingenieros;
 
-            db.all("SELECT id_ticket_pk, id_empresa_fk, id_ingeniero_fk, id_referencia_fk, fecha, version, prioridad, estado FROM tickets ORDER BY prioridad DESC", (err, row) => {
+            db.all("SELECT id_ticket_pk, contenido, fecha, version, prioridad, estado FROM tickets, referencia WHERE id_referencia_fk = id_referencia_pk ORDER BY id_ticket_pk DESC", (err, row) => {
                 let data = {
                     "name": req.session.nameAdmin,
                     "estados": JSON.stringify(estados),
@@ -950,11 +950,10 @@ app.get("/dashboard-admin/reportes/info/:id", (req, res) => {
             let mes = "0" + row[0].mes;
             let year = row[0].year;
 
-            db.all("SELECT COUNT(id_ticket_pk) as cant_tickets, id_ticket_pk, id_empresa_fk, fecha, version, tiempo, prioridad, nombre, contenido FROM tickets, usuarios, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND empresas.id_usuario_fk = usuarios.id_usuario_pk AND id_referencia_fk = id_referencia_pk AND estado = 'Liberado' AND id_empresa_fk = id_empresa_pk AND id_usuario_fk = id_usuario_pk AND strftime('%m', fecha) = '" + mes + "' AND strftime('%Y', fecha) = '" + year + "'", (err, row) => {
+            db.all("SELECT id_ticket_pk, id_empresa_fk, fecha, version, tiempo, prioridad, nombre, contenido FROM tickets, usuarios, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND empresas.id_usuario_fk = usuarios.id_usuario_pk AND id_referencia_fk = id_referencia_pk AND estado = 'Liberado' AND id_empresa_fk = id_empresa_pk AND id_usuario_fk = id_usuario_pk AND strftime('%m', fecha) = '" + mes + "' AND strftime('%Y', fecha) = '" + year + "' ORDER BY id_ticket_pk DESC", (err, row) => {
                 let data = {
                     "tickets": row
                 }
-                console.log(data);
                 res.render("admin/template-report.ejs", data);
             });
         });

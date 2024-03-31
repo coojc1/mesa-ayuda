@@ -94,16 +94,14 @@ body{
 }
 
 .charts .tickets-charts{
-    border-radius: 5px;
+    background-color: var(--Color-1);
+    border-radius: 10px;
     margin-left: 0px;
-    width: 39%;
+    width: 38%;
     height: fit-content;
     display: flex;
     flex-direction: column;
-    transition: all 0.5s;
-    &:hover{
-        background-color: var(--Color-1-dashed);
-    }
+    gap: 10px;
 }
 
 .charts .tickets-table{
@@ -126,6 +124,8 @@ body{
 
 .charts canvas{
     margin: auto;
-    width: 90%;
-    margin-top: 5vh;
+    width: 100%;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: var(--Color-3);
 }
