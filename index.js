@@ -416,7 +416,6 @@ app.get("/dashboard-support", (req, res) => {
                         "prioridad": prioridad,
                         "tickets": row
                     }
-                    console.log(data);
                     res.render("support/panel-support.ejs", data);
                 });
             });
@@ -447,7 +446,6 @@ app.get("/dashboard-support/ticket-info/:id", (req, res) => {
                             "comentarios": comentarios,
                             "imagenes": row
                         }
-                        console.log(data);
                         res.render("support/panel-support-ticket-info.ejs", data);
                     });
                 }); 
@@ -503,7 +501,6 @@ app.get("/dashboard-support/tickets", (req, res) => {
                 "tickets": row,
                 "title_table": "Abiertos"
             }
-            console.log(data);
             res.render("support/panel-support-tickets.ejs", data);
         });   
     }
@@ -521,7 +518,6 @@ app.get("/dashboard-support/tickets-process", (req, res) => {
                 "tickets": row,
                 "title_table": "En proceso"
             }
-            console.log(data);
             res.render("support/panel-support-tickets.ejs", data);
         });
     }
@@ -539,7 +535,6 @@ app.get("/dashboard-support/tickets-ended", (req, res) => {
                 "tickets": row,
                 "title_table": "Liberados"
             }
-            console.log(data);
             res.render("support/panel-support-tickets.ejs", data);
         });
     }
@@ -556,7 +551,6 @@ app.get("/dashboard-support/profile", (req, res) => {
                 "name": req.session.nameSupport,
                 "support": row
             }
-            console.log(data);
             res.render("support/panel-support-profile.ejs", data);
         });
     }
