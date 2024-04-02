@@ -586,7 +586,9 @@ app.get("/login-admin", (req, res) => {
 });
 
 app.get("/logout-admin", (req, res) => {
-    req.session.destroy(); // Destruir la sesión actual
+    delete req.session.idAdministrador;
+    delete req.session.nameAdmin;
+    
     res.redirect('/login-admin');
 });
 
