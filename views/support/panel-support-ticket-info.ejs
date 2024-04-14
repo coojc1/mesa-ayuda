@@ -196,7 +196,12 @@
                             <% } else { %>
                                 <div class="img">
                                     <% for(let i = 0; i < imagenes.length; i++) { %>
-                                        <img src="<%= imagenes[i].ruta %>" alt="">
+                                        <div class="img-buttons" style="background-image: url('<%= imagenes[i].ruta %>');">
+                                            <a name="" id="" class="btn btn-primary" href="<%= imagenes[i].ruta %>" role="button" target="_blank">
+                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                        <img src="" alt="">
                                     <% } %>
                                 </div>
                             <% } %>

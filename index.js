@@ -644,7 +644,7 @@ app.get("/dashboard-admin", (req, res) => {
     }
 });
 
-app.get("/dashboard-admin/ticket-info/:id_ticket", (req, res) => {
+app.get("/dashboard-admin/ticket-info/:id_ticket", (req, res) => {  
     if (req.session.idAdministrador === undefined) {
         res.redirect("/login-admin");
     } else {
@@ -761,7 +761,7 @@ app.get("/dashboard-admin/tickets-terminados", (req, res) => {
     if (req.session.idAdministrador === undefined) {
         res.redirect("/login-admin");
     } else {
-        db.all("SELECT id_ticket_pk, razon, contenido, fecha, version, prioridad, razon FROM tickets, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND id_referencia_fk = id_referencia_pk AND estado = 'Liberado'", (err, row) => {
+        db.all("SELECT id_ticket_pk, razon, contenido, fecha, version, prioridad, tiempo, razon FROM tickets, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND id_referencia_fk = id_referencia_pk AND estado = 'Liberado'", (err, row) => {
             let data = {
                 "name": req.session.nameAdmin,
                 "tickets": row

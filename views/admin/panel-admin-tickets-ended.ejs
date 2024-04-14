@@ -40,6 +40,7 @@
                                 <th>#</th>
                                 <th>Empresa</th>
                                 <th>Referencia</th>
+                                <th>Tiempo</th>
                                 <th>Fecha</th>
                                 <th>Versión</th>
                                 <th>Estado</th>
@@ -50,6 +51,11 @@
                                     <td><%= tickets[i].id_ticket_pk %></td>
                                     <td><%= tickets[i].razon %></td>
                                     <td><%= tickets[i].contenido %></td>
+                                    <td>
+                                        <span class="badge bg-success">
+                                            <%= tickets[i].tiempo %> Hrs.
+                                        </span>
+                                    </td>
                                     <td><%= tickets[i].fecha %></td>
                                     <td><%= tickets[i].version %></td>
                                     <td>

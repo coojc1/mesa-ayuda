@@ -230,7 +230,11 @@
                             <% } else { %>
                                 <div class="img">
                                     <% for(let i = 0; i < imagenes.length; i++) { %>
-                                        <img src="<%= imagenes[i].ruta %>" alt="">
+                                        <div class="img-buttons" style="background-image: url('<%= imagenes[i].ruta %>');">
+                                            <a name="" id="" class="btn btn-link" href="<%= imagenes[i].ruta %>" target="_blank" role="button">
+                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
                                     <% } %>
                                 </div>
                             <% } %>

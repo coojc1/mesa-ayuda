@@ -110,10 +110,18 @@ body{
     flex-wrap: wrap;
 }
 
-.ticket-info .img img{
+.ticket-info .img .img-buttons{
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
     width: 48%;
+    height: 30vh;
     margin: auto;
     margin-top: 0px;
     margin-bottom: 10px;
     border-radius: 10px;
+}
+
+.ticket-info .img .img-buttons a{
+    background-color: transparent;
 }

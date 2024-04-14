@@ -124,12 +124,14 @@
                             <p>No hay imágenes para mostrar. 😥😥</p>
                         <% } else { %>
                             <% for(let i = 0; i < imagenes.length; i++) { %>
-                                <div class="img">
+                                <div class="img" style="background-image: url('<%= imagenes[i].ruta %>');">
                                     <a name="" id="" class="btn btn-link" href="/ticket-info-img/delete/<%= imagenes[i].id_imagen_pk %>" role="button">
                                         <i class="fa fa-times" aria-hidden="true"></i>
                                     </a>
 
-                                    <img src="<%= imagenes[i].ruta %>" alt="">
+                                    <a name="" id="" class="btn btn-link" href="<%= imagenes[i].ruta %>" role="button" target="_blank">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </a>
                                 </div>
                             <% } %>
                         <% } %>
