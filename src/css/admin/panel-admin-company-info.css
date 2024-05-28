@@ -34,6 +34,18 @@ body{
     color: var(--Color-3);
 }
 
+.card-header .empresa-profile{
+    height: 100px;
+    width: 100px;
+    border-radius: 100%;
+    background-color: var(--Color-3);
+    background-position: center;
+    background-size: cover;
+    border: 1px solid var(--Color-3);
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .card-header i{
     font-size: 40pt;
 }

@@ -6,68 +6,46 @@
 }
 
 .container{
+    width: 90%;
     height: fit-content;
     margin-top: 5vh;
     margin-bottom: 5vh;
     display: flex;
 }
 
-.container form{
-    display: flex;
-    align-self: center;
-    margin: auto;
-    height: fit-content;
-    width: 70%;
-    border-radius: 10px;
-    padding: 10px;
+.container .content{
     background-color: var(--Color-1);
     box-shadow: 0px 0px 10px var(--Color-4);
-}
-
-.container form .content-left{
-    width: 40%;
+    height: fit-content;
     display: flex;
-    align-items: center;
-}
-
-.content-left .profile-img{
-    margin: auto;
-    text-align: center;
-}
-
-.profile-img .img{
-    background-color: var(--Color-3);
-    height: 200px;
-    width: 200px;
-    border-radius: 100%;
-    display: flex;
+    flex-direction: column;
     align-items: center;
     margin: auto;
-}
-
-.profile-img .img i{
-    font-size: 80pt;
-    margin: auto;
-    color: var(--Color-1);
-}
-
-.profile-img h1{
-    text-align: center;
-    color: var(--Color-3);
-}
-
-.container form hr{
-    transform: rotate(90deg);
-}
-
-.container form .content-right{
-    background-color: var(--Color-3);
-    width: 60%;
     border-radius: 10px;
+    padding: 10px;
+    width: 70%;
 }
 
-.content-right .form-group{
+.container .content .content-left{
+    width: 90%;
+    display: flex;
+    align-items: center;
+}
+
+.container .content .content-right{
+    background-color: var(--Color-3);
+    width: 100%;
+    border-radius: 10px;
     padding: 10px;
+}
+
+.container .content form{
+    background-color: var(--Color-3);
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    height: fit-content;
+    width: 100%;
 }
 
 .content-right .form-group p{
@@ -83,6 +61,13 @@
     color: var(--Color-1);
     width: fit-content;
     margin-left: 5%;
+}
+
+.form-group .new-profile{
+    background-color: var(--Color-1);
+    border: none;
+    margin-left: 5%;
+    font-weight: bold;
 }
 
 .content-right .form-group input, .content-right .form-group select{
@@ -112,3 +97,40 @@
         color: var(--Color-2);
     }
 }
+
+
+
+
+
+
+.content-left .profile-img{
+    margin: auto;
+    text-align: center;
+}
+
+.profile-img .img{
+    background-color: var(--Color-3);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 250px;
+    width: 250px;
+    border-radius: 100%;
+    margin: auto;
+}
+
+.profile-img .img i{
+    font-size: 80pt;
+    margin: auto;
+    color: var(--Color-1);
+}
+
+.profile-img h1{
+    text-align: center;
+    color: var(--Color-3);
+}
+
+.container form hr{
+    transform: rotate(90deg);
+}
+

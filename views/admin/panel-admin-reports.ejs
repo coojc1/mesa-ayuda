@@ -1,75 +1,265 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/bootstrap-5.3.3-dist/css/bootstrap.min.css">
-    <script src="https://kit.fontawesome.com/c55ac3095c.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
     <link rel="stylesheet" href="/css/admin/nav-panel.css">
     <link rel="stylesheet" href="/css/admin/panel-admin-reports.css">
     <link rel="shortcut icon" href="/res/logo-5.png" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Reportes</title>
 </head>
+
 <body>
     <div class="container-fluid">
         <%- include("nav-panel.ejs") %>
 
-        <div class="content">
-            <form action="/dashboard-admin/reportes/register" method="post">
-                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                <h3>Generar Reporte</h3>
-                <div class="form-group">
-                  <label for=""><i class="fa fa-calendar" aria-hidden="true"></i> Mes de reporte:</label>
-                  <select name="mes" id="" class="form-control">
-                    <% const meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]; %>
+            <div class="content">
+                <div class="reportes-mes">
+                    <div class="titles">
+                        <h2>
+                            <i class="fa fa-calendar" aria-hidden="true"></i> 
+                            Reportes por mes
+                        </h2>
+                        <p>Generar reporte</p>
+                    </div>
+                
 
-                    <% const value_meses = ["01","02","03","04","05","06","07","08","09","10","11","12"] %>
+                    <div class="reportes-buttons">
+                        <% var fecha = new Date();
+                        let mes = fecha.getMonth();
+                        const meses=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+                            %>
 
-                    <% for(let i = 0; i < (mes+1); i++) { %>
-                        <option value="<%= value_meses[i] %>"><%= meses[i] %></option>
-                    <% } %>
-                  </select>
-                  <button type="submit" name="" id="" class="btn btn-primary">
-                    <i class="fa fa-file-o" aria-hidden="true"></i> Generar Reporte
-                    </button>
-                </div>
-            </form>
+                            <% const value_meses=["01","02","03","04","05","06","07","08","09","10","11","12"] %>
 
-            <div class="div-table">
-                <% if(reportes.length === 0) { %>
-                    <p>Aún no hay reportes generados. 😥😥</p>
-                <% } else { %>
-                    <table class="table table-borderless table-hover table-striped ">
-                        <tr>
-                            <th>#</th>
-                            <th>Mes</th>
-                            <th>Año</th>
-                            <th>Fecha de generación</th>
-                            <th>Acción</th>
-                        </tr>
-                        <% for(let i = 0; i < reportes.length; i++) { %>
-                            <tr>
-                                <td><%= reportes[i].id_reporte_pk %></td>
-                                <td><%= reportes[i].mes %></td>
-                                <td><%= reportes[i].year %></td>
-                                <td><%= reportes[i].fecha %></td>
-                                <td>
-                                    <div class="buttons">
-                                        <a name="" id="" class="btn btn-link" href="/dashboard-admin/reportes/info/<%= reportes[i].id_reporte_pk %>" role="button" target="_blank" >
-                                            <i class="fa fa-eye" aria-hidden="true"></i>
-                                        </a>
-                                        <a name="" id="" class="btn btn-link" href="/dashboard-admin/reportes/delete/<%= reportes[i].id_reporte_pk %>" role="button">
-                                            <i class="fa fa-trash-o" aria-hidden="true"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
+                                <% for(let i=0; i < (mes+1); i++) { %>
+                                    <a name="" id="" class="btn btn-primary" href="/dashboard-admin/reportes/reporte-mes/<%= value_meses[i] %>" role="button">
+                                        <i class="fa fa-calendar-plus" aria-hidden="true"></i>
+                                        <%= meses[i] %>
+                                    </a>
+                                <% } %>
+                    </div>
+
+                    <div class="cards-reportes">
+                        <% if(reporte_mes.length === 0){ %>
+                            <p class="empty">No hay reportes por mes realizados. 😥😥</p>
+                        <% } else { %>
+                            <% for(let i = 0; i < reporte_mes.length; i++) { %>
+                                <div class="alert alert-primary" role="alert">
+                                    <h4 class="alert-heading">Reporte del mes <%= reporte_mes[i].mes %> del <%= reporte_mes[i].year %></h4>
+                                    <hr>
+                                    <p>
+                                        <i class="fa fa-calendar" aria-hidden="true"></i> Fecha: <%= reporte_mes[i].fecha %>
+                                    </p>
+                                    <a name="" id="" class="btn btn-info" href="/dashboard-admin/reporte-mes/info/<%= reporte_mes[i].mes %>/<%= reporte_mes[i].year %>" role="button" target="_blank">
+                                        <strong>
+                                            <i class="fa fa-eye" aria-hidden="true"></i> Ver reporte
+                                        </strong>
+                                    </a>
+    
+                                    <a name="" id="" class="btn btn-danger" href="/dashboard-admin/reportes/reporte-mes/delete/<%= reporte_mes[i].id_report_pk %>" role="button">
+                                        <strong>
+                                            <i class="fa fa-trash" aria-hidden="true"></i> Eliminar reporte
+                                        </strong>
+                                    </a>
+                                </div>
+                            <% } %>
                         <% } %>
-                    </table>
-                <% } %>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="reportes-estados">
+                    <div class="titles">
+                        <h2>
+                            <i class="fa fa-question-circle" aria-hidden="true"></i> Reporte por estados
+                        </h2>
+                        <p>Generar reporte</p>
+                    </div>
+
+                    <div class="reportes-buttons">
+                        <a name="" id="" class="btn btn-info" href="/dashboard-admin/reportes/reporte-estados/Baja" role="button">
+                            <i class="fas fa-arrow-down    "></i> Baja
+                        </a>
+                        <a name="" id="" class="btn btn-success" href="/dashboard-admin/reportes/reporte-estados/Normal" role="button">
+                            <i class="fa fa-info-circle" aria-hidden="true"></i> Normal
+                        </a>
+                        <a name="" id="" class="btn btn-warning" href="/dashboard-admin/reportes/reporte-estados/Alta" role="button">
+                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Alta
+                        </a>
+                        <a name="" id="" class="btn btn-danger" href="/dashboard-admin/reportes/reporte-estados/Urgente" role="button">
+                            <i class="fa fa-fire" aria-hidden="true"></i> Urgente
+                        </a>
+                        <a name="" id="" class="btn btn-primary" href="/dashboard-admin/reportes/reporte-estados/General" role="button">
+                            <i class="fa fa-question-circle" aria-hidden="true"></i> General
+                        </a>
+                    </div>
+
+                    <div class="cards-reportes">    
+                        <% if(reporte_estados.length === 0) { %>
+                            <p class="empty">No hay reportes por estados realizados. 😥😥</p>
+                        <% } else { %>
+                            <% for(let i = 0; i < reporte_estados.length; i++) { %>
+                                <% if(reporte_estados[i].estado === "Urgente" ){ %>
+                                    <div class="alert alert-danger">
+                                        <h4 class="alert-heading">Reporte de prioridad <%= reporte_estados[i].estado %></h4>
+                                    <hr>
+                                    <p>
+                                        <i class="fa fa-calendar" aria-hidden="true"></i> Fecha: <%= reporte_estados[i].fecha %>
+                                    </p>
+    
+                                    <a name="" id="" class="btn btn-info" href="/dashboard-admin/reportes/reporte-estados/info/<%= reporte_estados[i].mes %>/<%= reporte_estados[i].year %>/<%= reporte_estados[i].estado %>" role="button" target="_blank">
+                                        <strong>
+                                            <i class="fa fa-eye" aria-hidden="true"></i> Ver reporte
+                                        </strong>
+                                    </a>
+                                    <a name="" id="" class="btn btn-danger" href="/dashboard-admin/reportes/reporte-estados/delete/<%= reporte_estados[i].id_reporte_pk %>" role="button">
+                                        <strong>
+                                            <i class="fa fa-trash" aria-hidden="true"></i> Eliminar reporte
+                                        </strong>
+                                    </a>
+                                </div>
+                                <% } else if(reporte_estados[i].estado === "Alta") { %>
+                                    <div class="alert alert-warning">
+                                        <h4 class="alert-heading">Reporte de prioridad <%= reporte_estados[i].estado %></h4>
+                                    <hr>
+                                    <p>
+                                        <i class="fa fa-calendar" aria-hidden="true"></i> Fecha: <%= reporte_estados[i].fecha %>
+                                    </p>
+    
+                                    <a name="" id="" class="btn btn-info" href="/dashboard-admin/reportes/reporte-estados/info/<%= reporte_estados[i].mes %>/<%= reporte_estados[i].year %>/<%= reporte_estados[i].estado %>" target="_blank" role="button">
+                                        <strong>
+                                            <i class="fa fa-eye" aria-hidden="true"></i> Ver reporte
+                                        </strong>
+                                    </a>
+                                    <a name="" id="" class="btn btn-danger" href="/dashboard-admin/reportes/reporte-estados/delete/<%= reporte_estados[i].id_reporte_pk %>" role="button">
+                                        <strong>
+                                            <i class="fa fa-trash" aria-hidden="true"></i> Eliminar reporte
+                                        </strong>
+                                    </a>
+                                </div>
+                                <% } else if(reporte_estados[i].estado === "Normal") { %>
+                                    <div class="alert alert-success">
+                                        <h4 class="alert-heading">Reporte de prioridad <%= reporte_estados[i].estado %></h4>
+                                    <hr>
+                                    <p>
+                                        <i class="fa fa-calendar" aria-hidden="true"></i> Fecha: <%= reporte_estados[i].fecha %>
+                                    </p>
+    
+                                    <a name="" id="" class="btn btn-info" href="/dashboard-admin/reportes/reporte-estados/info/<%= reporte_estados[i].mes %>/<%= reporte_estados[i].year %>/<%= reporte_estados[i].estado %>" target="_blank" role="button">
+                                        <strong>
+                                            <i class="fa fa-eye" aria-hidden="true"></i> Ver reporte
+                                        </strong>
+                                    </a>
+                                    <a name="" id="" class="btn btn-danger" href="/dashboard-admin/reportes/reporte-estados/delete/<%= reporte_estados[i].id_reporte_pk %>" role="button">
+                                        <strong>
+                                            <i class="fa fa-trash" aria-hidden="true"></i> Eliminar reporte
+                                        </strong>
+                                    </a>
+                                </div>
+                                <% } else if(reporte_estados[i].estado === "Baja") { %>
+                                    <div class="alert alert-info">
+                                        <h4 class="alert-heading">Reporte de prioridad <%= reporte_estados[i].estado %></h4>
+                                    <hr>
+                                    <p>
+                                        <i class="fa fa-calendar" aria-hidden="true"></i> Fecha: <%= reporte_estados[i].fecha %>
+                                    </p>
+    
+                                    <a name="" id="" class="btn btn-info" href="/dashboard-admin/reportes/reporte-estados/info/<%= reporte_estados[i].mes %>/<%= reporte_estados[i].year %>/<%= reporte_estados[i].estado %>" target="_blank" role="button">
+                                        <strong>
+                                            <i class="fa fa-eye" aria-hidden="true"></i> Ver reporte
+                                        </strong>
+                                    </a>
+                                    <a name="" id="" class="btn btn-danger" href="/dashboard-admin/reportes/reporte-estados/delete/<%= reporte_estados[i].id_reporte_pk %>" role="button">
+                                        <strong>
+                                            <i class="fa fa-trash" aria-hidden="true"></i> Eliminar reporte
+                                        </strong>
+                                    </a>
+                                </div>
+                                <% } else { %>
+                                    <div class="alert alert-primary">
+                                        <h4 class="alert-heading">Reporte de prioridad <%= reporte_estados[i].estado %></h4>
+                                    <hr>
+                                    <p>
+                                        <i class="fa fa-calendar" aria-hidden="true"></i> Fecha: <%= reporte_estados[i].fecha %>
+                                    </p>
+    
+                                    <a name="" id="" class="btn btn-info" href="/dashboard-admin/reportes/reporte-estados/info/<%= reporte_estados[i].mes %>/<%= reporte_estados[i].year %>/<%= reporte_estados[i].estado %>" target="_blank" role="button">
+                                        <strong>
+                                            <i class="fa fa-eye" aria-hidden="true"></i> Ver reporte
+                                        </strong>
+                                    </a>
+                                    <a name="" id="" class="btn btn-danger" href="/dashboard-admin/reportes/reporte-estados/delete/<%= reporte_estados[i].id_reporte_pk %>" role="button">
+                                        <strong>
+                                            <i class="fa fa-trash" aria-hidden="true"></i> Eliminar reporte
+                                        </strong>
+                                    </a>
+                                    </div>
+                                <% } %>
+                            <% } %>
+                        <% } %>
+                    </div>
+                </div> 
+
+                <hr>
+
+                <div class="reportes-consultores">
+                    <div class="titles">
+                        <h2>
+                            <i class="fas fa-headset    "></i> Reporte por consultores
+                        </h2>
+                        <p>Generar reporte</p>
+                    </div>
+
+                    <div class="reportes-buttons">
+                        <% if(consultores.length === 0) { %>
+                            <p class="empty">No hay consultores registrados. 😥😥</p>
+                        <% } else { %>
+                            <% for(let i = 0; i < consultores.length; i++) { %>
+                                <a name="" id="" class="btn btn-primary" href="/dashboard-admin/reportes/reporte-consultores/<%= consultores[i].nombre %>/<%= consultores[i].id_ingeniero_pk %>" role="button">
+                                    <i class="fas fa-headset    "></i> <%= consultores[i].nombre %>
+                                </a>
+                            <% } %>
+                        <% } %>
+                    </div>
+
+                    <div class="cards-reportes">
+                        <% if(reporte_consultores.length === 0) { %>
+                            <p class="empty">No hay reportes por consultores realizados. 😥😥</p>
+                        <% } else { %>
+                            <% for(let i = 0; i < reporte_consultores.length; i++){ %>
+                                <div class="alert alert-primary">
+                                    <h4 class="alert-heading">Reporte del consultor <%= reporte_consultores[i].nombre %></h4>
+                                    <hr>
+                                    <p>
+                                        <i class="fa fa-calendar" aria-hidden="true"></i> Fecha: <%= reporte_consultores[i].fecha %>
+                                    </p>
+    
+                                    <a name="" id="" class="btn btn-info" href="/dashboard-admin/reportes/reporte-consultores/info/<%= reporte_consultores[i].mes %>/<%= reporte_consultores[i].year %>/<%= reporte_consultores[i].id_consultor_fk %>" target="_blank" role="button">
+                                        <strong>
+                                            <i class="fa fa-eye" aria-hidden="true"></i> Ver reporte
+                                        </strong>
+                                    </a>
+    
+                                    <form action="/dashboard-admin/reportes/reporte-consultores/delete/<%= reporte_consultores[i].id_reporte_pk %>" method="post">
+                                        <button type="submit    " name="" id="" class="btn btn-danger">
+                                            <strong>
+                                                <i class="fa fa-trash" aria-hidden="true"></i> Eliminar reporte
+                                            </strong>
+                                        </button>
+                                    </form>
+                                </div>
+                            <% } %>
+                        <% } %>
+                    </div>
+                </div>
             </div>
-        </div>
     </div>
 </body>
+
 </html>

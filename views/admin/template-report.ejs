@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,13 +11,14 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Reporte de Tickets Liberados</title>
 </head>
+
 <body>
     <div class="container-fluid">
         <div class="top">
             <img src="/res/logo.png" alt="">
 
             <div class="text">
-                <p> 
+                <p>
                     <strong>Nueva Metodología de la implementación</strong> <br>
                     Sistemas y Tecnologías de Información del Golfo
                 </p>
@@ -29,45 +31,59 @@
             <table class="table table-striped ">
                 <tr>
                     <th>Documento</th>
-                    <td>Reporte de tickets liberados</td>
+                    <td>Reporte de tickets liberados por <%= template %></td>
                 </tr>
             </table>
         </div>
 
 
         <div class="table-report">
-            <% if(tickets.length === 0) { %>
-                <p>Este reporte no contiene tickets liberados en el mes. 😥😥</p>
-            <% } else { %>
-                <table class="table table-striped">
+            <table class="table table-striped">
+                <tr>
+                    <th>#</th>
+                    <th>Empresa</th>
+                    <th>Consultor</th>
+                    <th>Referencia</th>
+                    <th>Fecha</th>
+                    <th>Tiempo</th>
+                    <th>Prioridad</th>
+                    <th>Version</th>
+                </tr>
+                <% for(let i=0; i < tickets.length; i++) { %>
                     <tr>
-                        <th>#</th>
-                        <th>Id Empresa</th>
-                        <th>Empresa</th>
-                        <th>Referencia</th>
-                        <th>Fecha</th>
-                        <th>Tiempo</th>
-                        <th>Prioridad</th>
-                        <th>Version</th>
+                        <td>
+                            <%= tickets[i].id_ticket_pk %>
+                        </td>
+                        <td>
+                            <%= tickets[i].razon %>
+                        </td>
+                        <td>
+                            <%= tickets[i].nombre %>
+                        </td>
+                        <td>
+                            <%= tickets[i].contenido %>
+                        </td>
+                        <td>
+                            <%= tickets[i].fecha %>
+                        </td>
+                        <td>
+                            <%= tickets[i].tiempo %> Hrs. <%= tickets[i].minutos %> Min.
+                        </td>
+                        <td>
+                            <%= tickets[i].prioridad %>
+                        </td>
+                        <td>
+                            <%= tickets[i].version %>
+                        </td>
                     </tr>
-                    <% for(let i = 0; i < tickets.length; i++) { %>
-                        <tr>
-                            <td><%= tickets[i].id_ticket_pk %></td>
-                            <td><%= tickets[i].id_empresa_fk %></td>
-                            <td><%= tickets[i].nombre %></td>
-                            <td><%= tickets[i].contenido %></td>
-                            <td><%= tickets[i].fecha %></td>
-                            <td><%= tickets[i].tiempo %> Hrs.</td>
-                            <td><%= tickets[i].prioridad %></td>
-                            <td><%= tickets[i].version %></td>  
-                        </tr>
-                    <% } %>
-                    <tr>
-                        <th colspan="6" class="total" >Total Tickets Liberados</th>
-                        <td colspan="2" class="no_total"><%= tickets.length %></td>
-                    </tr>
-                </table>
-            <% } %>
+                <% } %>
+                <tr>
+                    <th colspan="6" class="total">Total Tickets Liberados</th>
+                    <td colspan="2" class="no_total">
+                        <%= tickets.length %>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 </body>

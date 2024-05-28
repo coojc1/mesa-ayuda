@@ -22,64 +22,60 @@ body{
     margin: auto;
     margin-top: 5vh;
     display: flex;
+    flex-direction: column;
 }
 
-.content form{
+.content .reportes-mes, .content .reportes-estados, .content .reportes-consultores{
     background-color: var(--Color-1);
     padding: 10px;
-    border-radius: 10px;
-    width: 30%;
-}
-
-.content form .fa-file-pdf-o{
-    width: 100%;
-    text-align: center;
-    font-size: 40pt;
-    color: var(--Color-3);
-}
-
-.content form h3{
-    color: var(--Color-3);
-    text-align: center;
-}
-
-.content form .form-group{
-    background-color: var(--Color-3);
-    padding: 10px;
-    border-radius: 10px;
-}
-
-.form-group label{
-    font-weight: bold;
-    color: var(--Color-1);
-}
-
-.form-group select{
-    margin-bottom: 5vh;
-}
-
-.form-group button{
-    background-color: var(--Color-1);
-    border: none;
-}
-
-.content .div-table{
-    width: 68%;
-    margin-left: auto;
-    overflow: hidden;
     border-radius: 10px;
     height: fit-content;
 }
 
-.div-table p{
-    padding: 5vh 0px;
-    text-align: center;
-    font-size: 25pt;
-    font-weight: bold;
-    color: var(--Color-2);
+.titles{
+    background-color: var(--Color-3);
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 2vh;
 }
 
-.div-table table{
-    margin: 0px;
-    text-align: center;
+.titles h2{
+    font-weight: bold;
+    color: var(--Color-1);
+}
+
+.titles p{
+    margin-bottom: 0px;
+    color: var(--Color-1);
+    font-weight: bold;
+}
+
+.reportes-buttons{
+    background-color: var(--Color-3);
+    margin-bottom: 2vh;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.cards-reportes{
+    display: flex;
+    flex-wrap: wrap;
+    height: fit-content;
+    max-height: 70vh;
+    justify-content:space-around;
+    background-color: var(--Color-3);
+    padding: 10px;
+    border-radius: 10px;
+    overflow-y: scroll;
+}
+
+.cards-reportes p.empty{
+    font-weight: bold;
+    color: var(--Color-1);
+    font-size: 25pt;
+}
+
+.cards-reportes .alert{
+    width: fit-content;
+    height: fit-content;
 }

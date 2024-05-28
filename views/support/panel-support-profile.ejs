@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/css/support/panel-support-profile.css">
     <link rel="stylesheet" href="/css/support/nav-support.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
     <title>
         <%= name %>
     </title>
@@ -30,7 +31,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for=""><i class="fa fa-user-circle-o" aria-hidden="true"></i> Nombre:</label>
+                        <label for=""><i class="fa fa-user-circle" aria-hidden="true"></i> Nombre:</label>
                         <input type="text" name="nombre" id="" class="form-control" value="<%= support[0].nombre %>" required>
 
                         <label for=""><i class="fas fa-mail-bulk"></i> Correo:</label>
@@ -62,7 +63,7 @@
                         </p>
 
                         <button type="submit" name="" id="" class="btn btn-primary" btn-lg btn-block">
-                            <i class="fa fa-paper-plane-o" aria-hidden="true"></i> Guardar Cambios
+                            <i class="fa fa-paper-plane" aria-hidden="true"></i> Guardar Cambios
                         </button>
                     </div>
                 </form>

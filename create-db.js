@@ -40,6 +40,7 @@ function crearTabla() {
         descripcion TEXT,
         fecha DATE,
         tiempo INTEGER,
+        minutos INTEGER,
         version TEXT,
         prioridad TEXT,
         estado TEXT,
@@ -76,8 +77,39 @@ function crearTabla() {
         password TEXT
     )`;
 
-    consulta = `SELECT * FROM passwords`;
+    consulta = `CREATE TABLE IF NOT EXISTS profiles(
+        id_profile_pk INTEGER NOT NULL PRIMARY KEY,
+        id_usuario_fk INTEGER,
+        ruta TEXT
+    )`;
 
+    consulta = `CREATE TABLE IF NOT EXISTS reporte_mes(
+        id_report_pk INTEGER NOT NULL PRIMARY KEY,
+        fecha DATE,
+        mes INTEGER,
+        year INTEGER
+    )`;
+
+    consulta = `CREATE TABLE IF NOT EXISTS reportes_estados(
+        id_reporte_pk INTEGER NOT NULL PRIMARY KEY,
+        fecha DATE,
+        mes INTEGER,
+        year INTEGER,
+        estado TEXT
+    )`;
+
+    consulta = `CREATE TABLE IF NOT EXISTS reporte_consultor(
+        id_reporte_pk INTEGER NOT NULL PRIMARY KEY,
+        id_consultor_fk INTEGER,
+        nombre TEXT,
+        mes INTEGER,
+        year INTEGER,
+        fecha DATE
+    )`;
+
+    consulta = `SELECT * FROM REPORTE_CONSULTOR`;
+
+    
     db.all(consulta, (err, row) => {
         if(err) {
             return console.log(err);
@@ -88,3 +120,13 @@ function crearTabla() {
 }
 
 crearTabla();
+
+// consulta = `ALTER TABLE tickets ADD minutos INTEGER`;
+
+// consulta = `ALTER TABLE tickets ADD tipo_poliza TEXT`;
+
+    // consulta = `UPDATE tickets SET estado = 'En proceso' WHERE estado = 'Liberado'`;
+
+    // consulta = `DROP TABLE reporte_consultor`;
+
+    // consulta = `SELECT id_ticket_pk, id_referencia_fk, fecha, tiempo, minutos, version, estado, prioridad, razon, nombre, contenido FROM tickets, empresas, ingenieros, usuarios, referencia WHERE substr(fecha, 6, 2) = '03' AND substr(fecha, 1, 4) = '2024' AND id_empresa_fk = id_empresa_pk AND id_ingeniero_fk = id_ingeniero_pk AND ingenieros.id_usuario_fk = usuarios.id_usuario_pk AND estado = 'Liberado' AND id_ingeniero_fk = 1 ORDER BY id_ticket_pk DESC`;

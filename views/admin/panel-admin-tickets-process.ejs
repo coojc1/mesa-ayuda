@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/bootstrap-5.3.3-dist/css/bootstrap.min.css">
-    <script src="https://kit.fontawesome.com/c55ac3095c.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
     <link rel="stylesheet" href="/css/admin/nav-panel.css">
     <link rel="stylesheet" href="/css/admin/panel-admin-tickets.css">
     <link rel="shortcut icon" href="/res/logo-5.png" type="image/x-icon">
@@ -18,13 +18,13 @@
         <div class="content">
             <div class="nav-tickets">
                 <a name="" id="" class="btn btn-link" href="/dashboard-admin/tickets" role="button">
-                    <i class="fa fa-clock-o" aria-hidden="true"></i> Abiertos
+                    <i class="fa fa-clock" aria-hidden="true"></i> Abiertos
                 </a>
                 <a name="" id="" class="btn btn-link" href="/dashboard-admin/tickets-process" role="button">
                     <i class="fa fa-cog" aria-hidden="true"></i> En proceso
                 </a>
                 <a name="" id="" class="btn btn-link" href="/dashboard-admin/tickets-terminados" role="button">
-                    <i class="fa fa-check-circle-o" aria-hidden="true"></i> Liberados
+                    <i class="fa fa-check-circle" aria-hidden="true"></i> Liberados
                 </a>
             </div>
 
@@ -55,7 +55,7 @@
                                     <td>
                                         <% if(tickets[i].prioridad == "Por evaluar") { %>
                                             <span class="badge bg-secondary">
-                                                <i class="fa fa-question-circle-o" aria-hidden="true"></i> <%= tickets[i].prioridad %>
+                                                <i class="fa fa-question-circle" aria-hidden="true"></i> <%= tickets[i].prioridad %>
                                             </span>
                                         <% } else if(tickets[i].prioridad == "Baja") { %>
                                             <span class="badge bg-info">

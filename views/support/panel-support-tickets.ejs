@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/support/panel-support-tickets.css">
     <link rel="stylesheet" href="/css/support/nav-support.css">
     <script src="https://kit.fontawesome.com/c55ac3095c.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Tickets</title>
 </head>
@@ -19,13 +20,13 @@
             <div class="nav-tickets">
                 <h3><%= title_table %></h3>
                 <a name="" id="" class="btn btn-link" href="/dashboard-support/tickets" role="button">
-                    <i class="fa fa-clock-o" aria-hidden="true"></i> Abiertos
+                    <i class="fa fa-clock" aria-hidden="true"></i> Abiertos
                 </a>
                 <a name="" id="" class="btn btn-link" href="/dashboard-support/tickets-process" role="button">
                     <i class="fa fa-cogs" aria-hidden="true"></i> En proceso
                 </a>
                 <a name="" id="" class="btn btn-link" href="/dashboard-support/tickets-ended" role="button">
-                    <i class="fa fa-check-circle-o" aria-hidden="true"></i> Liberados
+                    <i class="fa fa-check-circle" aria-hidden="true"></i> Liberados
                 </a>
             </div>
 
@@ -54,11 +55,11 @@
                                 <td>
                                     <% if(tickets[i].tiempo === null) { %>
                                         <span class="badge bg-secondary">
-                                            <i class="fa fa-clock-o" aria-hidden="true"></i> Sin tiempo asignado
+                                            <i class="fa fa-clock" aria-hidden="true"></i> Sin tiempo asignado
                                         </span>
                                     <% } else { %>
                                         <span class="badge bg-success">
-                                            <i class="fa fa-clock-o" aria-hidden="true"></i> <%= tickets[i].tiempo %> Hrs.
+                                            <i class="fa fa-clock" aria-hidden="true"></i> <%= tickets[i].tiempo %> Hrs. <%= tickets[i].minutos %> Min.
                                         </span>
                                     <% } %>
                                 </td>
@@ -66,7 +67,7 @@
                                 <td>
                                     <% if(tickets[i].prioridad == "Por evaluar") { %>
                                         <span class="badge bg-secondary">
-                                            <i class="fa fa-question-circle-o" aria-hidden="true"></i> <%= tickets[i].prioridad %>
+                                            <i class="fa fa-question-circle" aria-hidden="true"></i> <%= tickets[i].prioridad %>
                                         </span>
                                     <% } else if(tickets[i].prioridad == "Baja") { %>
                                         <span class="badge bg-info">

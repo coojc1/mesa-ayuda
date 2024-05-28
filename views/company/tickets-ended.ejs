@@ -7,13 +7,13 @@
     <div class="content-top">
         <div class="buttons">
             <h4>
-                <i class="fa fa-check-circle-o" aria-hidden="true"></i> Liberados
+                <i class="fa fa-check-circle" aria-hidden="true"></i> Liberados
             </h4>
             <a name="" id="" class="btn btn-link" href="/ticket-generate" role="button">
                 <i class="fa-solid fa-ticket"></i> Nuevo Ticket
             </a>
             <a name="" id="" class="btn btn-link" href="/tickets-info/ended" role="button">
-                <i class="fa fa-check-circle-o" aria-hidden="true"></i> Liberados
+                <i class="fa fa-check-circle" aria-hidden="true"></i> Liberados
             </a>
             <a name="" id="" class="btn btn-link" href="/tickets-info/process" role="button">
                 <i class="fa fa-cogs" aria-hidden="true"></i> En Proceso
@@ -45,7 +45,7 @@
                             <td>
                                 <% if(tickets[i].prioridad == "Por evaluar") { %>
                                     <span class="badge bg-secondary">
-                                        <i class="fa fa-question-circle-o" aria-hidden="true"></i> <%= tickets[i].prioridad %>
+                                        <i class="fa fa-question-cirfa-check-circle" aria-hidden="true"></i> <%= tickets[i].prioridad %>
                                     </span>
                                 <% } else if(tickets[i].prioridad == "Baja") { %>
                                     <span class="badge bg-info">
@@ -74,9 +74,6 @@
                                 <div class="buttons">
                                     <a name="" id="" class="btn btn-link" href="/ticket-info/<%= tickets[i].id_ticket_pk %>" role="button">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
-                                    </a>
-                                    <a name="" id="" class="btn btn-link" href="/ticket-info/edit/<%= tickets[i].id_ticket_pk %>" role="button">
-                                        <i class="fa fa-pencil" aria-hidden="true"></i>
                                     </a>
                                 </div>
                             </td>

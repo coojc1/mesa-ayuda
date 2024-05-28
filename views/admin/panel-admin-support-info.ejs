@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/bootstrap-5.3.3-dist/css/bootstrap.min.css">
-    <script src="https://kit.fontawesome.com/c55ac3095c.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
     <link rel="stylesheet" href="/css/admin/nav-panel.css">
     <link rel="stylesheet" href="/css/admin/panel-admin-support-info.css">
     <link rel="shortcut icon" href="/res/logo-5.png" type="image/x-icon">
@@ -30,7 +30,7 @@
                     <div class="form-group">
                         <h3>Información del Consultor</h3>
                         <label for="">
-                            <i class="fa fa-user-circle-o" aria-hidden="true"></i> Nombre:
+                            <i class="fa fa-user-circle" aria-hidden="true"></i> Nombre:
                         </label>
                         <input type="text" name="nombre" id="" class="form-control" placeholder="<%= ingeniero[0].nombre %>" value="<%= ingeniero[0].nombre %>">
 
@@ -47,19 +47,29 @@
                         <label for="">
                             <i class="fa fa-tags" aria-hidden="true"></i> Categoría: <%= ingeniero[0].categoria %>
                         </label>
+
                         <select name="categoria" id="" class="form-control">
-                            <option value="Básico">Básico</option>
-                            <option value="Intermedio">Intermedio</option>
-                            <option value="Avanzado">Avanzado</option>
+                            <option value="<%= ingeniero[0].categoria %>">
+                                <%= ingeniero[0].categoria %>
+                            </option>
+                            <% const categorias = ["Básico", "Intermedio", "Avanzado"]; %>
+                            <% for(let i = 0; i < categorias.length; i++){ %>
+                                <% if(categorias[i] === ingeniero[0].categoria) { %>
+                                <% } else { %>
+                                    <option value="<%= categorias[i] %>">
+                                        <%= categorias[i] %>
+                                    </option> 
+                                <% } %>
+                            <% } %>
                         </select>
 
                         <div class="buttons">
                             <button type="submit" name="" id="" class="btn btn-primary">
-                                <i class="fa fa-paper-plane-o" aria-hidden="true"></i> Guardar Cambios
+                                <i class="fa fa-paper-plane" aria-hidden="true"></i> Guardar Cambios
                             </button>
                         </div>
                     </div>
-                </form>
+                </form> 
             </div>
     </div>
 </body>

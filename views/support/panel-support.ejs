@@ -7,6 +7,7 @@
     <link rel="shortcut icon" href="/res/logo-5.png" type="image/x-icon">
     <link rel="stylesheet" href="/bootstrap-5.3.3-dist/css/bootstrap.min.css">
     <script src="https://kit.fontawesome.com/c55ac3095c.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
     <link rel="stylesheet" href="/css/support/panel-support.css">
     <link rel="stylesheet" href="/css/support/nav-support.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -29,7 +30,11 @@
                         <div class="count">
                             <h4>Abiertos</h4>
                             <p>
-                                <%= stats[0] %>
+                                <% if(stats[0] === null){ %>
+                                    0
+                                <% } else { %>
+                                    <%= stats[0] %>
+                                <% } %>
                             </p>
                         </div>
                     </div>
@@ -40,7 +45,11 @@
                         <div class="count">
                             <h4>En Proceso</h4>
                             <p>
-                                <%= stats[1] %>
+                                <% if(stats[1] === null){ %>
+                                    0
+                                <% } else { %>
+                                    <%= stats[1] %>
+                                <% } %>
                             </p>
                         </div>
                     </div>
@@ -51,7 +60,11 @@
                         <div class="count">
                             <h4>Liberados</h4>
                             <p>
-                                <%= stats[2] %>
+                                <% if(stats[2] === null){ %>
+                                    0
+                                <% } else { %>
+                                    <%= stats[2] %>
+                                <% } %>
                             </p>
                         </div>
                     </div>
@@ -68,6 +81,48 @@
                     </div>
                 </div>
 
+                <br>
+
+                <div class="mensaje">
+                    <% if(tickets.length === 0) { %>
+                        <div class="alert alert-success" role="alert">
+                            <strong>
+                                <i class="fa fa-check-circle" aria-hidden="true"></i> Por el momento no tienes tickets asignados.
+                            </strong>
+                        </div>
+                    <% } else { %>
+                        <%
+                            let tam = tickets.length;
+                            let fecha_bd = new Date(tickets[tam-1].fecha);
+                    
+                            const fechaActual = new Date();
+                            const diferenciaMilisegundos = fechaActual.getTime() - fecha_bd.getTime();
+                            const diferenciaDias = diferenciaMilisegundos / (1000 * 60 * 60 * 24);
+                    
+                            if (diferenciaDias <= 7) { 
+                        %>
+                            <div class="alert alert-success" role="alert">
+                                <strong>
+                                    <i class="fa fa-calendar" aria-hidden="true"></i> Tienes tickets pendientes de una semana o menos días.
+                                </strong>
+                            </div>
+                            <% } else if (diferenciaDias <= 15) { %>
+                                <div class="alert alert-warning" role="alert">
+                                    <strong>
+                                        <i class="fa fa-calendar" aria-hidden="true"></i> Tienes tickets pendientes de dos semanas o menos días
+                                    </strong>
+                                </div>
+                            <% } else { %>
+                            <div class="alert alert-danger" role="alert">
+                                <strong>
+                                    <i class="fa fa-calendar" aria-hidden="true"></i> Tienes tickets pendientes de más de dos semanas
+                                </strong>
+                            </div>
+                            <% } %>
+                    <% } %>
+                </div>
+                
+
                 <div class="charts">
                     <canvas id="myChart"></canvas>
                     <canvas id="myChart-2"></canvas>
@@ -76,7 +131,7 @@
                         <% for(let i = 0; i < tickets.length; i++) { %>
                             <% if(tickets[i].prioridad == "Por evaluar") { %>
                                 <a name="" id="" class="btn btn-secondary" href="/dashboard-support/ticket-info/<%= tickets[i].id_ticket_pk %>" role="button">
-                                    <i class="fa fa-question-circle-o" aria-hidden="true"></i> <%= tickets[i].prioridad %>
+                                    <i class="fa fa-question-circle" aria-hidden="true"></i> <%= tickets[i].prioridad %>
                                 </a>
                             <% } else if(tickets[i].prioridad == "Baja") { %>
                                 <a name="" id="" class="btn btn-info" href="/dashboard-support/ticket-info/<%= tickets[i].id_ticket_pk %>" role="button">
@@ -140,7 +195,7 @@
                                             <td>
                                                 <% if(tickets[i].prioridad == "Por evaluar") { %>
                                                     <span class="badge bg-secondary">
-                                                        <i class="fa fa-question-circle-o" aria-hidden="true"></i> <%= tickets[i].prioridad %>
+                                                        <i class="fa fa-question-circle" aria-hidden="true"></i> <%= tickets[i].prioridad %>
                                                     </span>
                                                 <% } else if(tickets[i].prioridad == "Baja") { %>
                                                     <span class="badge bg-info">
@@ -162,7 +217,7 @@
                                             </td>
                                             <td>
                                                 <span class="badge bg-danger rounded-pill">
-                                                    <i class="fa fa-clock-o" aria-hidden="true"></i> <%= tickets[i].estado %>
+                                                    <i class="fa fa-clock" aria-hidden="true"></i> <%= tickets[i].estado %>
                                                 </span>
                                             </td>
                                             <td>

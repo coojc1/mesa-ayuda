@@ -7,7 +7,7 @@ const db = new sqlite3.Database("mesa.db");
 const session = require("express-session");
 const multer = require("multer");
 const fs = require("fs");
-var body = require('body-parser');
+const body = require('body-parser');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -18,6 +18,7 @@ const storage = multer.diskStorage({
     }
 });
 const upload = multer({ storage: storage });
+
 
 app.use(session({
     secret: "3b792f6f1d1f078e2c593d93ff3bba",
@@ -33,15 +34,20 @@ app.use(body.urlencoded({ extended: true }));
 app.use(body.json());
 
 
+
 //  RUTAS DE LA APLICACION --------------------------------------------------------------------------------
 app.get("/", (req, res) => {
-    res.render("index.ejs")
+    res.render("landing.ejs");
 });
 
 
 // #########################################################################################################
 //                                        PANEL DE EMPRESAS
 // #########################################################################################################
+app.get("/company-log", (req, res) => {
+    res.render("index.ejs")
+});
+
 app.post("/company-login", (req, res) => {
     let correo = req.body.correo;
     let password = req.body.password;
@@ -50,7 +56,7 @@ app.post("/company-login", (req, res) => {
 
     db.all(consulta, [correo, password], (err, row) => {
         if (err || row.length == 0) {
-            res.redirect("/");
+            res.redirect("/company-log");
         } else {
             req.session.idCompany = row[0].id_usuario_pk;
             req.session.nameCompany = row[0].nombre;
@@ -98,12 +104,16 @@ app.get("/company-panel", (req, res) => {
                         }
                     });
 
-                    let data = {
-                        "name": req.session.nameCompany,
-                        "tickets": tickets,
-                        "ticketsEstados": JSON.stringify(ticketsEstados)
-                    }
-                    res.render("company/panel-company.ejs", data);
+                    db.all("SELECT ruta FROM profiles WHERE id_usuario_fk = ?", [req.session.idCompany], (err, row) => {
+                        let data = {
+                            "name": req.session.nameCompany,
+                            "tickets": tickets,
+                            "ticketsEstados": JSON.stringify(ticketsEstados),
+                            "ruta": row
+                        }
+                        console.log(data);
+                        res.render("company/panel-company.ejs", data);
+                    });
                 });
             });
         });
@@ -117,12 +127,16 @@ app.get("/ticket-generate", (req, res) => {
         let consulta = `SELECT id_referencia_pk, contenido FROM referencia`;
 
         db.all(consulta, (err, row) => {
-            data = {
-                "name": req.session.nameCompany,
-                "referencias": row
-            }
-
-            res.render("company/generar-tikets.ejs", data);
+            let referencias = row;
+            db.all("SELECT ruta FROM profiles WHERE id_usuario_fk = ?", [req.session.idCompany], (err, row) => {
+                data = {
+                    "name": req.session.nameCompany,
+                    "referencias": referencias,
+                    "ruta": row
+                }
+    
+                res.render("company/generar-tikets.ejs", data);
+            });
         });
     } else {
         res.redirect("/");
@@ -155,16 +169,18 @@ app.post("/ticket-generate/new", (req, res) => {
 app.get("/company-profile", (req, res) => {
     if (req.session.idCompany != undefined) {
         db.all("SELECT correo, password, telefono, correo_empresarial, poliza, no_candado FROM usuarios, empresas WHERE id_usuario_fk = ? AND id_usuario_pk = ?", [req.session.idCompany, req.session.idCompany], (err, row) => {
-            data = {
-                "name": req.session.nameCompany,
-                "correo": row[0].correo,
-                "password": row[0].password,
-                "telefono": row[0].telefono,
-                "correo_empresarial": row[0].correo_empresarial,
-                "poliza": row[0].poliza,
-                "no_candado": row[0].no_candado
-            }
-            res.render("company/profile-company.ejs", data);
+            let info_empresa = row;
+
+            db.all("SELECT ruta FROM profiles WHERE id_usuario_fk = ?", [req.session.idCompany], (err, row) => {
+                let ruta = row;
+
+                data = {
+                    "name": req.session.nameCompany,
+                    "info_empresa": info_empresa,
+                    "ruta": ruta
+                }
+                res.render("company/profile-company.ejs", data);
+            });
         });
     } else {
         res.redirect("/");
@@ -186,6 +202,31 @@ app.post("/company-profile/update", (req, res) => {
             res.redirect("/company-profile");
         });
     });
+}); 
+
+app.post('/company-profile/update/img', upload.single('imagen'), (req, res) => {
+    db.all("SELECT id_profile_pk, ruta FROM profiles WHERE id_usuario_fk = ?", [req.session.idCompany], (err, row) => {
+        console.log(row);
+        if (row.length === 0 || row[0].ruta === '') {
+            const ruta = "/uploads/" + req.file.originalname;
+            db.all("INSERT INTO profiles(id_usuario_fk, ruta) VALUES(?,?)", [req.session.   idCompany, ruta], (err, row) => {
+                res.redirect("/company-profile");
+            });     
+        } else {
+            let ruta_imagen = __dirname + "/src" + row[0].ruta;
+            fs.access(ruta_imagen, fs.constants.F_OK, (err) => {
+                fs.unlink(ruta_imagen, (err) => {
+                    id_profile = row[0].id_profile_pk;
+                    db.all("DELETE FROM profiles WHERE id_profile_pk = ?", [id_profile], (err, row) => {
+                        const ruta = "/uploads/" + req.file.originalname;
+                        db.all("INSERT INTO profiles(id_usuario_fk, ruta) VALUES(?,?)", [req.session.idCompany, ruta], (err, row) => {
+                            res.redirect("/company-profile");
+                        });
+                    });
+                });
+            });
+        }
+    });
 });
 
 let id_ticket;
@@ -204,14 +245,17 @@ app.get("/ticket-info/:id_ticket", (req, res) => {
 
                 db.all("SELECT ruta, id_imagen_pk FROM imagenes WHERE id_ticket_fk = ?", [id_ticket], (err, row) => {
                     imagenes = row;
-                    data = {
-                        "name": req.session.nameCompany,
-                        "id_ticket": id_ticket,
-                        "ticket": info_tickets,
-                        "comentarios": comentarios,
-                        "imagenes": imagenes
-                    }
-                    res.render("company/ticket-info.ejs", data);
+                    db.all("SELECT ruta FROM profiles WHERE id_usuario_fk = ?", [req.session.idCompany], (err, row) => {
+                        data = {
+                            "name": req.session.nameCompany,
+                            "id_ticket": id_ticket,
+                            "ticket": info_tickets,
+                            "comentarios": comentarios,
+                            "imagenes": imagenes,
+                            "ruta": row
+                        }
+                        res.render("company/ticket-info.ejs", data);
+                    });
                 });
             });
         });
@@ -266,16 +310,21 @@ app.get("/ticket-info/edit/:id_ticket", (req, res) => {
     if (req.session.idCompany != undefined) {
         id_ticket = req.params.id_ticket;
         let ticket = [];
-        db.all("SELECT id_ticket_pk, descripcion, version, contenido FROM tickets, referencia WHERE tickets.id_referencia_fk = referencia.id_referencia_pk AND id_ticket_pk = ?", [id_ticket], (err, row) => {
+        db.all("SELECT id_ticket_pk, version, contenido FROM tickets, referencia WHERE tickets.id_referencia_fk = referencia.id_referencia_pk AND id_ticket_pk = ?", [id_ticket], (err, row) => {
             ticket = row;
 
             db.all("SELECT * FROM referencia", (err, row) => {
-                data = {
-                    "name": req.session.nameCompany,
-                    "ticket": ticket,
-                    "referencia": row
-                }
-                res.render("company/ticket-edit.ejs", data);
+                let referencia = row;
+
+                db.all("SELECT ruta FROM profiles WHERE id_usuario_fk = ?", [req.session.idCompany], (err, row) => {
+                    data = {
+                        "name": req.session.nameCompany,
+                        "ticket": ticket,
+                        "referencia": referencia,
+                        "ruta": row
+                    }
+                    res.render("company/ticket-edit.ejs", data);
+                });
             });
         });
     } else {
@@ -285,10 +334,9 @@ app.get("/ticket-info/edit/:id_ticket", (req, res) => {
 
 app.post("/ticket-info/edit/update", (req, res) => {
     let version = req.body.version;
-    let descripcion = req.body.descripcion;
     let referencia = req.body.referencia;
 
-    db.run("UPDATE tickets SET version = ?, descripcion = ?, id_referencia_fk = ? WHERE id_ticket_pk = ?", [version, descripcion, referencia, id_ticket], () => {
+    db.run("UPDATE tickets SET version = ?, id_referencia_fk = ? WHERE id_ticket_pk = ?", [version, referencia, id_ticket], () => {
         res.redirect("/ticket-info/edit/" + id_ticket);
     });
 });
@@ -299,11 +347,15 @@ app.get("/tickets-info/ended", (req, res) => {
     } else {
         let id_empresa = req.session.idEmpresa;
         db.all("SELECT id_ticket_pk, contenido, fecha, version, prioridad, estado FROM tickets, referencia WHERE id_referencia_fk = id_referencia_pk AND estado = 'Liberado' AND id_empresa_fk = ? ORDER BY id_ticket_pk DESC", [id_empresa], (err, row) => {
-            let data = {
-                "name": req.session.nameCompany,
-                "tickets": row
-            }
-            res.render("company/tickets-ended.ejs", data);
+            let tickets = row;
+            db.all("SELECT ruta FROM profiles WHERE id_usuario_fk = ?", [req.session.idCompany], (err, row) => {
+                let data = {
+                    "name": req.session.nameCompany,
+                    "tickets": tickets,
+                    "ruta": row
+                }
+                res.render("company/tickets-ended.ejs", data);
+            });
         });
     }
 });
@@ -314,11 +366,15 @@ app.get("/tickets-info/process", (req, res) => {
     } else {
         let id_empresa = req.session.idEmpresa;
         db.all("SELECT id_ticket_pk, contenido, fecha, version, prioridad, estado FROM tickets, referencia WHERE estado = 'En proceso' AND id_referencia_fk = id_referencia_pk AND id_empresa_fk = ? ORDER BY id_ticket_pk DESC", [id_empresa], (err, row) => {
-            let data = {
-                "name": req.session.nameCompany,
-                "tickets": row
-            }
-            res.render("company/tickets-process.ejs", data);
+            let tickets = row;
+            db.all("SELECT ruta FROM profiles WHERE id_usuario_fk = ?", [req.session.idCompany], (err, row) => {
+                let data = {
+                    "name": req.session.nameCompany,
+                    "tickets": tickets,
+                    "ruta": row
+                }
+                res.render("company/tickets-process.ejs", data);
+            });
         });
     }
 });
@@ -345,7 +401,7 @@ app.post("/register-company/new", (req, res) => {
                         let data = {
                             "titulo": "Registro exitoso",
                             "mensaje": "Listo... has sido registrado en la plataforma como " + nombre + ". 😁😁",
-                            "link": "/",
+                            "link": "/company-log",
                             "tipo": "alert-success"
                         }
                         res.render("out-log.ejs", data);
@@ -383,11 +439,15 @@ app.post("/support-login/login", (req, res) => {
     let password = req.body.password;
     
     db.all("SELECT id_usuario_pk, nombre, id_ingeniero_pk FROM usuarios, ingenieros WHERE id_usuario_pk = id_usuario_fk AND correo = ? AND password = ?", [correo, password], (err, row) => {
-        req.session.idUser = row[0].id_usuario_pk;
-        req.session.nameSupport = row[0].nombre;
-        req.session.idSupport = row[0].id_ingeniero_pk;
+        if (row.length === 0 || row === undefined) {
+            res.redirect("/support-login");
+        } else {
+            req.session.idUser = row[0].id_usuario_pk;
+            req.session.nameSupport = row[0].nombre;
+            req.session.idSupport = row[0].id_ingeniero_pk;
         
-        res.redirect("/dashboard-support");
+            res.redirect("/dashboard-support");
+        }
     });
 });
 
@@ -416,6 +476,7 @@ app.get("/dashboard-support", (req, res) => {
                         "prioridad": prioridad,
                         "tickets": row
                     }
+                    console.log(data);
                     res.render("support/panel-support.ejs", data);
                 });
             });
@@ -429,7 +490,7 @@ app.get("/dashboard-support/ticket-info/:id", (req, res) => {
     } else {
         let id_ticket = req.params.id;
 
-        db.all("SELECT id_ticket_pk, id_empresa_fk, descripcion, fecha, tiempo, version, prioridad, estado, contenido FROM tickets, empresas, referencia WHERE id_referencia_fk = id_referencia_pk AND id_ticket_pk = ?", [id_ticket], (err, row) => {
+        db.all("SELECT id_ticket_pk, id_empresa_fk, descripcion, fecha, tiempo, minutos, version, prioridad, estado, tipo_poliza, contenido FROM tickets, empresas, referencia WHERE id_referencia_fk = id_referencia_pk AND id_ticket_pk = ?", [id_ticket], (err, row) => {
             let ticket_info = row;
             let id_empresa = row[0].id_empresa_fk;
 
@@ -446,6 +507,7 @@ app.get("/dashboard-support/ticket-info/:id", (req, res) => {
                             "comentarios": comentarios,
                             "imagenes": row
                         }
+                        console.log(data);
                         res.render("support/panel-support-ticket-info.ejs", data);
                     });
                 }); 
@@ -465,8 +527,9 @@ app.get("/dashboard-support/ticket-info/status-update/:id", (req, res) => {
 app.post("/dashboard-support/ticket-info/status-end", (req, res) => {
     let id_ticket = req.body.id_ticket;
     let horas = req.body.horas;
+    let minutos = req.body.minutos;
 
-    db.run("UPDATE tickets SET estado = 'Liberado', tiempo = ? WHERE id_ticket_pk = ?", [horas, id_ticket], () => {
+    db.run("UPDATE tickets SET estado = 'Liberado', tiempo = ?, minutos = ? WHERE id_ticket_pk = ?", [horas, minutos, id_ticket], () => {
         res.redirect("/dashboard-support/ticket-info/"+id_ticket);
     });
 });
@@ -529,7 +592,7 @@ app.get("/dashboard-support/tickets-ended", (req, res) => {
     } else {
         let id_support = req.session.idSupport;
 
-        db.all("SELECT id_ticket_pk, razon, contenido, descripcion, fecha, tiempo, version, prioridad, estado FROM tickets, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND id_referencia_fk = id_referencia_pk AND estado = 'Liberado' AND id_ingeniero_fk = ? ORDER BY id_ticket_pk DESC", [id_support], (err, row) => {
+        db.all("SELECT id_ticket_pk, razon, contenido, descripcion, fecha, tiempo, minutos, version, prioridad, estado FROM tickets, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND id_referencia_fk = id_referencia_pk AND estado = 'Liberado' AND id_ingeniero_fk = ? ORDER BY id_ticket_pk DESC", [id_support], (err, row) => {
             let data = {
                 "name": req.session.nameSupport,
                 "tickets": row,
@@ -650,7 +713,8 @@ app.get("/dashboard-admin/ticket-info/:id_ticket", (req, res) => {
     } else {
         let id_ticket = req.params.id_ticket;
 
-        db.all("SELECT id_ticket_pk, id_empresa_fk, id_ingeniero_fk, id_referencia_fk, descripcion, fecha, tiempo, version, prioridad, estado, contenido, id_usuario_fk, telefono, correo_empresarial, nombre, correo FROM tickets, referencia, empresas, usuarios WHERE id_ticket_pk = ? AND id_empresa_fk = id_empresa_pk AND id_referencia_fk = id_referencia_pk AND id_usuario_fk = id_usuario_pk", [id_ticket], (err, row) => {
+        db.all("SELECT id_ticket_pk, id_empresa_fk, id_ingeniero_fk, id_referencia_fk, descripcion, fecha, tiempo, version, prioridad, estado, tipo_poliza, contenido, id_usuario_fk, telefono, correo_empresarial, nombre, correo FROM tickets, referencia, empresas, usuarios WHERE id_ticket_pk = ? AND id_empresa_fk = id_empresa_pk AND id_referencia_fk = id_referencia_pk AND id_usuario_fk = id_usuario_pk", [id_ticket], (err, row) => {
+            let id_usuario_fk = row[0].id_usuario_fk;
             let info_ticket = row;
 
             if (row[0].id_ingeniero_fk === null) {
@@ -660,14 +724,18 @@ app.get("/dashboard-admin/ticket-info/:id_ticket", (req, res) => {
                         let imagenes = row;
                         db.all("SELECT id_ingeniero_pk, nombre FROM ingenieros, usuarios WHERE id_usuario_fk = id_usuario_pk", (err, row) => {
                             let ingenieros = row;
-                            let data = {
-                                "name": req.session.nameAdmin,
-                                "ticket": info_ticket,
-                                "comentarios": comentarios,
-                                "imagenes": imagenes,
-                                "ingenieros": ingenieros
-                            }
-                            res.render("admin/panel-admin-ticket.ejs", data);
+                            db.all("SELECT ruta FROM profiles WHERE id_usuario_fk = ?", [id_usuario_fk], (err, row) => {
+                                let data = {
+                                    "name": req.session.nameAdmin,
+                                    "ticket": info_ticket,
+                                    "comentarios": comentarios,
+                                    "imagenes": imagenes,
+                                    "ingenieros": ingenieros,
+                                    "ruta": row
+                                }
+                                console.log(data);
+                                res.render("admin/panel-admin-ticket.ejs", data);
+                            });
                         });
                     });
                 });
@@ -679,14 +747,18 @@ app.get("/dashboard-admin/ticket-info/:id_ticket", (req, res) => {
                         let comentarios = row;
                         db.all("SELECT ruta FROM imagenes WHERE id_ticket_fk = ?", [id_ticket], (err, row) => {
                             let imagenes = row;
-                            let data = {
-                                "name": req.session.nameAdmin,
-                                "ticket": info_ticket,
-                                "ingeniero": ingeniero,
-                                "comentarios": comentarios,
-                                "imagenes": imagenes
-                            }
-                            res.render("admin/panel-admin-ticket.ejs", data);
+                            db.all("SELECT ruta FROM profiles WHERE id_usuario_fk = ?", [id_usuario_fk], (err, row) => {
+                                let data = {
+                                    "name": req.session.nameAdmin,
+                                    "ticket": info_ticket,
+                                    "ingeniero": ingeniero,
+                                    "comentarios": comentarios,
+                                    "imagenes": imagenes,
+                                    "ruta": row
+                                }
+                                console.log(data);
+                                res.render("admin/panel-admin-ticket.ejs", data);
+                            });
                         });
                     });
                 });
@@ -729,6 +801,32 @@ app.post("/dashboard-admin/ticket-info/asign-priority", (req, res) => {
     });
 });
 
+app.get("/dashboard-admin/ticket-info/asign-poliza/:poliza/:id", (req, res) => {
+    let poliza = req.params.poliza;
+    let id = req.params.id;
+
+    db.all("UPDATE tickets SET tipo_poliza = ? WHERE id_ticket_pk = ?", [poliza, id], () => {
+        res.redirect("/dashboard-admin/ticket-info/"+id);
+    });
+});
+
+app.post("/dashboard-admin/ticket-info/asign-poliza", (req, res) => {
+    let tipo_poliza_otro = req.body.tipo_poliza_otro;
+    let id_ticket = req.body.id_ticket;
+
+    db.all("UPDATE tickets SET tipo_poliza = ? WHERE id_ticket_pk = ?", [tipo_poliza_otro, id_ticket], () => {
+        res.redirect("/dashboard-admin/ticket-info/"+id_ticket);
+    });
+});
+
+app.get("/dashboard-admin/ticket-info/delete-poliza/:id", (req, res) => {
+    let id = req.params.id;
+
+    db.all("UPDATE tickets SET tipo_poliza = null WHERE id_ticket_pk = ?", [id], () => {
+        res.redirect("/dashboard-admin/ticket-info/"+id);
+    });
+});
+
 app.get("/dashboard-admin/tickets", (req, res) => {
     if (req.session.idAdministrador === undefined) {
         res.redirect("/login-admin");
@@ -761,7 +859,7 @@ app.get("/dashboard-admin/tickets-terminados", (req, res) => {
     if (req.session.idAdministrador === undefined) {
         res.redirect("/login-admin");
     } else {
-        db.all("SELECT id_ticket_pk, razon, contenido, fecha, version, prioridad, tiempo, razon FROM tickets, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND id_referencia_fk = id_referencia_pk AND estado = 'Liberado'", (err, row) => {
+        db.all("SELECT id_ticket_pk, razon, contenido, fecha, minutos, version, prioridad, tiempo, razon FROM tickets, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND id_referencia_fk = id_referencia_pk AND estado = 'Liberado'", (err, row) => {
             let data = {
                 "name": req.session.nameAdmin,
                 "tickets": row
@@ -805,7 +903,7 @@ app.post("/dashboard-admin/support/register", (req, res) => {
 
 let id_ingeniero;
 
-app.get("/support-info/:id", (req, res) => {
+app.get("/support-info/:id", (req, res) => {    
     if (req.session.idAdministrador === undefined) {
         res.redirect("/login-admin");
     } else {
@@ -861,21 +959,26 @@ app.get("/dashboard-admin/company-list/company-info/:id", (req, res) => {
         res.redirect("/login-admin");
     } else {
         let id = req.params.id;
-        db.all("SELECT nombre, correo, telefono, id_empresa_pk, correo_empresarial, poliza, no_candado FROM usuarios, empresas WHERE id_usuario_pk = id_usuario_fk AND id_usuario_pk = ?", [id], (err, row) => {
-            let info_empresa = row;
-            let id_empresa = row[0].id_empresa_pk;
-            db.all("SELECT id_ticket_pk, contenido, fecha, version, estado, prioridad FROM tickets, ingenieros, usuarios, referencia WHERE id_usuario_fk = id_usuario_pk AND id_referencia_fk = id_referencia_pk AND id_empresa_fk = ?", [id_empresa], (err, row) => {
-                let data = {
-                    "name": req.session.nameAdmin,
-                    "empresa": info_empresa,
-                    "tickets": row
-                }
-                console.log(data);
-                res.render("admin/panel-admin-company-info.ejs", data);
+        db.all("SELECT nombre, correo, telefono, id_empresa_pk, correo_empresarial, poliza, no_candado FROM usuarios, empresas WHERE id_usuario_pk = id_usuario_fk AND id_usuario_pk = ?", [id], (err, empresaRows) => {
+            let info_empresa = empresaRows;
+            let id_empresa = empresaRows[0].id_empresa_pk;
+            db.all("SELECT DISTINCT id_ticket_pk, contenido, fecha, version, estado, prioridad FROM tickets, ingenieros, usuarios, referencia WHERE id_usuario_fk = id_usuario_pk AND id_referencia_fk = id_referencia_pk AND id_empresa_fk = ?", [id_empresa], (err, ticketRows) => {
+                let tickets = ticketRows;
+                db.all("SELECT ruta FROM profiles WHERE id_usuario_fk = ?", [id], (err, profileRows) => {
+                    let data = {
+                        "name": req.session.nameAdmin,
+                        "empresa": info_empresa,
+                        "tickets": tickets,
+                        "ruta": profileRows
+                    }
+                    console.log(data);
+                    res.render("admin/panel-admin-company-info.ejs", data);
+                });
             });
         });
     }
 });
+
 
 app.get("/dashboard-admin/references", (req, res) => {
     if (req.session.idAdministrador === undefined) {
@@ -902,59 +1005,170 @@ app.get("/dashboard-admin/reportes", (req, res) => {
     if (req.session.idAdministrador === undefined) {
         res.redirect("/login-admin");
     } else {
-        db.all("SELECT id_reporte_pk, mes, year, fecha FROM reportes ORDER BY id_reporte_pk DESC", (err, row) => {
-            var fecha = new Date();
-            let mes = fecha.getMonth();
+        db.all("SELECT id_report_pk, mes, year, fecha FROM reporte_mes ORDER BY id_report_pk DESC", (err, row) => {
+            let reportes_mes = row;
 
-            let data = {
-                "name": req.session.nameAdmin,
-                "mes": mes,
-                "reportes": row
-            }
-            res.render("admin/panel-admin-reports.ejs", data);
-        });
-    }
-});
+            db.all("SELECT id_reporte_pk, mes, year, estado, fecha FROM reportes_estados ORDER BY id_reporte_pk DESC", (err, row) => {
+                let reporte_estados = row;
 
-app.post("/dashboard-admin/reportes/register", (req, res) => {
-    let mes = req.body.mes;
-    let fecha = new Date;
-    let year = fecha.getFullYear();
+                db.all("SELECT id_reporte_pk, id_consultor_fk, nombre, mes, year, fecha FROM reporte_consultor ORDER BY id_reporte_pk DESC", (err, row) => {
+                    let reporte_consultores = row;
 
-    let fecha_completa = fecha.getDay() + "-" + (fecha.getMonth() + 1) + "-" + fecha.getFullYear();
-
-    db.all("INSERT INTO reportes(mes, year, fecha) VALUES(?,?, ?)", [mes, year, fecha_completa], (err, row) => {
-        res.redirect("/dashboard-admin/reportes");
-    });
-});
-
-app.get("/dashboard-admin/reportes/delete/:id", (req, res) => {
-    let id = req.params.id;
-
-    db.run("DELETE FROM reportes WHERE id_reporte_pk = ?", [id], () => {
-        res.redirect("/dashboard-admin/reportes");
-    });
-});
-
-app.get("/dashboard-admin/reportes/info/:id", (req, res) => {
-    if (req.session.idAdministrador === undefined) {
-        res.redirect("/login-admin");
-    } else {
-        let id = req.params.id;
-
-        db.all("SELECT mes, year FROM reportes WHERE id_reporte_pk = ?", [id], (err, row) => {
-            let mes = "0" + row[0].mes;
-            let year = row[0].year;
-
-            db.all("SELECT id_ticket_pk, id_empresa_fk, fecha, version, tiempo, prioridad, nombre, contenido FROM tickets, usuarios, empresas, referencia WHERE id_empresa_fk = id_empresa_pk AND empresas.id_usuario_fk = usuarios.id_usuario_pk AND id_referencia_fk = id_referencia_pk AND estado = 'Liberado' AND id_empresa_fk = id_empresa_pk AND id_usuario_fk = id_usuario_pk AND strftime('%m', fecha) = '" + mes + "' AND strftime('%Y', fecha) = '" + year + "' ORDER BY id_ticket_pk DESC", (err, row) => {
-                let data = {
-                    "tickets": row
-                }
-                res.render("admin/template-report.ejs", data);
+                    db.all("SELECT id_ingeniero_pk, nombre FROM ingenieros, usuarios WHERE id_usuario_fk = id_usuario_pk", (err, row) => {
+                        let data = {
+                            "name": req.session.nameAdmin,
+                            "reporte_mes": reportes_mes,
+                            "reporte_estados": reporte_estados,
+                            "reporte_consultores": reporte_consultores,
+                            "consultores": row
+                        };
+                        console.log(data);
+                        res.render("admin/panel-admin-reports.ejs", data);
+                    });
+                });
             });
         });
     }
 });
+
+// REPORTES POR MES -------------------------------------------------------
+
+app.get("/dashboard-admin/reportes/reporte-mes/:mes", (req, res) => {
+    let date = new Date();
+    let mes = req.params.mes;
+    
+    let day = date.getDate().toString().padStart(2, '0');
+    let month = (date.getMonth() + 1).toString().padStart(2, '0');
+    let year = date.getFullYear();
+    let fecha = day + "-" + month + "-" + year;
+
+    db.all("INSERT INTO reporte_mes(fecha, mes, year) VALUES(?,?,?)", [fecha, mes, date.getFullYear()], () => {
+        res.redirect("/dashboard-admin/reportes");
+    });
+});
+
+app.get("/dashboard-admin/reportes/reporte-mes/delete/:id", (req, res) => {
+    let id = req.params.id;
+
+    db.run("DELETE FROM reporte_mes WHERE id_report_pk = ?", [id], () => {
+        res.redirect("/dashboard-admin/reportes");
+    });
+});
+
+app.get("/dashboard-admin/reporte-mes/info/:mes/:year", (req, res) => {
+    let mes = req.params.mes;
+    let year = req.params.year;
+
+    let consulta = `SELECT DISTINCT id_ticket_pk, id_referencia_fk, fecha, tiempo, minutos, version, estado, prioridad, razon, nombre, contenido FROM tickets, empresas, ingenieros, usuarios, referencia WHERE substr(fecha, 6, 2) = '0`+mes+`' AND substr(fecha, 1, 4) = '`+year+`' AND id_empresa_fk = id_empresa_pk AND id_ingeniero_fk = id_ingeniero_pk AND ingenieros.id_usuario_fk = usuarios.id_usuario_pk AND estado = 'Liberado' ORDER BY id_ticket_pk DESC`;
+
+    db.all(consulta, (err, row) => {
+        let data = {
+            "tickets": row,
+            "template": "mes"
+        }
+        console.log(data);
+        res.render("admin/template-report.ejs", data);
+    });
+});
+
+// REPORTES POR MES -------------------------------------------------------
+
+// REPORTES POR ESTADO ----------------------------------------------------
+
+app.get("/dashboard-admin/reportes/reporte-estados/:estado", (req, res) => {
+    let estado = req.params.estado;
+    let date = new Date();
+    let mes = date.getMonth() + 1;
+    let year = date.getFullYear();
+
+    let day = date.getDate().toString().padStart(2, '0');
+    let month = (date.getMonth() + 1).toString().padStart(2, '0');
+    let fecha = day + "-" + month + "-" + year;
+
+    db.all("INSERT INTO reportes_estados(fecha, mes, year, estado) VALUES(?,?,?,?)", [fecha, mes, year, estado], () => {
+        res.redirect("/dashboard-admin/reportes");
+    });
+});
+
+app.get("/dashboard-admin/reportes/reporte-estados/delete/:id", (req, res) => {
+    let id = req.params.id;
+
+    db.run("DELETE FROM reportes_estados WHERE id_reporte_pk = ?", [id], () => {
+        res.redirect("/dashboard-admin/reportes");
+    });
+});
+
+app.get("/dashboard-admin/reportes/reporte-estados/info/:mes/:year/:estado", (req, res) => {
+    let mes = req.params.mes;
+    let year = req.params.year;
+    let prioridad = req.params.estado;
+
+    let consulta = ``;
+
+    if (prioridad === "General") {
+        consulta = `SELECT DISTINCT id_ticket_pk, id_referencia_fk, fecha, tiempo, minutos, version, estado, prioridad, razon, nombre, contenido FROM tickets, empresas, ingenieros, usuarios, referencia WHERE substr(fecha, 6, 2) = '0`+mes+`' AND substr(fecha, 1, 4) = '`+year+`' AND id_empresa_fk = id_empresa_pk AND id_ingeniero_fk = id_ingeniero_pk AND ingenieros.id_usuario_fk = usuarios.id_usuario_pk AND estado = 'Liberado' ORDER BY prioridad`;
+    } else {
+        consulta = `SELECT DISTINCT id_ticket_pk, id_referencia_fk, fecha, tiempo, minutos, version, estado, prioridad, razon, nombre, contenido FROM tickets, empresas, ingenieros, usuarios, referencia WHERE substr(fecha, 6, 2) = '0`+mes+`' AND substr(fecha, 1, 4) = '`+year+`' AND id_empresa_fk = id_empresa_pk AND id_ingeniero_fk = id_ingeniero_pk AND ingenieros.id_usuario_fk = usuarios.id_usuario_pk AND estado = 'Liberado' AND prioridad = '`+prioridad+`' ORDER BY id_ticket_pk DESC`;
+    }
+
+    db.all(consulta, (err, row) => {
+        let data = {
+            "tickets": row,
+            "template": "estado"
+        }
+        console.log(data);
+        res.render("admin/template-report.ejs", data);
+    });
+});
+
+
+// REPORTES POR ESTADO ----------------------------------------------------
+
+// REPORTES POR CONSULTORES -----------------------------------------------
+
+app.get("/dashboard-admin/reportes/reporte-consultores/:nombre/:id", (req, res) => {
+    let nombre = req.params.nombre;
+    let id = req.params.id;
+
+    let date = new Date();
+    let mes = date.getMonth() + 1;
+    let year = date.getFullYear();
+
+    let day = date.getDate().toString().padStart(2, '0');
+    let month = (date.getMonth() + 1).toString().padStart(2, '0');
+    let fecha = day + "-" + month + "-" + year;
+
+    db.all("INSERT INTO reporte_consultor(id_consultor_fk, nombre, mes, year, fecha) VALUES(?,?,?,?,?)", [id, nombre, mes, year, fecha], () => {
+        res.redirect("/dashboard-admin/reportes");
+    });
+});
+
+app.post("/dashboard-admin/reportes/reporte-consultores/delete/:id", (req, res) => {
+    let id = req.params.id;
+
+    db.run("DELETE FROM reporte_consultor WHERE id_reporte_pk = ?", [id], () => {
+        res.redirect("/dashboard-admin/reportes");
+    });
+});
+
+app.get("/dashboard-admin/reportes/reporte-consultores/info/:mes/:year/:id", (req, res) => {
+    let id = req.params.id
+    let mes = req.params.mes;
+    let year = req.params.year;
+
+    let consulta = `SELECT DISTINCT id_ticket_pk, id_referencia_fk, fecha, tiempo, minutos, version, estado, prioridad, razon, nombre, contenido FROM tickets, empresas, ingenieros, usuarios, referencia WHERE substr(fecha, 6, 2) = '0`+mes+`' AND substr(fecha, 1, 4) = '`+year+`' AND id_empresa_fk = id_empresa_pk AND id_ingeniero_fk = id_ingeniero_pk AND ingenieros.id_usuario_fk = usuarios.id_usuario_pk AND estado = 'Liberado' AND id_ingeniero_fk = `+id+` ORDER BY id_ticket_pk DESC`;
+
+    db.all(consulta,  (err, row) => {
+        let data = {
+            "tickets": row,
+            "template": "consultor"
+        }
+        console.log(data);
+        res.render("admin/template-report.ejs", data);
+    });
+});
+
+// REPORTES POR CONSULTORES -----------------------------------------------
 
 app.get("/dashboard-admin/profile", (req, res) => {
     if (req.session.idAdministrador === undefined) {

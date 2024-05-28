@@ -4,62 +4,84 @@
     <title>Profile Company</title>
 
     <div class="container">
-        <form action="/company-profile/update" method="post">
+        <div class="content">
             <div class="content-left">
                 <div class="profile-img">
-                    <div class="img">
-                        <i class="fa fa-building-o" aria-hidden="true"></i>
-                    </div>
+                    <% if(ruta.length === 0 || ruta[0].ruta === ''){ %>
+                        <div class="img" style="background-image: url('/uploads/no_profile_img.png');"></div>
+                    <% } else { %>
+                        <div class="img" style="background-image: url('<%= ruta[0].ruta %>');"></div>
+                    <% } %>
                     <h1>
                         <%= name %>
                     </h1>
                 </div>
             </div>
-            <hr>
             <div class="content-right">
-                <div class="form-group">
-                    <p>Información sobre la empresa</p>
-                    <label for="">
-                        <i class="fa fa-building-o" aria-hidden="true"></i> Razón:
-                    </label>
-                    <input type="text" name="nombre" id="" class="form-control" placeholder="Razón" required
-                        autocomplete="off" value="<%= name %>">
-
-                    <label for="">
-                        <i class="fas fa-mail-bulk    "></i> Correo del Administrador del Sistema:
-                    </label>
-                    <input type="text" name="correo" id="" class="form-control" placeholder="Correo" required
-                        autocomplete="off" value="<%= correo %>">
-
-                    <label for="">
-                        <i class="fas fa-mail-bulk    "></i> Correo de la empresa:
-                    </label>
-                    <input type="text" name="correo_empresarial" id="" class="form-control" placeholder="Correo empresarial" required autocomplete="off" value="<%= correo_empresarial %>">
-
-                    <label for="">
-                        <i class="fa fa-phone" aria-hidden="true"></i> Teléfono:
-                    </label>
-                    <input type="tel" name="telefono" id="" class="form-control" placeholder="Correo" required autocomplete="off" value="<%= telefono %>">
-
-                    <label for="">
-                        <i class="fa fa-key" aria-hidden="true"></i> Contraseña:
-                    </label>
-                    <input type="text" name="password" id="" class="form-control" placeholder="Contraseña" required autocomplete="off" value="<%= password %>">
-
-                    <label for="">
-                        <i class="fa fa-lock" aria-hidden="true"></i> No. Candado:
-                    </label>
-                    <input type="text" name="no_candado" id="" class="form-control" placeholder="Contraseña" required autocomplete="off" value="<%= no_candado %>">
-
-                    <div class="buttons">
-                        <button type="submit" name="" id="" class="btn btn-primary">
-                            <i class="fas fa-user-cog    "></i> Guardar Cambios
-                        </button>
-                        <a name="" id="" class="btn btn-link" href="/company-panel" role="button">
-                            <i class="fa fa-arrow-left" aria-hidden="true"></i> Regresar
-                        </a>
+                <form action="/company-profile/update" method="post">
+                    <div class="form-group">
+                        <p>Información sobre la empresa</p>
+                        <label for="">
+                            <i class="fa fa-building" aria-hidden="true"></i> Razón:
+                        </label>
+                        <input type="text" name="nombre" id="" class="form-control" placeholder="Razón" required
+                            autocomplete="off" value="<%= name %>">
+    
+                        <label for="">
+                            <i class="fas fa-mail-bulk    "></i> Correo del Administrador del Sistema:
+                        </label>
+                        <input type="text" name="correo" id="" class="form-control" placeholder="Correo" required
+                            autocomplete="off" value="<%= info_empresa[0].correo %>">
+    
+                        <label for="">
+                            <i class="fas fa-mail-bulk    "></i> Correo de la empresa:
+                        </label>
+                        <input type="text" name="correo_empresarial" id="" class="form-control"
+                            placeholder="Correo empresarial" required autocomplete="off" value="<%= info_empresa[0].correo_empresarial %>">
+    
+                        <label for="">
+                            <i class="fa fa-phone" aria-hidden="true"></i> Teléfono:
+                        </label>
+                        <input type="tel" name="telefono" id="" class="form-control" placeholder="Correo" required
+                            autocomplete="off" value="<%= info_empresa[0].telefono %>">
+    
+                        <label for="">
+                            <i class="fa fa-key" aria-hidden="true"></i> Contraseña:
+                        </label>
+                        <input type="text" name="password" id="" class="form-control" placeholder="Contraseña" required
+                            autocomplete="off" value="<%= info_empresa[0].password %>">
+    
+                        <label for="">
+                            <i class="fa fa-lock" aria-hidden="true"></i> No. Candado:
+                        </label>
+                        <input type="text" name="no_candado" id="" class="form-control" placeholder="Contraseña" required
+                            autocomplete="off" value="<%= info_empresa[0].no_candado %>">
+    
+                        <div class="buttons">
+                            <button type="submit" name="" id="" class="btn btn-primary">
+                                <i class="fas fa-user-cog    "></i> Guardar Cambios
+                            </button>
+                            <a name="" id="" class="btn btn-link" href="/company-panel" role="button">
+                                <i class="fa fa-arrow-left" aria-hidden="true"></i> Regresar
+                            </a>
+                        </div>
                     </div>
-                </div>
+                </form>
+
+                <hr>
+    
+                <form action="/company-profile/update/img" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <p>Foto de perfil</p>
+                        <label for="">
+                            <i class="fas fa-image    "></i> Logo de la empresa
+                        </label>
+                        <input type="file" name="imagen" id="" class="form-control" required>
+                        <button type="submit" name="" id="" class="btn btn-primary new-profile">
+                            <i class="fas fa-file-upload    "></i> Guardar imagen
+                        </button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>

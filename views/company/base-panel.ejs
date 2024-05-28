@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/bootstrap-5.3.3-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
     <script src="/bootstrap-5.3.3-dist/js/bootstrap.min.js"></script>
     <script src="https://kit.fontawesome.com/c55ac3095c.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/css/company/panel-nav.css">
@@ -14,7 +15,11 @@
     <ul class="nav">
         <li class="nav-item nombre-empresa">
             <a class="nav-link" href="/company-profile">
-                <i class="fa fa-building-o" aria-hidden="true"></i> <%= name %>
+                <% if(ruta.length === 0 || ruta[0].ruta === '') { %>
+                    <div class="img-navbar" style="background-image: url('/uploads/no_profile_img.png');"></div>
+                <% } else { %>
+                    <div class="img-navbar" style="background-image: url('<%= ruta[0].ruta %>');"></div>
+                <% } %> <%= name %>
             </a>
         </li>
         <li class="nav-item">

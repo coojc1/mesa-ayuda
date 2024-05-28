@@ -9,7 +9,7 @@
                     <%= ticket[0].contenido %>
                         <% if(ticket[0].prioridad=="Por evaluar" ) { %>
                             <span class="badge bg-secondary">
-                                <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+                                <i class="fa fa-question-circle" aria-hidden="true"></i>
                                 <%= ticket[0].prioridad %>
                             </span>
                         <% } else if(ticket[0].prioridad=="Baja" ) { %>
@@ -35,7 +35,7 @@
                         <% } %>
                         <% if(ticket[0].estado=="Abierto" ) { %>
                             <span class="badge bg-danger rounded-pill">
-                                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                <i class="fa fa-clock|" aria-hidden="true"></i>
                                     <%= ticket[0].estado %>
                             </span>
                         <% } else if(ticket[0].estado=="En proceso" ) { %>
@@ -85,11 +85,8 @@
                                     <% if(comentarios[i].tipo_usuario == "Empresa") { %>
                                         <div class="user">
                                             <p>
-                                                <i class="fa fa-building-o" aria-hidden="true"></i> Empresa
+                                                <i class="fa fa-building|" aria-hidden="true"></i> Empresa
                                             </p>
-                                            <a name="" id="" class="btn btn-link" href="/ticket-info-comment/delete/<%= comentarios[i].id_comentario_pk %>" role="button">
-                                                <i class="fa fa-times" aria-hidden="true"></i>
-                                            </a>
                                         </div>
                                         <p>
                                             <%= comentarios[i].contenido %>
@@ -114,7 +111,7 @@
                           <label for=""><i class="fas fa-image    "></i> Subir imagen de referencia</label>
                           <input type="file" name="imagen" id="" class="form-control" required>
                           <button type="submit" name="" id="" class="btn btn-primary">
-                            <i class="fa fa-paper-plane-o" aria-hidden="true"></i> Subir imagen
+                            <i class="fa fa-paper-plane|" aria-hidden="true"></i> Subir imagen
                           </button>
                         </div>
                     </form>

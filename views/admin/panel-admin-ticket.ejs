@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/bootstrap-5.3.3-dist/css/bootstrap.min.css">
-    <script src="https://kit.fontawesome.com/c55ac3095c.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
     <link rel="stylesheet" href="/css/admin/nav-panel.css">
     <link rel="stylesheet" href="/css/admin/panel-admin-ticket.css">
     <link rel="shortcut icon" href="/res/logo-5.png" type="image/x-icon">
@@ -19,7 +19,11 @@
             <div class="empresa-info">
                 <div class="card">
                     <div class="card-header">
-                        <i class="fa fa-building-o" aria-hidden="true"></i>
+                        <% if(ruta.length === 0) { %>
+                            <div class="img-profile" style="background-image: url('/uploads/no_profile_img.png');"></div>
+                        <% } else { %>
+                            <div class="img-profile" style="background-image: url('<%= ruta[0].ruta %>');"></div>
+                        <% } %>
                         <h3><%= ticket[0].nombre %></h3>
                     </div>
                     <div class="card-body">
@@ -47,7 +51,7 @@
                             <%= ticket[0].contenido %>
                             <% if(ticket[0].prioridad=="Por evaluar" ) { %>
                                 <span class="badge bg-secondary">
-                                    <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+                                    <i class="fa fa-question-circle" aria-hidden="true"></i>
                                     <%= ticket[0].prioridad %>
                                 </span>
                             <% } else if(ticket[0].prioridad=="Baja" ) { %>
@@ -73,7 +77,7 @@
                             <% } %>
                             <% if(ticket[0].estado=="Abierto" ) { %>
                                 <span class="badge bg-danger rounded-pill">
-                                    <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                    <i class="fa fa-clock" aria-hidden="true"></i>
                                         <%= ticket[0].estado %>
                                 </span>
                             <% } else if(ticket[0].estado=="En proceso" ) { %>
@@ -95,6 +99,53 @@
                         <p class="card-text"><%= ticket[0].descripcion %></p>
                     </div>
                     <div class="card-footer text-muted">
+                        <div class="tipo_poliza">
+                            <h3>Tipo de poliza</h3>
+                            <% if(ticket[0].tipo_poliza === null) { %>
+                                <div class="buttons">
+                                    <a name="" id="" class="btn btn-primary" href="/dashboard-admin/ticket-info/asign-poliza/Póliza anual/<%= ticket[0].id_ticket_pk %>" role="button">
+                                        <i class="fa fa-calendar" aria-hidden="true"></i> Póliza anual
+                                    </a>
+                                    <a name="" id="" class="btn btn-primary" href="/dashboard-admin/ticket-info/asign-poliza/Póliza de horas/<%= ticket[0].id_ticket_pk %>" role="button">
+                                        <i class="fas fa-clock    "></i> Póliza de horas
+                                    </a>
+                                    <a name="" id="" class="btn btn-primary" href="/dashboard-admin/ticket-info/asign-poliza/Pago por evento/<%= ticket[0].id_ticket_pk %>" role="button">
+                                        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Pago por evento
+                                    </a>
+    
+                                    <br>
+                                    <br>
+    
+                                    <form action="/dashboard-admin/ticket-info/asign-poliza" method="post">
+                                        <div class="form-group">
+                                            <label for="">
+                                                <i class="fa fa-plus-square" aria-hidden="true"></i> Otro:
+                                            </label>
+    
+                                            <input type="text" name="tipo_poliza_otro" id="" class="form-control" placeholder="Otro...">
+
+                                            <input type="text" name="id_ticket" id="" class="form-control" value="<%= ticket[0].id_ticket_pk %>" readonly hidden>
+                                            
+                                            <br>
+    
+                                            <button type="submit" name="" id="" class="btn btn-primary">
+                                                <i class="fa fa-paper-plane" aria-hidden="true"></i> Guardar
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            <% } else { %>
+                                <p>
+                                    <i class="fas fa-shield-alt    "></i> Tipo de poliza: <%= ticket[0].tipo_poliza %> <a name="" id="" class="btn btn-link borrar_poliza" href="/dashboard-admin/ticket-info/delete-poliza/<%= ticket[0].id_ticket_pk %>" role="button">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </a>
+                                </p>
+                            <% } %>   
+                            
+                        </div>
+
+                        <hr>
+
                         <div class="support">
                             <h3>Consultor</h3>
                             
@@ -135,7 +186,7 @@
                                     <% } %>
 
                                     <a name="" id="" class="btn btn-link" href="/dashboard-admin/ticket-infor/delete-inge/<%= ticket[0].id_ticket_pk %>" role="button">
-                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
                                     </a>
                                 </p>
                             <% } %>
@@ -147,7 +198,7 @@
                             <h3>Estado del problema</h3>
                             <% if(ticket[0].prioridad === "Por evaluar") { %>
                                 <p><i class="fas fa-chart-line    "></i> Estado: <span class="badge bg-secondary">
-                                    <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+                                    <i class="fa fa-question-circle" aria-hidden="true"></i>
                                     <%= ticket[0].prioridad %>
                                 </span></p>
 
@@ -192,7 +243,7 @@
                                     <% } %>
 
                                     <a name="" id="" class="btn btn-link" href="/dashboard-admin/ticket-infor/delete-priority/<%= ticket[0].id_ticket_pk %>" role="button">
-                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
                                     </a>
                                 </p>
                             <% } %>
@@ -209,7 +260,7 @@
                                     <div class="comentario">
                                         <p class="usuario">
                                             <% if(comentarios[i].tipo_usuario == "Empresa") { %>
-                                                <i class="fa fa-building-o" aria-hidden="true"></i> Empresa
+                                                <i class="fa fa-building" aria-hidden="true"></i> Empresa
                                             <% } else { %>
                                                 <i class="fas fa-headset    "></i> Soporte
                                             <% } %>

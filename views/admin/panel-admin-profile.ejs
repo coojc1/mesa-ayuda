@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/bootstrap-5.3.3-dist/css/bootstrap.min.css">
-    <script src="https://kit.fontawesome.com/c55ac3095c.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
     <link rel="stylesheet" href="/css/admin/nav-panel.css">
     <link rel="stylesheet" href="/css/admin/panel-admin-profile.css">
     <link rel="shortcut icon" href="/res/logo-5.png" type="image/x-icon">
@@ -20,13 +20,13 @@
             <div class="content">
                 <form action="/dashboard-admin/profile/update" method="post">
                     <div class="icon-holder">
-                        <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                        <i class="fa fa-user-circle" aria-hidden="true"></i>
                         <h3>
                             <%= admin[0].nombre %>
                         </h3>
                     </div>
                     <div class="form-group">
-                        <label for=""><i class="fa fa-user-circle-o" aria-hidden="true"></i> Nombre completo:</label>
+                        <label for=""><i class="fa fa-user-circle" aria-hidden="true"></i> Nombre completo:</label>
                         <input type="text" name="nombre" id="" class="form-control" placeholder="Nombre"
                             value="<%= admin[0].nombre %>" autocomplete="off" required>
 
@@ -39,7 +39,7 @@
                             value="<%= admin[0].password %>" autocomplete="off" required>
 
                         <button type="submit" name="" id="" class="btn btn-primary">
-                            <i class="fa fa-paper-plane-o" aria-hidden="true"></i> Guardar cambios
+                            <i class="fa fa-paper-plane" aria-hidden="true"></i> Guardar cambios
                         </button>
                     </div>
                 </form>
@@ -51,7 +51,7 @@
                     </div>
                     <div class="form-group">
                         <label for="">
-                            <i class="fa fa-user-circle-o" aria-hidden="true"></i> Nombre completo:
+                            <i class="fa fa-user-circle" aria-hidden="true"></i> Nombre completo:
                         </label>
                         <input type="text" name="nombre" id="" class="form-control" required autocomplete="off" placeholder="Nombre completo">
 

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/css/support/panel-support-ticket-info.css">
     <link rel="stylesheet" href="/css/support/nav-support.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
     <title>Información del Ticket</title>
 </head>
 <body>
@@ -54,7 +55,7 @@
                             <%= ticket[0].contenido %>
                             <% if(ticket[0].prioridad=="Por evaluar" ) { %>
                                 <span class="badge bg-secondary">
-                                    <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+                                    <i class="fa fa-question-circle" aria-hidden="true"></i>
                                     <%= ticket[0].prioridad %>
                                 </span>
                             <% } else if(ticket[0].prioridad=="Baja" ) { %>
@@ -80,7 +81,7 @@
                             <% } %>
                             <% if(ticket[0].estado=="Abierto" ) { %>
                                 <span class="badge bg-danger rounded-pill">
-                                    <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                    <i class="fa fa-clock" aria-hidden="true"></i>
                                         <%= ticket[0].estado %>
                                 </span>
                             <% } else if(ticket[0].estado=="En proceso" ) { %>
@@ -102,18 +103,31 @@
                         <p class="card-text"><%= ticket[0].descripcion %></p>
                     </div>
                     <div class="card-footer text-muted">
+                        <div class="tipo_poliza">
+                            <h3>Tipo de póliza</h3>
+                            <p>
+                                <i class="fas fa-shield-alt    "></i> Tipo de póliza: 
+                                <% if(ticket[0].tipo_poliza === null) { %>
+                                    <span class="badge bg-secondary">
+                                        <i class="fa fa-question-circle" aria-hidden="true"></i> Sin categorizar
+                                    </span>
+                                <% } else { %>
+                                    <%= ticket[0].tipo_poliza %>
+                                <% } %>
+                            </p>
+                        </div>
                         <div class="estado">
                             <h3>Cambiar Estatus</h3>
                             <p>
-                                <i class="fa fa-clock-o" aria-hidden="true"></i> Tiempo de soporte: 
+                                <i class="fa fa-clock" aria-hidden="true"></i> Tiempo de soporte: 
                                 <% if(ticket[0].tiempo === null){ %> 
                                     <span class="badge bg-secondary">
-                                        <i class="fa fa-clock-o" aria-hidden="true"></i> Sin Horas de Soporte
+                                        <i class="fa fa-clock" aria-hidden="true"></i> Sin Horas de Soporte
                                     </span>
                                 <% } else { %>
                                     <span class="badge bg-success">
-                                        <i class="fa fa-clock-o" aria-hidden="true"></i> 
-                                        <%= ticket[0].tiempo %> Hrs. Empleadas
+                                        <i class="fa fa-clock" aria-hidden="true"></i> 
+                                        <%= ticket[0].tiempo %> Hrs. y <%= ticket[0].minutos %> Min. Empleados
                                     </span>
                                 <% } %>
                             </p>
@@ -131,13 +145,19 @@
                                 <form action="/dashboard-support/ticket-info/status-end" method="post">
                                     <div class="form-group">
                                       <label for="">
-                                        <i class="fa fa-clock-o" aria-hidden="true"></i> Horas de Soporte
+                                        <i class="fa fa-clock" aria-hidden="true"></i> Horas de Soporte
                                     </label>
                                       <input type="number" name="horas" id="" class="form-control" required>
-                                      <input type="number" name="id_ticket" id="" class="form-control" required readonly value="<%= ticket[0].id_ticket_pk %>" hidden>
+                                      
+                                      <label for="">
+                                          <i class="fa fa-clock" aria-hidden="true"></i> Minutos de Soporte
+                                        </label>
+                                        <input type="number" name="minutos" id="" class="form-control" required>
+                                        
+                                        <input type="number" name="id_ticket" id="" class="form-control" required readonly value="<%= ticket[0].id_ticket_pk %>" hidden>
                                     </div>
                                     <button type="submit" name="" id="" class="btn btn-primary">
-                                        <i class="fa fa-paper-plane-o" aria-hidden="true"></i> Liberar Ticket
+                                        <i class="fa fa-paper-plane" aria-hidden="true"></i> Liberar Ticket
                                     </button>
                                 </form>
                             <% } %>
@@ -151,7 +171,7 @@
                             <form action="/dashboard-support/ticket-info/comment-post" method="post">
                                 <div class="form-group">
                                   <label for="">
-                                    <i class="fa fa-comment-o" aria-hidden="true"></i> Agregar Comentario
+                                    <i class="fa fa-comment" aria-hidden="true"></i> Agregar Comentario
                                 </label>
                                   <input type="text" name="contenido" id="" class="form-control" placeholder="Contenido..." required>
 
@@ -172,11 +192,11 @@
                                     <div class="comentario">
                                         <p class="usuario">
                                             <% if(comentarios[i].tipo_usuario === "Empresa") { %>
-                                                <i class="fa fa-building-o" aria-hidden="true"></i> Empresa
+                                                <i class="fa fa-building" aria-hidden="true"></i> Empresa
                                             <% } else { %>
                                                 <i class="fas fa-headset    "></i> Consultor 
-                                                <a name="" id="" class="btn btn-link" href="/dashboard-support/ticket-info/comment-delete/<%= comentarios[i].id_comentario_pk %>/<%= ticket[i].id_ticket_pk %>" role="button">
-                                                    <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                                                <a name="" id="" class="btn btn-link" href="/dashboard-support/ticket-info/comment-delete/<%= comentarios[i].id_comentario_pk %>/<%= ticket[0].id_ticket_pk %>" role="button">
+                                                    <i class="fa fa-times-circle" aria-hidden="true"></i>
                                                 </a>
                                             <% } %>
                                         </p>
@@ -197,7 +217,7 @@
                                 <div class="img">
                                     <% for(let i = 0; i < imagenes.length; i++) { %>
                                         <div class="img-buttons" style="background-image: url('<%= imagenes[i].ruta %>');">
-                                            <a name="" id="" class="btn btn-primary" href="<%= imagenes[i].ruta %>" role="button" target="_blank">
+                                            <a name="" id="" class="btn btn-link" href="<%= imagenes[i].ruta %>" role="button" target="_blank">
                                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                             </a>
                                         </div>
